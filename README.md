@@ -1,4 +1,6 @@
-# 라플 / LastPlate MVP 1.2.1 — 월간 급식 운영 계획
+# 라플 / LastPlate MVP 1.2.2 — 월간 급식 운영 계획
+
+**1.2.2 Railway 계산 오류 수정:** Linux 실행 이미지에 LightGBM의 필수 라이브러리 `libgomp.so.1`이 없어 식수 예측이 실패하는 원인을 수정했습니다. `railpack.json`에서 실행 이미지에 `libgomp1`을 설치합니다. 계산식·모델·위험 판정은 바꾸지 않습니다.
 
 **1.2.1 계산 재시도 수정:** 저장된 미완료 계산을 완료 결과로 재사용하던 문제를 수정했습니다. 최신 코드로 서버를 다시 실행하고 브라우저를 새로고침한 뒤, 캘린더에서 해당 날짜의 **계산 다시 시도** 또는 **월간 운영 계획 생성**을 누르세요. 완료된 날짜는 유지하고 미완료 날짜를 다시 계산합니다. 기존 운영 DB를 지울 필요가 없습니다. 이전 미완료 계획도 이력으로 보존됩니다.
 
@@ -25,6 +27,18 @@ python -m venv .venv
 별도 프론트 빌드나 외부 LLM 키는 필요 없습니다. 초기 패키지 설치에는 네트워크가 필요합니다.
 Windows 실행 파일은 프로젝트의 .venv, 명시한 LASTPLATE_PYTHON 또는 현재 PC에 준비한 공용 환경을 사용합니다.
 macOS/Linux는 .venv/bin/python을 사용하세요.
+
+## Railway 배포
+
+GitHub `main`의 최신 커밋으로 배포하세요. 기존 배포의 **Redeploy**는 그 배포의 예전 커밋을 다시 사용할 수 있습니다. Railway의 **Deploy Latest Commit**으로 최신 코드를 선택하고 커밋을 확인하세요.
+
+루트 `railpack.json`은 Python 빌드, 실행 단계의 `libgomp1` 설치, Railway의 `PORT`를 사용하는 시작 명령을 지정합니다. 기존 서비스의 사용자 지정 시작 명령이 있으면 `python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT`인지 확인하세요. 서버 콘솔에서 `python scripts/check-runtime.py`를 실행하면 운영 DB를 건드리지 않고 네 단계 계산을 확인할 수 있습니다.
+
+SQLite를 재배포 후에도 보존하려면 Railway Volume을 마운트하고 `LASTPLATE_DB_PATH`를 그 안의 파일로 지정해야 합니다(예: `/data/lastplate.db`). 이미 저장한 자료가 있다면 **먼저 SQLite 백업을 내려받고**, 새 위치로 복원한 다음 경로를 전환하세요. 컨테이너의 기본 `/app/data`는 Volume 없이 영구 저장되지 않습니다.
+
+배포 후 캘린더의 **계산 다시 시도** 또는 **월간 운영 계획 생성**으로 이전 미완료 결과를 다시 계산하세요. 페이지 새로고침만으로 저장된 계획이 재계산되지는 않습니다.
+
+참고: [Railpack 설정](https://railpack.com/config/file/), [Railway 배포 동작](https://docs.railway.com/deployments/deployment-actions).
 
 ## 사용 순서
 
