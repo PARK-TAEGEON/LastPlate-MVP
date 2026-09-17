@@ -57,7 +57,7 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
     if unknown:add('unknown','확인이 필요한 조건: '+', '.join(unknown),'기한·입고·검증 자료를 확인하세요.')
     if demand.get('operational_eligible') is False or (op.get('source') or {}).get('operational_eligible') is False:
         add('evidence','현재 자료만으로 운영에 사용할 수 없습니다','운영 인원과 입력 자료의 확인 근거가 필요합니다.')
-    if op.get('capacity_excess',0)>0:add('capacity','급식 용량을 초과했습니다','수용 가능 인원과 조리 설비를 확인하세요.','차단')
+    if op.get('capacity_excess') is not None and op['capacity_excess']>0:add('capacity','급식 용량을 초과했습니다','수용 가능 인원과 조리 설비를 확인하세요.','차단')
     requirement={r['ingredient']:r for r in op.get('ingredient_requirements',[])}
     mapping={
       'STOCK_SHORTAGE':('shortage','재고 부족','필요량과 재고를 확인하고 추가 확보를 검토하세요.'),
@@ -98,6 +98,11 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
             '식재료 수량 단위를 g 또는 kg로 확인한 뒤 다시 계산하세요.' if code=='UNIT_ERROR' else
             '이벤트 또는 위험 정보에 확인이 필요합니다. 입력을 확인하고 다시 계산하세요.' if code=='DECISION_NEEDS_CONFIRMATION' else
             '계산 다시 시도를 눌러 주세요. 반복되면 서버 실행 환경과 입력 자료를 확인해야 합니다.')
+        if code=='INVENTORY_DATA_MISSING':
+            menus={m['menu_name'] for m in request['weekly_menu'] if m['date']==result['target_date'] and m['meal_type']=='lunch'}
+            ingredients={i['ingredient'] for r in request['recipes'] if r['menu_name'] in menus for i in r['ingredients']}
+            missing=sorted(ingredients-{r['ingredient'] for r in request['inventory']})
+            if missing:action='재고가 등록되지 않은 품목: '+', '.join(missing)+'. 해당 품목의 재고 자료를 추가하고 다시 계산하세요.'
         add('calculation',label+' 계산을 완료하지 못했습니다',action,target=label)
         if action not in calculation_actions:calculation_actions.append(action)
     if result['persistence_status']!='SUCCESS':add('save','계산 결과가 완전히 저장되지 않았습니다','아래 ‘저장 다시 시도’를 누르세요. 계산 결과는 이 화면에 남아 있습니다.')

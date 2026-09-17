@@ -99,6 +99,18 @@ def test_monthly_xlsx_and_duplicate_dates(client):
     ws.append(['2026-09-19','백미밥','된장국','제육볶음','두부조림']);stream=BytesIO();wb.save(stream)
     assert client.post('/api/ui/upload/monthly-menu',data={'site_id':SITE,'target_date':'2026-09-19'},files={'file':('month.xlsx',stream.getvalue())}).status_code==422
 
+
+def test_download_inventory_templates_cover_monthly_menu(client):
+    from pathlib import Path
+    from backend.application.profiles import demo_profile
+    from backend.application.meal_catalog import CATALOG
+    required={i['ingredient'] for r in demo_profile()['request']['recipes']
+              if any(r['menu_name'] in names for names in CATALOG.values()) for i in r['ingredients']}
+    for extension in ('csv','xlsx'):
+        content=(Path(__file__).resolve().parents[1]/'examples'/('inventory.'+extension)).read_bytes()
+        result=response(client.post('/api/ui/upload/inventory',data={'site_id':SITE,'target_date':'2026-09-19'},files={'file':('inventory.'+extension,content)}))
+        assert required<={r['ingredient'] for r in result['rows']}
+
 @pytest.mark.e2e
 def test_concurrent_edit_never_attaches_stale_calculation(client,monkeypatch):
     from backend.api import monthly
@@ -148,3 +160,23 @@ def test_partial_calculation_retries_and_repairs_old_completion_marker(client,mo
     assert '계산 미완료' not in new['outcome']
     assert generate(client,day)['reused']
     assert not response(client.get('/api/ui/plans/'+p['id']))['calculation_complete']
+
+
+@pytest.mark.e2e
+def test_missing_inventory_returns_actionable_plan_and_recovers(client):
+    month,body=setup(client)
+    original=body['inventory']
+    body.update(expected_revision=month['revision'],inventory=[r for r in original if r['ingredient'] not in ('쌀','된장')])
+    month=response(client.put(URL,json=body));day=month['days'][0]
+    failed=generate(client,day);p=failed['plan']
+    assert p['saved'] and not p['calculation_complete']
+    assert p['model_diners'] is not None and p['review_servings'] is None
+    assert '쌀' in p['next_action'] and '된장' in p['next_action']
+    assert not any(i['title']=='급식 용량을 초과했습니다' for i in p['issues'])
+    assert response(client.get('/api/ui/plans/'+p['id']))['next_action']==p['next_action']
+    assert not response(client.get(URL,params={'site_id':SITE}))['days'][0]['summary']['calculation_complete']
+    body.update(expected_revision=failed['month']['revision'],inventory=original)
+    month=response(client.put(URL,json=body))
+    fixed=generate(client,month['days'][0])['plan']
+    assert fixed['calculation_complete'] and fixed['review_servings'] is not None
+    assert fixed['model_diners']==p['model_diners']
