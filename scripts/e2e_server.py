@@ -6,6 +6,8 @@ import uvicorn
 import sqlite3
 from backend.main import create_app
 from backend.adapters.persistence import Persistence
+from backend.application import orchestrator
+from integration.errors import StageError
 
 app=create_app()
 @app.get('/__e2e_identity')
@@ -25,6 +27,21 @@ Persistence.save_run=maybe_fail
 def fail_next():
     global _fail_next
     _fail_next=True
+    return {'armed':True}
+
+_invoke=orchestrator.invoke
+_fail_demand=False
+def maybe_fail_demand(stage,*args,**kwargs):
+    global _fail_demand
+    if stage=='demand' and _fail_demand:
+        _fail_demand=False
+        raise StageError(stage,'STAGE_TIMEOUT','Test-only demand timeout')
+    return _invoke(stage,*args,**kwargs)
+orchestrator.invoke=maybe_fail_demand
+@app.post('/__e2e_fail_next_demand')
+def fail_demand():
+    global _fail_demand
+    _fail_demand=True
     return {'armed':True}
 
 server=uvicorn.Server(uvicorn.Config(app,host='127.0.0.1',port=int(sys.argv[1]),log_level='info'))

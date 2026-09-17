@@ -18,6 +18,7 @@ from backend.adapters.persistence import Conflict,now
 router=APIRouter(prefix='/api/ui/months')
 locks={}
 locks_guard=threading.Lock()
+SUMMARY_FIELDS=('model_diners','operating_diners','review_servings','blocked','calculation','calculation_complete','saved')
 
 class Change(Contract):
     reason:str=Field(default='',max_length=200)
@@ -113,10 +114,12 @@ def get_month(month:str,site_id:str,request:Request):
         ensure(db);data=read(db,site_id,month)
         result=view(data)
         for d in result['days']:
-            if d['plan_id']:
-                saved=db.get_run(d['plan_id'])
+            current_id=d.get('pending_plan_id') or d['plan_id']
+            if current_id:
+                saved=db.get_run(current_id)
                 if saved:
-                    p=present_run(db,d['plan_id']);d['summary']={k:p[k] for k in ('model_diners','operating_diners','review_servings','blocked','calculation','saved')}
+                    p=present_run(db,current_id);d['summary']={k:p[k] for k in SUMMARY_FIELDS}
+                    if not p['calculation_complete']:d['generated_revision']=None
         return result
 
 @router.put('/{month}')
@@ -181,7 +184,12 @@ def generate(month:str,target:date,payload:Generate,request:Request):
             ensure(db);data=read(db,payload.site_id,month,True);d=day_in(data,str(target))
             if d['revision']!=payload.expected_revision:raise Conflict('입력 내용이 변경됐습니다. 월간 식단을 새로고침하세요.')
             if d['plan_id'] and d['generated_revision']==d['revision']:
-                return {'month':view(data),'plan':present_run(db,d['plan_id']),'reused':True}
+                previous=present_run(db,d['plan_id'])
+                # A saved failure is an audit record, not a completed calculation.
+                # Check the stored result as older schedules marked partial runs complete.
+                if previous['saved'] and previous['calculation_complete']:
+                    d['summary']={k:previous[k] for k in SUMMARY_FIELDS}
+                    return {'month':view(data),'plan':previous,'reused':True}
         resolved=day_request(data,d)
         result=None
         pending_id=d.get('pending_plan_id') if d.get('pending_revision')==d['revision'] else None
@@ -200,10 +208,11 @@ def generate(month:str,target:date,payload:Generate,request:Request):
                 current=read(db,payload.site_id,month,True);day=day_in(current,str(target))
                 if day['revision']!=payload.expected_revision:raise Conflict('계산 중 입력이 변경됐습니다. 이전 계산은 보존했으며 수정된 입력으로 다시 계산하세요.')
                 day['note_review']=note_review
+                day['summary']={k:result[k] for k in SUMMARY_FIELDS}
                 if result['saved']:
-                    day.update(plan_id=result['id'],generated_revision=day['revision'],summary={k:result[k] for k in ('model_diners','operating_diners','review_servings','blocked','calculation','saved')})
+                    day.update(plan_id=result['id'],generated_revision=day['revision'] if result['calculation_complete'] else None)
                     day.pop('pending_plan_id',None);day.pop('pending_revision',None)
-                else:day.update(pending_plan_id=result['id'],pending_revision=day['revision'])
+                else:day.update(pending_plan_id=result['id'],pending_revision=day['revision'],generated_revision=None)
                 write(db,current)
             return {'month':view(current),'plan':result,'reused':False}
     finally:lock.release()
@@ -215,10 +224,11 @@ def review(month:str,target:date,payload:Review,request:Request):
         with db.repo.transaction():
             data=read(db,payload.site_id,month,True);d=day_in(data,str(target))
             if d['revision']!=payload.expected_revision or d['plan_id']!=payload.plan_id or d['generated_revision']!=d['revision']:raise Conflict('최신 입력으로 계산한 계획에서 권고를 검토하세요.')
+            p=present_run(db,payload.plan_id)
+            if not p['calculation_complete']:raise Conflict('계산을 완료한 뒤 권고를 검토하세요. 해당 날짜의 계산 다시 시도를 눌러 주세요.')
             if any(r['plan_id']==payload.plan_id and r['kind']==payload.kind and r['candidate_index']==payload.candidate_index for r in d['reviews']):raise Conflict('이미 선택한 권고입니다. 기록을 새로고침하세요.')
             summary='기타 사유 반영'
             if payload.kind=='menu':
-                p=present_run(db,payload.plan_id)
                 if payload.candidate_index>=len(p['candidates']):raise HTTPException(422,'현재 계획의 권고를 선택하세요.')
                 c=p['candidates'][payload.candidate_index];summary=c['original_menu']+' → '+c['menu']
                 slot=next((s for s,n in d['menus'].items() if n==c['original_menu']),None)

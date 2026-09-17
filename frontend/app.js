@@ -1,6 +1,6 @@
-import {initMonthly} from './monthly.js?v=4';
-import {api} from './api/lastplateApi.js?v=4';
-import {$,fmt,stamp,node,text,renderInputs,renderEvents,renderPlan,renderActual,renderHistory,renderSectionState} from './components/cards.js?v=4';
+import {initMonthly} from './monthly.js?v=5';
+import {api} from './api/lastplateApi.js?v=5';
+import {$,fmt,stamp,node,text,renderInputs,renderEvents,renderPlan,renderActual,renderHistory,renderSectionState} from './components/cards.js?v=5';
 
 const staff=['vacation','business_trip','work_from_home','overtime'];
 const actualNumbers=['actual_diners','prepared_servings','unserved_leftover_kg','plate_waste_kg','ingredient_waste_kg'];

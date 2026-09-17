@@ -1,5 +1,5 @@
-import {api} from './api/lastplateApi.js?v=4';
-import {$,node,fmt,table} from './components/cards.js?v=4';
+import {api} from './api/lastplateApi.js?v=5';
+import {$,node,fmt,table} from './components/cards.js?v=5';
 
 const slots={rice:'밥',soup:'국',main:'메인반찬',side:'사이드반찬'};
 export function initMonthly(hooks){
@@ -9,6 +9,12 @@ export function initMonthly(hooks){
   const captureDay=()=>({menus:Object.fromEntries(Object.keys(slots).map(s=>[s,$('day-'+s).value])),change:{reason:$('day-reason').value.trim(),increase:Number($('day-increase').value),decrease:Number($('day-decrease').value),note:$('day-note').value.trim()}});
   const selection=()=>hooks.selection();
   const selectedDay=()=>data?.days.find(d=>d.date===selection()?.date);
+  const incomplete=day=>day?.summary?.calculation_complete===false;
+  const complete=day=>!!day.plan_id&&!day.pending_plan_id&&day.generated_revision===day.revision&&day.summary?.calculation_complete===true;
+  function resultMessage(plan,success){
+    if(!plan.calculation_complete)return '일부 계산을 완료하지 못했습니다. 계산된 항목은 보존됩니다. 경고 내용을 확인한 뒤 ‘계산 다시 시도’를 눌러 주세요.';
+    return plan.saved?success:'계산은 완료했으나 저장되지 않았습니다. 계산 결과의 저장 다시 시도를 이용하세요.';
+  }
   function beginSelection(){sequence++;reading=true;const s=selection();if(loadedKey!==s.site+'|'+s.date.slice(0,7)){data=null;$('month-calendar').replaceChildren(node('p','월간 식단을 불러오는 중…'));$('month-menu-table').replaceChildren();$('month-summary').textContent='';}$('day-workspace').hidden=true;$('agent-review').replaceChildren();sync(true);}
   function message(value,error=false){$('month-status').textContent=value;$('month-status').className='local-status '+(error?'error':'success');$('month-status').setAttribute('role',error?'alert':'status');$('month-create-status').textContent=value;$('month-create-status').className='local-status '+(error?'error':'success');}
   function update(next){data=next;dirty=false;render();}
@@ -23,7 +29,8 @@ export function initMonthly(hooks){
   function render(){
     if(!data)return;
     $('month-input').value=data.month;$('month-title').textContent=`${data.month.slice(0,4)}년 ${Number(data.month.slice(5))}월 운영 계획`;
-    $('month-summary').textContent=`식단 ${data.days.length}일 · 계산 완료 ${data.days.filter(d=>d.plan_id&&d.generated_revision===d.revision).length}일${dirty?' · 저장 전 변경사항':''}`;
+    const unfinished=data.days.filter(incomplete).length;
+    $('month-summary').textContent=`식단 ${data.days.length}일 · 계산 완료 ${data.days.filter(complete).length}일${unfinished?' · 계산 미완료 '+unfinished+'일':''}${dirty?' · 저장 전 변경사항':''}`;
     $('monthly-template').href=`/api/ui/months/${data.month}/template`;
     $('month-menu-table').replaceChildren();table($('month-menu-table'),[['날짜','date'],...Object.entries(slots).map(([key,label])=>[label,d=>d.menus[key]])],data.days,'월간 식단표');
     const grid=$('month-calendar');grid.replaceChildren();
@@ -37,7 +44,7 @@ export function initMonthly(hooks){
       b.append(node('strong',String(number),'calendar-number'));
       if(day){
         const stale=day.plan_id&&(dirty||day.generated_revision!==day.revision);
-        b.append(node('span',day.pending_plan_id?'계산 완료 · 저장 재시도':stale?'수정 · 재계산 필요':day.plan_id?(day.summary?.blocked?'확인 필요':'계획 생성됨'):'계획 생성 전','calendar-status'+(stale?' pending':'')));
+        b.append(node('span',incomplete(day)?'계산 미완료 · 다시 시도':day.pending_plan_id?'계산 완료 · 저장 재시도':stale?'수정 · 재계산 필요':day.plan_id?(day.summary?.blocked?'확인 필요':'계획 생성됨'):'계획 생성 전','calendar-status'+(stale||incomplete(day)?' pending':'')));
         for(const [key,label] of Object.entries(slots))b.append(node('span',`${label} · ${day.menus[key]}`,'calendar-menu'));
         if(day.summary)b.append(node('span',`예상 ${fmt(day.summary.operating_diners)}명`,'calendar-diners'));
         if(day.change.increase||day.change.decrease)b.append(node('span',`증가 ${day.change.increase} · 감소 ${day.change.decrease}명`,'calendar-change'));
@@ -57,9 +64,9 @@ export function initMonthly(hooks){
     }
     for(const key of ['reason','increase','decrease','note'])$('day-'+key).value=day.change[key]??'';
     $('day-edit-fields').disabled=running;
-    $('day-apply').textContent=day.plan_id?'변경사항 반영 · 다시 계산':'이 날짜 운영 계획 생성';
+    $('day-apply').textContent=incomplete(day)?'계산 다시 시도':day.plan_id?'변경사항 반영 · 다시 계산':'이 날짜 운영 계획 생성';
     $('day-plan-link').hidden=!day.plan_id;
-    $('day-state').textContent=day.plan_id?(day.generated_revision===day.revision?'저장된 계획을 확인하고 필요한 내용만 수정하세요.':'입력이 변경되었습니다. 다시 계산하면 운영 계획에 반영됩니다.'):'아직 계산 전입니다. 월 전체 생성 또는 이 날짜 생성을 선택하세요.';
+    $('day-state').textContent=incomplete(day)?'일부 계산을 완료하지 못했습니다. 입력과 계산된 항목은 보존되어 있습니다. 경고를 확인하고 다시 시도하세요.':day.plan_id?(day.generated_revision===day.revision?'저장된 계획을 확인하고 필요한 내용만 수정하세요.':'입력이 변경되었습니다. 다시 계산하면 운영 계획에 반영됩니다.'):'아직 계산 전입니다. 월 전체 생성 또는 이 날짜 생성을 선택하세요.';
   }
   function reviewButtons(root,kind,index,disabled=false){
     const day=selectedDay(),plan=hooks.plan();
@@ -74,6 +81,7 @@ export function initMonthly(hooks){
     const root=$('agent-review');root.replaceChildren(node('h2','운영 Agent 검토'));
     const day=selectedDay(),plan=hooks.plan();
     if(dirty||dayDrafts.has(draftKey())){root.append(node('p','저장 전 변경사항이 있습니다. 변경사항 반영으로 다시 계산한 뒤 새 권고를 검토하세요.','notice info'));return;}
+    if(day&&plan&&day.plan_id===plan.id&&!plan.calculation_complete){root.append(node('p','계산을 완료한 뒤 Agent 권고를 검토할 수 있습니다. 위의 ‘계산 다시 시도’를 눌러 주세요.','notice'));return;}
     if(!day||!plan||day.plan_id!==plan.id||day.generated_revision!==day.revision){root.append(node('p','계획 생성 후 날짜를 클릭하면 Agent의 권고와 근거를 확인할 수 있습니다.','muted'));return;}
     root.append(node('p',plan.outcome,'agent-outcome'),node('p',plan.next_action,'muted'));
     if(day.change.reason)root.append(node('p',`인원 변경 사유 · ${day.change.reason} / 증가 ${day.change.increase}명 · 감소 ${day.change.decrease}명`,'notice info'));
@@ -127,7 +135,7 @@ export function initMonthly(hooks){
       for(const date of days){
         if(stop)break;
         const day=data.days.find(d=>d.date===date);message(`${data.month} · ${completed}/${days.length}일 완료 · ${date} 계산 중`);$('month-progress').hidden=false;$('month-progress').max=days.length;$('month-progress').value=completed;
-        try{const result=await api.generateDay(data.month,date,{site_id:selection().site,expected_revision:day.revision});update(result.month);lastPlan=result.plan;if(!lastPlan.saved){failures.push(date+' (계산 완료 · 저장 미완료)');unsaved={date,plan:lastPlan};}}
+        try{const result=await api.generateDay(data.month,date,{site_id:selection().site,expected_revision:day.revision});update(result.month);lastPlan=result.plan;if(!lastPlan.calculation_complete)failures.push(date+' (계산 미완료 · 다시 시도)');if(!lastPlan.saved){if(lastPlan.calculation_complete)failures.push(date+' (계산 완료 · 저장 미완료)');unsaved={date,plan:lastPlan};}}
         catch(error){failures.push(date+' ('+error.message+')');}
         completed++;$('month-progress').value=completed;
       }
@@ -143,11 +151,11 @@ export function initMonthly(hooks){
     if(!data.revision)await save();const day=selectedDay();
     update(await api.saveDay(data.month,day.date,{site_id:selection().site,expected_revision:day.revision,menus,change}));
     dayDrafts.delete(draftKey());
-    const fresh=selectedDay();const result=await api.generateDay(data.month,fresh.date,{site_id:selection().site,expected_revision:fresh.revision});update(result.month);if(result.plan.saved)await hooks.select(fresh.date,result.plan.id);else await hooks.present(fresh.date,result.plan);message(result.plan.saved?'선택한 날짜의 변경사항을 반영했습니다. Agent 권고를 확인하세요.':'계산은 완료했으나 저장되지 않았습니다. 계산 결과의 저장 다시 시도를 이용하세요.',!result.plan.saved);
+    const fresh=selectedDay();const result=await api.generateDay(data.month,fresh.date,{site_id:selection().site,expected_revision:fresh.revision});update(result.month);if(result.plan.saved)await hooks.select(fresh.date,result.plan.id);else await hooks.present(fresh.date,result.plan);message(resultMessage(result.plan,'선택한 날짜의 변경사항을 반영했습니다. Agent 권고를 확인하세요.'),!result.plan.saved||!result.plan.calculation_complete);
   });});
   $('agent-review').addEventListener('click',e=>{const b=e.target.closest('[data-review-kind]');if(!b)return;void run('권고 선택을 기록합니다…',async()=>{
     const day=selectedDay();const response=await api.review(data.month,day.date,{site_id:selection().site,expected_revision:day.revision,plan_id:hooks.plan().id,kind:b.dataset.reviewKind,candidate_index:Number(b.dataset.reviewIndex),decision:b.dataset.reviewDecision,reason:''});update(response.month);
-    if(response.needs_recalculation){message('수용한 검토안으로 Agent가 다시 계산합니다…');const fresh=selectedDay();const result=await api.generateDay(data.month,fresh.date,{site_id:selection().site,expected_revision:fresh.revision});update(result.month);if(!result.plan.saved){await hooks.present(fresh.date,result.plan);message('계산은 완료했으나 저장되지 않았습니다. 저장 다시 시도를 이용하세요.',true);return;}await hooks.select(fresh.date,result.plan.id);}
+    if(response.needs_recalculation){message('수용한 검토안으로 Agent가 다시 계산합니다…');const fresh=selectedDay();const result=await api.generateDay(data.month,fresh.date,{site_id:selection().site,expected_revision:fresh.revision});update(result.month);if(!result.plan.saved){await hooks.present(fresh.date,result.plan);message(resultMessage(result.plan,''),true);return;}await hooks.select(fresh.date,result.plan.id);if(!result.plan.calculation_complete){message(resultMessage(result.plan,''),true);return;}}
     message(response.needs_recalculation?'수용한 내용을 재계산했습니다. 새 계획의 경고와 권고를 확인하세요.':'반영하지 않기로 기록했습니다. 기존 메뉴는 유지됩니다.');
   });});
   $('menu-file').addEventListener('change',()=>{const file=$('menu-file').files[0];if(!file)return;void run('월간 식단표를 확인합니다…',async()=>{

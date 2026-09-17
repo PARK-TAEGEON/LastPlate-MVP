@@ -85,7 +85,21 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
             amount=quantity(requirement[target].get('purchase_need'),requirement[target].get('unit'))
             if amount is not None:action=f'계산상 {amount:g}kg 추가 확보가 필요합니다. 입고·기한을 확인하세요.'
         add(key,f'{target} · {title}' if target else title,action,'참고' if key in ('overstock','unused') else '주의',target)
-    if result.get('errors'):add('calculation','계산을 완료하지 못한 항목이 있습니다','식단·재고·근무 현황을 확인한 뒤 다시 생성하세요.')
+    calculation_actions=[]
+    for error in result.get('errors',[]):
+        stage=error.get('stage');code=error.get('code')
+        label={'demand':'예상 식수','operation':'조리량·식재료','inventory_risk':'재고·공급 위험','decision':'최종 운영 권고','events':'변경 사유 해석'}.get(stage,'운영 계획')
+        action=('계산 시간이 초과됐습니다. 해당 날짜의 ‘계산 다시 시도’를 눌러 주세요.' if code=='STAGE_TIMEOUT' else
+            '계산에 필요한 실행 패키지가 없습니다. README의 설치 명령으로 requirements.txt를 설치한 뒤 서버를 재시작하세요.' if code in ('ModuleNotFoundError','ImportError') else
+            '계산 라이브러리를 불러오지 못했습니다. 서버 터미널에서 실행 환경을 점검한 뒤 다시 시도하세요.' if code=='OSError' else
+            '모델 또는 계산 자료 파일을 찾지 못했습니다. 저장소 전체를 내려받았는지 확인하세요.' if code=='FileNotFoundError' else
+            '일부 메뉴의 레시피 기준량이 없습니다. 등록된 메뉴로 수정한 뒤 다시 계산하세요.' if code=='RECIPE_MISSING' else
+            '식재료 재고 자료를 확인한 뒤 다시 계산하세요.' if code=='INVENTORY_DATA_MISSING' else
+            '식재료 수량 단위를 g 또는 kg로 확인한 뒤 다시 계산하세요.' if code=='UNIT_ERROR' else
+            '이벤트 또는 위험 정보에 확인이 필요합니다. 입력을 확인하고 다시 계산하세요.' if code=='DECISION_NEEDS_CONFIRMATION' else
+            '계산 다시 시도를 눌러 주세요. 반복되면 서버 실행 환경과 입력 자료를 확인해야 합니다.')
+        add('calculation',label+' 계산을 완료하지 못했습니다',action,target=label)
+        if action not in calculation_actions:calculation_actions.append(action)
     if result['persistence_status']!='SUCCESS':add('save','계산 결과가 완전히 저장되지 않았습니다','아래 ‘저장 다시 시도’를 누르세요. 계산 결과는 이 화면에 남아 있습니다.')
     risk_stock={r['ingredient']:r for r in risk.get('inventory_status',[])}
     orders={r['ingredient']:r for r in op.get('order_reviews',[])}
@@ -143,9 +157,10 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
     return {'id':result['request_id'],'site_id':result['site_id'],'site_name':request['site_name'],
         'target_date':result['target_date'],'is_demo':result['is_demo'],'created_at':created_at,'version':version,
         'acknowledged_at':acknowledged_at,'saved':result['persistence_status']=='SUCCESS',
-        'calculation':'계획 계산 완료' if complete else '일부 계산 미완료',
+        'calculation':'계획 계산 완료' if complete else '일부 계산 미완료','calculation_complete':complete,
         'outcome':outcome,'blocked':blocked,'ood':ood,
-        'next_action':(' · '.join(failures+unknown)+' 항목을 확인하고 다시 계산하세요.') if failures or unknown else '운영 인원과 재고, 입력 자료의 확인 근거가 필요합니다.',
+        'next_action':(' '.join(calculation_actions) if calculation_actions else '해당 날짜의 계산 다시 시도를 눌러 주세요.') if not complete else
+            (' · '.join(failures+unknown)+' 항목을 확인하고 다시 계산하세요.') if failures or unknown else '운영 인원과 재고, 입력 자료의 확인 근거가 필요합니다.',
         'model_diners':demand.get('predicted_diners'),'operating_diners':op.get('base_demand'),
         'review_servings':op.get('recommended_servings'),'final_servings':None,
         'margin_pct':op.get('safety_margin_pct'),'capacity':request['meal_capacity'],
@@ -159,7 +174,7 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
         'event_inputs':[e for e in request.get('events',[]) if isinstance(e,str)],
         'sources':{'menu':source_label(request['sources'].get('weekly_menu')),
             'inventory':source_label(request['sources'].get('inventory')),'as_of':request['as_of']},
-        'reason':'운영 기준 인원에 사업장 여유분을 더해 조리량을 계산했습니다. 재료 확보와 운영 조건을 확인해야 합니다.'}
+        'reason':'운영 기준 인원에 사업장 여유분을 더해 조리량을 계산했습니다. 재료 확보와 운영 조건을 확인해야 합니다.' if op.get('recommended_servings') is not None else '예상 식수와 조리량 계산을 완료한 뒤 조리 계획을 확인할 수 있습니다.'}
 
 def actual_view(row, revision=None, corrections=None):
     keys=['site_id','target_date','actual_diners','prepared_servings','unserved_leftover_kg',

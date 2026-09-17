@@ -91,6 +91,8 @@ def plan(request, settings, parent_request_id=None):
         if stages['demand']: stages['demand']=results.demand(stages['demand'],request)
         if stages['operation']: stages['operation']=results.operation(stages['operation'])
         status='SUCCESS' if raw['pipeline_status']=='COMPLETE' and not errors else 'PARTIAL'
+        for error in errors:
+            log.error('Plan calculation failed at %s (%s): %s',error.get('stage'),error.get('code'),error.get('original_message') or error.get('message'))
         if not any(stages.values()): status='FAILED'
         response=dict(pipeline_status=status,persistence_status='SUCCESS',request_id=request_id,
             site_id=request.site_id,target_date=str(request.target_date),parent_request_id=parent_request_id,
