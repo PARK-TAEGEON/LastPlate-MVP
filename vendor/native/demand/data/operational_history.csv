@@ -1,0 +1,1 @@
+﻿prediction_id,date,model_version,predicted_at,recorded_at,predicted_diners,actual_diners,prediction_error,menu,available_population,input_json,weather_json,event_json,prepared_servings,leftover_servings

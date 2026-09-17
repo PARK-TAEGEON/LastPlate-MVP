@@ -1,0 +1,782 @@
+<!DOCTYPE html><html lang="ko"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>LastPlate - B2B 엔터프라이즈 급식 운영 솔루션</title>
+<style>
+  :root {
+    --bg-main: #F0F4F2;
+    --surface: #FFFFFF;
+    --surface-sub: #EAF0EC;
+    --surface-hover: #E1E9E3;
+    --text-primary: #121815;
+    --text-secondary: #536259;
+    --text-tertiary: #829288;
+    --border-subtle: #DEE5E0;
+    --border-strong: #C4CEC7;
+    --brand-primary: #20503A;
+    --brand-hover: #163B2A;
+    --brand-light: #E6EFE9;
+    --brand-border: #B2CABE;
+    --status-ok-bg: #E8F5ED;
+    --status-ok-text: #195232;
+    --status-ok-border: #BFDFCB;
+    --status-warn-bg: #FAF2E3;
+    --status-warn-text: #7D530C;
+    --status-warn-border: #E8D9B4;
+    --status-err-bg: #FCEDEB;
+    --status-err-text: #A3201B;
+    --status-err-border: #F3BFBC;
+    --font-stack: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard Variable", Pretendard, "Malgun Gothic", sans-serif;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --shadow-card: 0 2px 6px rgba(18, 24, 21, 0.03), 0 1px 2px rgba(18, 24, 21, 0.02);
+    --shadow-hover: 0 12px 28px -6px rgba(18, 24, 21, 0.09), 0 4px 10px -2px rgba(18, 24, 21, 0.04);
+    --sidebar-width: 250px;
+    --nav-height-mobile: 64px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-stack);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+    font-size: 15px;
+  }
+  @media (max-width: 767px) { body { font-size: 16px; } }
+  :focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+  button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+  .app-layout { display: flex; min-height: 100vh; flex-direction: column; }
+  @media (min-width: 992px) { .app-layout { flex-direction: row; } }
+  .sidebar {
+    display: none; background-color: var(--surface); border-right: 1px solid var(--border-subtle);
+    width: var(--sidebar-width); flex-shrink: 0; padding: 30px 22px; position: sticky; top: 0;
+    height: 100vh; overflow-y: auto; flex-direction: column; justify-content: space-between; z-index: 25;
+  }
+  @media (min-width: 992px) { .sidebar { display: flex; } }
+  .brand-area { display: flex; align-items: center; gap: 12px; padding-bottom: 24px; border-bottom: 1px solid var(--border-subtle); }
+  .brand-symbol {
+    width: 36px; height: 36px; background-color: var(--brand-primary); border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center; color: #FFFFFF; font-weight: 800; font-size: 1.1rem;
+    box-shadow: 0 2px 6px rgba(32, 80, 58, 0.25);
+  }
+  .brand-title-box h1 { font-size: 1.18rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; }
+  .brand-title-box p { font-size: 0.76rem; color: var(--text-secondary); font-weight: 500; margin-top: 1px; }
+  .nav-list { list-style: none; margin-top: 24px; display: flex; flex-direction: column; gap: 6px; }
+  .nav-item-btn {
+    width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 14px; background: none;
+    border: 1px solid transparent; border-radius: var(--radius-sm); color: var(--text-secondary); font-weight: 500;
+    font-size: 0.92rem; cursor: pointer; text-align: left; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .nav-item-btn:hover { background-color: var(--surface-sub); color: var(--text-primary); transform: translateX(2px); }
+  .nav-item-btn.active { background-color: var(--brand-light); color: var(--brand-primary); border-color: var(--brand-border); font-weight: 700; }
+  .nav-icon { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  .sidebar-footer { border-top: 1px solid var(--border-subtle); padding-top: 20px; }
+  .scenario-box { background-color: var(--bg-main); padding: 14px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); }
+  .scenario-label { font-size: 0.75rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 7px; display: flex; justify-content: space-between; }
+  .scenario-select {
+    width: 100%; padding: 8px 10px; font-size: 0.84rem; font-weight: 500; border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm); background-color: var(--surface); cursor: pointer; color: var(--text-primary);
+  }
+  .main-wrapper { flex: 1; display: flex; flex-direction: column; min-width: 0; padding-bottom: calc(var(--nav-height-mobile) + 40px); }
+  @media (min-width: 992px) { .main-wrapper { padding-bottom: 56px; } }
+  .top-bar {
+    background-color: var(--surface); border-bottom: 1px solid var(--border-subtle); padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 20;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  }
+  @media (min-width: 768px) { .top-bar { padding: 16px 36px; } }
+  .mobile-brand { display: flex; align-items: center; gap: 8px; }
+  @media (min-width: 992px) { .mobile-brand { display: none; } }
+  .top-meta { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--text-secondary); }
+  .badge-demo { font-size: 0.74rem; font-weight: 600; color: var(--text-secondary); background-color: var(--surface-sub); padding: 5px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); white-space: nowrap; }
+  .btn-reset-demo {
+    background: var(--surface); border: 1px solid var(--border-strong); padding: 4px 10px; border-radius: var(--radius-sm);
+    font-size: 0.76rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.2s;
+  }
+  .btn-reset-demo:hover { background-color: var(--surface-sub); color: var(--text-primary); transform: translateY(-1px); }
+  .content-viewport { max-width: 1160px; width: 100%; margin: 0 auto; padding: 22px 18px; }
+  @media (min-width: 768px) { .content-viewport { padding: 36px 36px; } }
+  .screen-pane { display: none; }
+  .screen-pane.active { display: block; }
+  @keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .screen-pane.active .animate-stagger-1 { animation: slideUpFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both; }
+  .screen-pane.active .animate-stagger-2 { animation: slideUpFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both; }
+  .screen-pane.active .animate-stagger-3 { animation: slideUpFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.20s both; }
+  .screen-pane.active .animate-stagger-4 { animation: slideUpFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both; }
+  @media (prefers-reduced-motion: reduce) {
+    .screen-pane.active [class*="animate-stagger"] { animation: none !important; opacity: 1 !important; transform: none !important; }
+  }
+  .editorial-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border-subtle); }
+  .page-pre-tag { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em; color: var(--brand-primary); text-transform: uppercase; margin-bottom: 4px; }
+  .page-title { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.025em; color: var(--text-primary); }
+  @media (min-width: 768px) { .page-title { font-size: 1.95rem; } }
+  .page-subtitle { font-size: 0.94rem; color: var(--text-secondary); margin-top: 4px; }
+  
+  /* Hero 2열 그리드 레이아웃 */
+  .hero-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 22px;
+    align-items: stretch;
+  }
+  @media (min-width: 900px) {
+    .hero-grid-2col {
+      grid-template-columns: 1.15fr 0.95fr;
+    }
+  }
+
+  .surface-card, .hero-block, .todo-section, .chart-box, .stat-summary-row, .events-card {
+    background-color: var(--surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+    padding: 24px 22px; margin-bottom: 22px; box-shadow: var(--shadow-card);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s;
+  }
+  .hero-grid-2col .hero-block, .hero-grid-2col .events-card {
+    margin-bottom: 0;
+  }
+  @media (min-width: 768px) {
+    .surface-card, .hero-block { padding: 32px 34px; }
+    .events-card { padding: 26px 28px; }
+    .todo-section { padding: 28px 34px; }
+    .chart-box, .stat-summary-row { padding: 26px 30px; }
+  }
+  .surface-card:hover, .hero-block:hover, .todo-section:hover, .chart-box:hover, .stat-summary-row:hover, .events-card:hover {
+    transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--border-strong);
+  }
+  .hero-label { font-size: 0.84rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 12px; }
+  .hero-main-stat { display: flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+  .hero-focal-number {
+    font-size: 3.8rem; font-weight: 800; line-height: 1; letter-spacing: -0.04em;
+    color: var(--brand-primary); font-feature-settings: "tnum";
+  }
+  @media (min-width: 768px) { .hero-focal-number { font-size: 4.1rem; } }
+  .hero-focal-unit { font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin-left: 4px; opacity: 0.9; }
+  .hero-explanation { font-size: 0.94rem; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.65; }
+  .hero-status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .hero-actions-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+
+  /* 사내 행사 공지 카드 스타일 */
+  .events-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 14px;
+  }
+  .events-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .events-title {
+    font-size: 0.98rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+  .events-count-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    background-color: var(--brand-light);
+    color: var(--brand-primary);
+    padding: 2px 7px;
+    border-radius: 12px;
+    border: 1px solid var(--brand-border);
+  }
+  .events-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    overflow-y: auto;
+    max-height: 290px;
+    padding-right: 2px;
+  }
+  .event-item {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .event-item:hover {
+    background-color: #FFFFFF;
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(18, 24, 21, 0.04);
+  }
+  .event-main-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+  .event-meta-line {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.76rem;
+  }
+  .event-date-chip {
+    font-weight: 700;
+    color: var(--brand-primary);
+    background-color: var(--surface);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+  }
+  .event-dept {
+    color: var(--text-tertiary);
+    font-weight: 500;
+  }
+  .event-name {
+    font-size: 0.89rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .event-note {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+  }
+  .event-impact-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.76rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .impact-increase {
+    background-color: #E8F5ED;
+    color: #195232;
+    border: 1px solid #BFDFCB;
+  }
+  .impact-decrease {
+    background-color: #FCEDEB;
+    color: #A3201B;
+    border: 1px solid #F3BFBC;
+  }
+  .impact-neutral {
+    background-color: var(--surface-sub);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+  }
+  .events-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 12px;
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.76rem;
+    color: var(--text-tertiary);
+  }
+
+  .metric-large { font-weight: 800; letter-spacing: -0.03em; font-feature-settings: "tnum"; color: var(--text-primary); }
+  .metric-unit { font-size: 0.52em; font-weight: 600; opacity: 0.85; margin-left: 3px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px;
+    border-radius: var(--radius-sm); font-weight: 600; font-size: 0.92rem; cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid transparent; text-decoration: none; white-space: nowrap;
+  }
+  .btn:hover { transform: translateY(-1.5px); }
+  .btn:active { transform: translateY(0px) scale(0.99); }
+  .btn-primary { background-color: var(--brand-primary); color: #FFFFFF; border-color: var(--brand-primary); box-shadow: 0 2px 6px rgba(32, 80, 58, 0.2); }
+  .btn-primary:hover { background-color: var(--brand-hover); border-color: var(--brand-hover); box-shadow: 0 4px 12px rgba(32, 80, 58, 0.3); }
+  .btn-secondary { background-color: var(--surface); color: var(--text-primary); border-color: var(--border-strong); box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .btn-secondary:hover { background-color: var(--surface-sub); border-color: var(--border-strong); box-shadow: 0 3px 8px rgba(0,0,0,0.05); }
+  .btn-text { background: none; border: none; color: var(--brand-primary); font-weight: 600; padding: 8px 12px; cursor: pointer; transition: all 0.2s; }
+  .btn-text:hover { color: var(--brand-hover); transform: translateX(2px); }
+  .btn-sm { padding: 7px 14px; font-size: 0.84rem; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; transform: none !important; }
+  .status-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 700; padding: 5px 11px; border-radius: var(--radius-sm); border: 1px solid transparent; }
+  .status-ok { background-color: var(--status-ok-bg); border-color: var(--status-ok-border); color: var(--status-ok-text); }
+  .status-warn { background-color: var(--status-warn-bg); border-color: var(--status-warn-border); color: var(--status-warn-text); }
+  .status-err { background-color: var(--status-err-bg); border-color: var(--status-err-border); color: var(--status-err-text); }
+  .section-title-clean { font-size: 1.08rem; font-weight: 800; letter-spacing: -0.02em; color: var(--text-primary); margin-bottom: 16px; }
+  .todo-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .todo-item {
+    display: flex; flex-direction: column; gap: 10px; padding: 15px 18px; background-color: var(--bg-main);
+    border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .todo-item:hover { background-color: #FFFFFF; border-color: var(--border-strong); transform: translateY(-1.5px); box-shadow: 0 4px 12px rgba(18, 24, 21, 0.05); }
+  @media (min-width: 600px) { .todo-item { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .todo-info { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .todo-text { font-size: 0.94rem; font-weight: 700; color: var(--text-primary); }
+  .todo-sub { font-size: 0.82rem; color: var(--text-secondary); }
+  .details-grid { display: grid; grid-template-columns: 1fr; gap: 22px; }
+  @media (min-width: 900px) { .details-grid { grid-template-columns: 1.25fr 1fr; } }
+  .stat-summary-row { display: flex; flex-direction: column; gap: 13px; }
+  .key-value-line { display: flex; justify-content: space-between; align-items: center; padding-bottom: 11px; border-bottom: 1px solid var(--border-subtle); font-size: 0.93rem; }
+  .key-value-line:last-child { border-bottom: none; padding-bottom: 0; }
+  .kv-label { color: var(--text-secondary); font-weight: 500; }
+  .kv-val { font-weight: 800; color: var(--text-primary); font-feature-settings: "tnum"; }
+  .chart-legend { display: flex; gap: 18px; font-size: 0.82rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 18px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; }
+  .legend-dot-actual { width: 9px; height: 9px; border-radius: 50%; background-color: var(--brand-primary); }
+  @keyframes drawPath { to { stroke-dashoffset: 0; } }
+  @keyframes nodePop {
+    0% { transform: scale(0); opacity: 0; }
+    70% { transform: scale(1.25); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .chart-draw-line {
+    stroke-dasharray: 600; stroke-dashoffset: 600;
+    animation: drawPath 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+  }
+  .chart-node { transform-origin: center; transform-box: fill-box; opacity: 0; animation: nodePop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @media (prefers-reduced-motion: reduce) {
+    .chart-draw-line { stroke-dashoffset: 0 !important; animation: none !important; }
+    .chart-node { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+  .stepper-box { display: inline-flex; align-items: center; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background-color: var(--surface); }
+  .step-btn { background: none; border: none; width: 42px; height: 42px; cursor: pointer; font-size: 1.25rem; font-weight: 700; color: var(--text-primary); transition: background 0.15s; }
+  .step-btn:hover { background-color: var(--surface-sub); }
+  .input-stepper-val { width: 95px; height: 42px; border: none; border-left: 1px solid var(--border-subtle); border-right: 1px solid var(--border-subtle); text-align: center; font-weight: 800; font-size: 1.2rem; outline: none; color: var(--text-primary); font-feature-settings: "tnum"; }
+  .accordion { border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); margin-top: 22px; overflow: hidden; }
+  .accordion-trigger { width: 100%; text-align: left; padding: 13px 18px; background-color: var(--bg-main); border: none; display: flex; align-items: center; justify-content: space-between; font-weight: 700; font-size: 0.92rem; color: var(--text-primary); cursor: pointer; }
+  .accordion-trigger:hover { background-color: var(--surface-sub); }
+  .accordion-content { display: none; padding: 18px 20px; background-color: var(--surface); border-top: 1px solid var(--border-subtle); font-size: 0.91rem; color: var(--text-secondary); line-height: 1.65; }
+  .accordion-content.open { display: block; animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .filter-row { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+  @media (min-width: 600px) { .filter-row { flex-direction: row; align-items: center; justify-content: space-between; } }
+  .search-wrap { position: relative; max-width: 320px; width: 100%; }
+  .search-input { width: 100%; padding: 9px 12px 9px 34px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.88rem; background-color: var(--surface); }
+  .search-input:focus { border-color: var(--brand-primary); outline: none; box-shadow: 0 0 0 3px rgba(32, 80, 58, 0.12); }
+  .search-icon-svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; stroke: var(--text-tertiary); }
+  .filter-tabs { display: inline-flex; background-color: var(--surface-sub); padding: 4px; border-radius: var(--radius-sm); }
+  .filter-tab-btn { background: none; border: none; padding: 6px 14px; font-size: 0.84rem; font-weight: 600; color: var(--text-secondary); border-radius: 4px; cursor: pointer; }
+  .filter-tab-btn.active { background-color: var(--surface); color: var(--brand-primary); font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .table-responsive { width: 100%; overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background-color: var(--surface); margin-bottom: 24px; box-shadow: var(--shadow-card); }
+  .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.91rem; }
+  .data-table th { background-color: var(--bg-main); color: var(--text-secondary); font-weight: 700; padding: 13px 16px; border-bottom: 1px solid var(--border-subtle); white-space: nowrap; font-size: 0.84rem; }
+  .data-table td { padding: 13px 16px; border-bottom: 1px solid var(--border-subtle); color: var(--text-primary); }
+  .data-table tr:hover td { background-color: var(--surface-sub); }
+  .data-table tr:last-child td { border-bottom: none; }
+  @media (max-width: 767px) { .desktop-table-only { display: none; } }
+  .mobile-cards-only { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+  @media (min-width: 768px) { .mobile-cards-only { display: none; } }
+  .inv-mobile-card { background-color: var(--surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 18px; box-shadow: var(--shadow-card); }
+  .inv-mobile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .inv-mobile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 0.84rem; padding-top: 10px; border-top: 1px solid var(--border-subtle); }
+  .lot-box {
+    background-color: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+    padding: 14px 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  .lot-box:hover { background-color: #FFFFFF; border-color: var(--border-strong); box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+  .copilot-card {
+    display: flex; flex-direction: column; height: 620px; background-color: var(--surface);
+    border: 1px solid var(--border-subtle); border-radius: var(--radius-md); overflow: hidden; position: relative; z-index: 1; box-shadow: var(--shadow-card);
+  }
+  .copilot-header { padding: 15px 20px; background-color: var(--bg-main); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; }
+  .copilot-feed { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; background-color: var(--bg-main); }
+  .chat-msg { max-width: 85%; padding: 13px 18px; border-radius: var(--radius-sm); font-size: 0.93rem; line-height: 1.65; animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  .chat-msg-user { align-self: flex-end; background-color: var(--brand-primary); color: #FFFFFF; box-shadow: 0 2px 6px rgba(32, 80, 58, 0.2); }
+  .chat-msg-bot { align-self: flex-start; background-color: var(--surface); border: 1px solid var(--border-subtle); color: var(--text-primary); box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .doc-ref { margin-top: 10px; padding: 10px 12px; background-color: var(--surface-sub); border-left: 3px solid var(--brand-primary); font-size: 0.82rem; color: var(--text-secondary); }
+  .copilot-chips { padding: 12px 16px; background-color: var(--surface); border-top: 1px solid var(--border-subtle); display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; }
+  .chip-btn {
+    background-color: var(--surface-sub); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);
+    padding: 7px 13px; font-size: 0.82rem; font-weight: 600; cursor: pointer; color: var(--text-primary); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .chip-btn:hover { background-color: var(--brand-light); border-color: var(--brand-border); color: var(--brand-primary); transform: translateY(-1px); }
+  .copilot-input-bar { padding: 14px 16px; border-top: 1px solid var(--border-subtle); background-color: var(--surface); display: flex; gap: 10px; align-items: center; position: relative; z-index: 10; }
+  .chat-text-field { flex: 1; padding: 10px 15px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: 0.93rem; background-color: var(--surface); color: var(--text-primary); min-width: 0; }
+  .chat-text-field:focus { border-color: var(--brand-primary); outline: none; box-shadow: 0 0 0 3px rgba(32, 80, 58, 0.14); }
+  .bottom-bar {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height-mobile);
+    background-color: var(--surface); border-top: 1px solid var(--border-subtle); z-index: 30; padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  @media (min-width: 992px) { .bottom-bar { display: none; } }
+  .bottom-tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; color: var(--text-secondary); font-size: 0.74rem; font-weight: 500; gap: 3px; cursor: pointer; }
+  .bottom-tab-btn.active { color: var(--brand-primary); font-weight: 700; }
+  .bottom-tab-btn .nav-icon { width: 20px; height: 20px; }
+  .toast-banner {
+    padding: 11px 18px; background-color: var(--text-primary); color: #FFFFFF; border-radius: var(--radius-sm);
+    font-size: 0.88rem; font-weight: 500; position: fixed; bottom: calc(var(--nav-height-mobile) + 12px); right: 18px; z-index: 100;
+    display: none; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); animation: slideUpFade 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (min-width: 992px) { .toast-banner { bottom: 28px; right: 28px; } }
+</style>
+<link rel="stylesheet" href="/assets/integration.css">
+</head>
+<body>
+<div class="app-layout">
+<aside aria-label="주요 내비게이션" class="sidebar">
+<div>
+<div class="brand-area">
+<div class="brand-symbol">L</div>
+<div class="brand-title-box">
+<h1>LastPlate</h1>
+<p>급식 운영 최적화 솔루션</p>
+</div>
+</div>
+<nav>
+<ul class="nav-list">
+<li>
+<button aria-current="page" class="nav-item-btn active" data-screen="home" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+<span>운영 홈</span>
+</button>
+</li>
+<li>
+<button class="nav-item-btn" data-screen="plan" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line></svg>
+<span>수요예측 · 조리계획</span>
+</button>
+</li>
+<li>
+<button class="nav-item-btn" data-screen="inventory" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" x2="12" y1="22.08" y2="12"></line></svg>
+<span>재고 · 발주</span>
+</button>
+</li>
+<li>
+<button class="nav-item-btn" data-screen="copilot" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+<span>급식톡</span>
+</button>
+</li>
+</ul>
+</nav>
+</div>
+<div class="sidebar-footer">
+<div class="scenario-box">
+<label class="scenario-label" for="scenario-select-desktop">
+<span>데모 시나리오</span>
+<span>테스트</span>
+</label>
+<select aria-label="데모 시나리오 선택" class="scenario-select" id="scenario-select-desktop">
+<option value="normal">① 정상 운영 (기준 충족)</option>
+<option value="capacity_limit">② 조리 한도 부족 (500식 한도)</option>
+<option value="delivery_delay">③ 입고 지연 (12시 납품)</option>
+<option value="no_doc">④ 운영 근거 누락 (문서 없음)</option>
+</select>
+</div>
+<p style="font-size: 0.75rem; color: var(--text-tertiary); margin-top: 14px; text-align: center; font-weight: 500;">
+  부족 걱정은 낮추고, 잔반은 줄입니다.
+</p>
+</div>
+</aside>
+
+<div class="main-wrapper">
+<header class="top-bar">
+<div class="mobile-brand">
+<div class="brand-symbol" style="width:28px; height:28px; font-size:0.95rem;">L</div>
+<span style="font-weight: 800; color: var(--brand-primary); font-size: 1.1rem;">LastPlate</span>
+</div>
+<div class="top-meta">
+<span><strong>A사업장 급식실</strong></span>
+<span>·</span>
+<span>2026.09.18 (금) 중식</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px;">
+<span class="badge-demo">데모 데이터 · 외부 시스템 미연결</span>
+<button aria-label="데모 상태 초기화" class="btn-reset-demo" id="btn-reset-state" type="button">초기화</button>
+</div>
+</header>
+
+<main class="content-viewport">
+<div id="connection-status" role="status">백엔드에 연결하는 중입니다…</div>
+<div class="mobile-scenario"><label for="scenario-select-mobile">시연 상황 선택</label><select id="scenario-select-mobile" class="scenario-select"><option value="normal">① 정상 운영</option><option value="capacity_limit">② 조리 한도 부족 (500식)</option><option value="delivery_delay">③ 입고 지연 (12시)</option><option value="no_doc">④ 운영 기준 미확인</option></select></div>
+<div id="app-error" role="alert" hidden></div><noscript>이 앱은 JavaScript가 필요합니다.</noscript>
+<!-- SCREEN 1: 운영 홈 -->
+<section aria-labelledby="home-heading" class="screen-pane active" id="screen-home">
+<div class="editorial-header animate-stagger-1">
+<p class="page-pre-tag">운영 현황</p>
+<h2 class="page-title" id="home-heading">익일 급식 운영 제안</h2>
+<p class="page-subtitle">기준일 2026년 9월 17일 산출 · 9월 18일 중식 기준</p>
+</div>
+
+<!-- 2열 그리드: 권장 조리량 산출 결과 카드 & 식수 변동 영향 사내 행사 공지 카드 -->
+<div class="hero-grid-2col animate-stagger-2">
+  <!-- 좌측: 권장 조리량 산출 결과 카드 -->
+  <div class="hero-block">
+    <div class="hero-label">권장 조리량 산출 결과</div>
+    <div class="hero-main-stat">
+      <span class="hero-focal-number" id="home-serving-number">510</span>
+      <span class="hero-focal-unit">식 준비 권장</span>
+    </div>
+    <p class="hero-explanation" id="hero-desc-text">백엔드 계산 결과를 불러오는 중입니다.</p>
+    <div class="hero-status-row" id="home-status-badge-container"><div class="status-badge status-ok"><span>운영 기준 충족</span></div></div>
+    <div class="hero-actions-row">
+      <button class="btn btn-primary" data-action="go-plan" type="button">조리 계획 검토</button>
+      <button class="btn-text" data-action="go-plan-basis" type="button">산출 근거 확인하기 →</button>
+    </div>
+  </div>
+
+  <!-- 우측: 식수 변동 영향 사내 행사 공지 카드 (외부 데이터 연동 지원) -->
+  <div class="events-card">
+    <div>
+      <div class="events-header">
+        <div class="events-title-wrap">
+          <svg style="width:18px; height:18px; stroke:var(--brand-primary); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <h3 class="events-title">사내 행사 공지 <span style="font-size:0.82rem; font-weight:600; color:var(--text-secondary);">(식수 변동 요인)</span></h3>
+        </div>
+        <span class="events-count-badge" id="company-events-count">0건</span>
+      </div>
+      <!-- 동적 이벤트 목록 렌더링 컨테이너 -->
+      <ul class="events-list" id="company-events-list">
+        <!-- JS renderCompanyEvents()를 통해 동적으로 주입됩니다 -->
+      </ul>
+    </div>
+    <form id="event-form" class="integration-form">
+<label>변동 사유<input id="event-note" required maxlength="80" placeholder="예: 단체 출장"></label>
+<label>증감 인원<input id="event-delta" type="number" required step="1" min="-100000" max="100000" value="-35"></label>
+<button class="btn btn-secondary btn-sm" type="submit">확정 변동 추가</button>
+<p class="form-hint">감소는 음수, 증가는 양수. ML 인사 입력에 이미 포함된 변동은 다시 넣지 마세요. 외부 일정 연동 없음.</p></form>
+  </div>
+</div>
+
+<div class="todo-section animate-stagger-3">
+<h3 class="section-title-clean">먼저 처리할 일</h3>
+<ul class="todo-list" id="operation-todos"></ul>
+</div>
+
+<div class="details-grid animate-stagger-4">
+<div class="surface-card"><h3 class="section-title-clean">계산 출처와 적용 범위</h3><div id="source-summary"></div>
+<p class="form-hint">이 화면은 2026-09-18 중식 시뮬레이션입니다. 재고·레시피·납기·운영 기준은 예시 입력이며 실제 발주나 재고 차감은 하지 않습니다.</p></div>
+<div class="stat-summary-row" id="home-metrics"></div>
+</div>
+</section>
+
+<!-- SCREEN 2: 수요예측 · 조리계획 -->
+<section aria-labelledby="plan-heading" class="screen-pane" id="screen-plan">
+<div class="editorial-header animate-stagger-1">
+<p class="page-pre-tag">조리 계획</p>
+<h2 class="page-title" id="plan-heading">수요예측 · 조리계획 확정</h2>
+<p class="page-subtitle">예측 식수와 현장 조리 한도를 대조하여 최종 적용 조리량을 확정합니다.</p>
+</div>
+<div class="details-grid" style="margin-bottom:24px">
+<div class="surface-card"><h3 class="section-title-clean">실제 ML 모델 실행</h3>
+<p class="form-hint">LightGBM · 첨부 모델의 원래 전처리 적용 · 중식 전용. 날씨와 실시간 인사 시스템은 연결되지 않았습니다.</p>
+<form id="ml-form" class="integration-form">
+<label>정원<input id="ml-employees" type="number" min="1" max="100000" step="1" value="520" required></label>
+<label>휴가<input id="ml-vacation" type="number" min="0" step="1" value="0" required></label>
+<label>출장<input id="ml-business_trip" type="number" min="0" step="1" value="0" required></label>
+<label>재택<input id="ml-work_from_home" type="number" min="0" step="1" value="0" required></label>
+<label>시간외근무 승인 건수<input id="ml-overtime" type="number" min="0" step="1" value="0" required></label>
+<label class="full-width">현재 레시피와 연결된 메뉴<input id="ml-menu" value="쌀밥 제육볶음 양배추무침" readonly></label>
+<button class="btn btn-primary" type="submit">ML 예측 → 운영안 재계산</button>
+<p class="form-hint">학습자료의 예정 출근인원 범위는 1,372~2,921명입니다. 520명 사업장 적용 시 범위 밖 경고가 표시됩니다. 수요 예측 신뢰성은 별도 검증이 필요합니다.</p>
+</form></div>
+<div class="surface-card"><h3 class="section-title-clean">운영 기준 및 계산 결과</h3><div id="plan-summary"></div>
+<form id="settings-form" class="integration-form" style="margin-top:16px">
+<label>메뉴당 총 조리 한도<input id="setting-capacity" type="number" min="0" max="100000" step="1" value="550" required></label>
+<label>안전여유 (명)<input id="setting-buffer" type="number" min="0" max="100000" step="1" value="10" required></label>
+<label class="full-width">시뮬레이션 현재 시각 (한국시간)<input id="setting-time" type="datetime-local" required value="2026-09-17T18:00"></label>
+<button class="btn btn-secondary" type="submit">운영 입력 적용</button>
+<p class="form-hint">10시 시작 배치는 해당 시각부터 잠깁니다. 시작 후 재고 입력은 이미 투입·예약된 물량을 제외한 스냅샷이어야 합니다.</p>
+</form></div></div>
+<div class="surface-card animate-stagger-3">
+<h3 class="section-title-clean" style="margin-bottom: 6px;">적용 조리량 결정</h3>
+<p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 22px;">
+  권장 조리량을 기준으로 10식 단위로 입력한 뒤, 아래 ‘이 조리안으로 재고 배정’ 버튼을 눌러 저장·재계산하세요.
+</p>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 28px; margin-bottom: 22px;">
+<div>
+<span class="kv-label" style="display:block; font-size:0.82rem; margin-bottom:4px;">시스템 권장 조리량</span>
+<p id="plan-recommended-val" style="font-size: 1.55rem; font-weight: 800; color: var(--brand-primary); font-feature-settings: 'tnum';">510 식</p>
+</div>
+<div>
+<label class="kv-label" for="input-custom-plan" style="display:block; font-size:0.82rem; margin-bottom:4px;">최종 적용 조리량</label>
+<div class="stepper-box">
+<button aria-label="10식 감소" class="step-btn" id="btn-step-minus" type="button">-</button>
+<input aria-label="적용 조리량 입력" class="input-stepper-val" id="input-custom-plan" max="100000" min="0" step="10" type="number" value="510">
+<button aria-label="10식 증가" class="step-btn" id="btn-step-plus" type="button">+</button>
+</div>
+</div>
+<div>
+<span class="kv-label" style="display:block; font-size:0.82rem; margin-bottom:4px;">예측 식수 대비 여유</span>
+<p id="plan-buffer-val" style="font-size: 1.55rem; font-weight: 800; color: var(--text-primary); font-feature-settings: 'tnum';">+30 식</p>
+</div>
+</div>
+<div id="plan-validation-alert" style="margin-bottom: 22px;"><div class="status-badge status-ok" style="width: 100%; padding: 11px 16px;"><span>운영 기준 충족</span></div></div>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
+<button class="btn btn-primary" id="btn-proceed-inventory" type="button">이 조리안으로 재고 배정</button>
+<button class="btn btn-secondary" id="btn-reset-plan-val" type="button">권장값(510식)으로 복원</button>
+</div>
+<div id="batch-timeline" style="margin-top:22px"></div>
+<div class="accordion">
+<button aria-expanded="false" class="accordion-trigger" id="btn-accordion-rationale" type="button">
+<span>왜 510식인가요? (계산식 및 운영 기준 원칙)</span>
+<span id="accordion-arrow">▼</span>
+</button>
+<div class="accordion-content" id="accordion-rationale-body"></div></div>
+</div>
+</section>
+
+<!-- SCREEN 3: 재고 · 발주 -->
+<section aria-labelledby="inv-heading" class="screen-pane" id="screen-inventory">
+<div class="editorial-header animate-stagger-1">
+<p class="page-pre-tag">재고 및 발주</p>
+<h2 class="page-title" id="inv-heading">재고 배정 · 발주 초안</h2>
+<p class="page-subtitle">적용 조리량 기준 식재료 소요량을 정밀 연산하고, 부족분은 포장 규격 단위로 발주합니다.</p>
+</div>
+
+<div class="stat-summary-row animate-stagger-2" style="margin-bottom: 22px;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;">
+<div>
+<span class="kv-label" style="font-size:0.82rem;">기준 적용 조리량</span>
+<p style="font-size: 1.35rem; font-weight: 800; color: var(--text-primary);"><span id="inv-summary-plan-val">510</span><span class="metric-unit">식</span></p>
+</div>
+<div>
+<span class="kv-label" style="font-size:0.82rem;">발주 필요 품목</span>
+<p id="inv-summary-order-count" style="font-size: 1.35rem; font-weight: 800; color: var(--status-err-text);">1개 품목</p>
+</div>
+<div>
+<span class="kv-label" style="font-size:0.82rem;">발주 초안 상태</span>
+<div style="margin-top:2px;">
+<span class="status-badge status-warn" id="inv-summary-order-status">검토 대기</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="filter-row animate-stagger-3">
+<div class="search-wrap">
+<svg class="search-icon-svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21"></line></svg>
+<input aria-label="식재료 검색" class="search-input" id="inv-search-input" placeholder="식재료명 검색 (예: 돼지고기, 양배추)" type="text">
+</div>
+<div aria-label="식재료 상태 필터" class="filter-tabs" role="tablist">
+<button class="filter-tab-btn active" data-filter="all" type="button">전체 (<span id="count-filter-all">3</span>)</button>
+<button class="filter-tab-btn" data-filter="order_needed" type="button">발주 필요 (<span id="count-filter-order">1</span>)</button>
+<button class="filter-tab-btn" data-filter="fefo_priority" type="button">먼저 사용할 재고 (<span id="count-filter-fefo">1</span>)</button>
+</div>
+</div>
+
+<div class="table-responsive desktop-table-only animate-stagger-3">
+<table class="data-table">
+<thead>
+<tr>
+<th>식재료명</th>
+<th>1식 소요량</th>
+<th>총 필요량</th>
+<th>사용 가능 재고</th>
+<th>부족량</th>
+<th>포장 규격</th>
+<th>발주 제안량</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody id="inventory-table-tbody"></tbody>
+</table>
+</div>
+
+<div class="mobile-cards-only" id="inventory-mobile-container"></div>
+<div id="inv-empty-message" style="display:none; text-align:center; padding:36px; background:var(--surface); border-radius:var(--radius-md); border:1px solid var(--border-subtle); margin-bottom:20px;">
+<p style="font-size:0.94rem; color:var(--text-secondary); margin-bottom:12px;">일치하는 식재료가 없습니다.</p>
+<button class="btn btn-secondary btn-sm" id="btn-clear-search-filter" type="button">검색·필터 초기화</button>
+</div>
+
+<div class="surface-card animate-stagger-4">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+<h3 class="section-title-clean" style="margin-bottom: 0;">소비기한 우선 배정 내역 (현재 재고 기준)</h3>
+<span class="status-badge status-ok">기한순 자동 배정</span>
+</div>
+<p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 18px;">
+  계획일(2026.09.18) 기준 유효한 재고 중 소비기한이 가장 빠른 물량부터 우선 소진합니다.
+</p>
+<div id="fefo-lots-container"></div>
+</div>
+
+<div class="surface-card animate-stagger-4" style="border: 1px solid var(--border-strong);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+<h3 class="section-title-clean" style="margin-bottom: 0;">발주 초안 검토</h3>
+<span class="status-badge status-warn" id="draft-panel-badge">검토 대기</span>
+</div>
+<div id="draft-items-container" style="background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 18px;"></div>
+<div id="draft-action-alert" style="margin-bottom: 18px;"></div>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center;">
+<button class="btn btn-primary" id="btn-request-approval" type="button">검토 완료로 표시 — 데모</button>
+<span style="font-size: 0.82rem; color: var(--text-secondary);">* 서버에 검토 상태만 저장하며 실제 발주·재고 예약은 하지 않습니다.</span>
+</div>
+</div>
+</section>
+
+<!-- SCREEN 4: 급식톡 -->
+<section aria-labelledby="copilot-heading" class="screen-pane" id="screen-copilot">
+<div class="editorial-header animate-stagger-1">
+<p class="page-pre-tag">계산 근거 확인</p>
+<h2 class="page-title" id="copilot-heading">급식톡</h2>
+<p class="page-subtitle">현재 저장된 계산 결과를 규칙 기반으로 설명합니다. 실제 운영 문서를 검색하거나 검증하지 않습니다.</p>
+</div>
+<div class="animate-stagger-2" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 18px; font-size: 0.86rem; color: var(--text-secondary); background: var(--surface); padding: 12px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-card);">
+<span>기준: <strong>A사업장 9/18 중식</strong></span>
+<span>·</span>
+<span>예측 식수: <strong id="copilot-meta-pred">480명</strong></span>
+<span>·</span>
+<span>적용 조리량: <strong id="copilot-meta-plan">510식</strong></span>
+</div>
+<div class="copilot-card animate-stagger-3">
+<div class="copilot-header">
+<span style="font-weight: 800; font-size: 0.94rem; color: var(--brand-primary);">급식톡 · 계산 결과 설명</span>
+<span style="font-size: 0.78rem; color: var(--text-tertiary); font-weight: 500;">규칙 기반 설명 · LLM/RAG 미연결</span>
+</div>
+<div class="copilot-feed" id="copilot-messages-box">
+<div class="chat-msg chat-msg-bot">
+  안녕하세요, 영양사님. LastPlate 급식톡입니다.<br>
+  조리량 산출 원칙, 발주 수량 근거, 먼저 소진할 식재료에 대해 궁금하신 점을 확인하실 수 있습니다.
+</div>
+</div>
+<div aria-label="추천 질문 목록" class="copilot-chips">
+<button class="chip-btn" data-q="why-portion" type="button">“권장 조리량의 근거는 무엇인가요?”</button>
+<button class="chip-btn" data-q="why-pork" type="button">“돼지고기는 얼마나 발주해야 하나요?”</button>
+<button class="chip-btn" data-q="why-fefo" type="button">“먼저 사용할 재고는 무엇인가요?”</button>
+</div>
+<form class="copilot-input-bar" id="copilot-form">
+<input aria-label="질문 입력" autocomplete="off" class="chat-text-field" id="copilot-input" placeholder="질문을 입력하세요 (예: 돼지고기 발주량, 양배추 재고, 권장 조리량)" type="text">
+<button class="btn btn-primary btn-sm" id="copilot-send-btn" type="submit">보내기</button>
+</form>
+</div>
+</section>
+</main>
+
+<nav aria-label="하단 내비게이션" class="bottom-bar">
+<button class="bottom-tab-btn active" data-screen="home" type="button" aria-current="page">
+<svg class="nav-icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+<span>운영 홈</span>
+</button>
+<button class="bottom-tab-btn" data-screen="plan" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" x2="8" y1="13" y2="13"></line><line x1="16" x2="8" y1="17" y2="17"></line></svg>
+<span>조리계획</span>
+</button>
+<button class="bottom-tab-btn" data-screen="inventory" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" x2="12" y1="22.08" y2="12"></line></svg>
+<span>재고·발주</span>
+</button>
+<button class="bottom-tab-btn" data-screen="copilot" type="button">
+<svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+<span>급식톡</span>
+</button>
+</nav>
+</div>
+</div>
+<div aria-live="polite" class="toast-banner" id="toast-element" role="status"></div>
+
+<script src="/assets/app.js" defer></script>
+</body>
+</html>

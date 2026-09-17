@@ -1,0 +1,128 @@
+{
+  "demand_result": {
+    "prediction": 487.0,
+    "prediction_interval": {
+      "lower": 469.0,
+      "upper": 507.0
+    },
+    "model_version": "demo-v1",
+    "input_snapshot_id": "demo-meal-001",
+    "applicability": {
+      "status": "IN_DOMAIN",
+      "reasons": [
+        "DEMO-only applicability declaration"
+      ]
+    },
+    "warnings": [],
+    "operational_eligible": null,
+    "availability_status": null,
+    "prediction_id": null,
+    "created_at": null,
+    "target_date": null,
+    "deadline_at": null,
+    "timezone": null,
+    "mode": null,
+    "input_data": null,
+    "availability": null,
+    "weather": null,
+    "policy": null
+  },
+  "recipe_data": [
+    {
+      "menu_name": "제육볶음",
+      "ingredient": "돼지고기",
+      "amount_per_serving": 120.0,
+      "unit": "g"
+    },
+    {
+      "menu_name": "두부조림",
+      "ingredient": "두부",
+      "amount_per_serving": 80.0,
+      "unit": "g"
+    }
+  ],
+  "inventory_data": [
+    {
+      "ingredient": "돼지고기",
+      "stock": 66.0632,
+      "unit": "kg"
+    },
+    {
+      "ingredient": "두부",
+      "stock": 8000.0,
+      "unit": "g"
+    }
+  ],
+  "planned_orders": [
+    {
+      "ingredient": "돼지고기",
+      "planned_order": 105000.0,
+      "unit": "g"
+    },
+    {
+      "ingredient": "두부",
+      "planned_order": 34000.0,
+      "unit": "g"
+    }
+  ],
+  "config": {
+    "execution_mode": "simulation",
+    "policy_acknowledged": false,
+    "capacity_servings": null,
+    "maximum_input_servings": 100000,
+    "provenance": {
+      "recipe": null,
+      "inventory": null,
+      "nutrition": null,
+      "policy": null
+    },
+    "rounding_policy": "purchase_only",
+    "cooking_quantum": null,
+    "purchase_quantum": {
+      "g": 100.0,
+      "ml": 1.0,
+      "ea": 1.0
+    },
+    "fractional_ea_inventory": false,
+    "safety_margin_pct": 3.0,
+    "trim_loss_pct": {
+      "돼지고기": 5.0
+    },
+    "minimum_servings": 0,
+    "shortage_policy": "conservative",
+    "order_tolerance_pct": 5.0,
+    "quantity_quantum": {
+      "g": 1.0,
+      "ml": 1.0,
+      "ea": 1.0
+    },
+    "planned_servings": null,
+    "required_menus": [],
+    "constraints": {
+      "minimum_serving_amount": {
+        "돼지고기": {
+          "amount": 100.0,
+          "unit": "g"
+        }
+      },
+      "minimum_protein": 20.0,
+      "calorie_range": [
+        500.0,
+        900.0
+      ],
+      "sodium_max": 1500.0,
+      "allergy_restriction": [
+        "땅콩"
+      ]
+    },
+    "nutrition_per_serving": {
+      "protein": 30.0,
+      "calories": 700.0,
+      "sodium": 1000.0,
+      "allergens": [
+        "대두"
+      ]
+    },
+    "data_mode": "DEMO"
+  }
+}

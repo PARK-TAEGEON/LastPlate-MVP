@@ -1,0 +1,10 @@
+{
+  "wheel": "lastplate_decision-0.1.2-py3-none-any.whl",
+  "sha256": "f8bb695225d544c3e70fdd6e83d27c8b1c942f2b7508e5164fbe4f94a77c5e95",
+  "top_level_packages": [
+    "lastplate_decision",
+    "lastplate_decision-0.1.2.dist-info"
+  ],
+  "json_schemas": 7,
+  "isolated_import_probe": "namespace-shadow import and safe-empty-input OK"
+}

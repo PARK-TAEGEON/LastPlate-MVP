@@ -1,0 +1,42 @@
+{
+  "baseline": "lastplate-inventory-risk-v0.2.2.zip",
+  "baseline_sha256": "761f104e7b9d8aa68dc13eb8ff259a8991479de617050bd81d4ee0b23a856ba9",
+  "modified": [
+    "pyproject.toml",
+    "README.md",
+    "VALIDATION.md",
+    "agents/inventory_risk.py",
+    "schemas/event.py",
+    "tools/events.py",
+    "tools/identity.py",
+    "tools/ingredients.py"
+  ],
+  "added": [
+    "RELEASE_RESIDUAL_REPORT.md",
+    "examples/release-cases.json",
+    "examples/release-test-results.xml",
+    "tests/test_release_and_residual.py"
+  ],
+  "unchanged_verified": [
+    "data/__init__.py",
+    "examples/streamlit_app.py",
+    "graph/inventory_risk_workflow.py",
+    "tests/test_data_quality_and_integration.py",
+    "tests/test_inventory_risk_agent.py",
+    "tests/test_p1_fixes.py",
+    "tests/test_repeated_restrictions.py",
+    "tests/test_review_regressions.py",
+    "data/demo/demo_monthly_price.csv",
+    "data/demo/demo_nutrition.csv",
+    "data/demo/demo_price_trend.csv",
+    "data/demo/demo_recipe_ingredients.csv",
+    "data/demo/demo_risk_events.csv",
+    "data/demo/food_inventory.xlsx",
+    "data/demo/weekly_menu.xlsx"
+  ],
+  "existing_tests": 192,
+  "new_tests": 48,
+  "passed": 240,
+  "failures": 0,
+  "skipped": 0
+}

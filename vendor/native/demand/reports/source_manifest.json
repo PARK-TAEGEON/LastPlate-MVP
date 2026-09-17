@@ -1,0 +1,17 @@
+{
+  "files": [
+    {
+      "original_name": "한국주택토지공사 구내식당 data.zip",
+      "copied_path": "data/raw/lh_original.zip",
+      "bytes": 93712,
+      "sha256": "7d26cdae989cd0568012a384c62f2df19bae0137a73d4928ceb061842bcb54cf"
+    },
+    {
+      "original_name": "OBS_ASOS_TIM_20260917142811.csv",
+      "copied_path": "data/raw/weather_hourly.csv",
+      "bytes": 61126,
+      "sha256": "07ba46908fc408b749ded9b40a3636609e51fcf0cd4675c8b7d5930040dff25f"
+    }
+  ],
+  "python": "3.12.14"
+}

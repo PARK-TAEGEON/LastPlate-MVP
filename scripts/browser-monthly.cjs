@@ -1,0 +1,53 @@
+const {chromium}=require('playwright');
+const {spawn}=require('node:child_process');
+const fs=require('node:fs'),path=require('node:path'),net=require('node:net'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..'),reports=path.join(root,'reports','monthly');fs.mkdirSync(reports,{recursive:true});fs.mkdirSync(path.join(root,'work'),{recursive:true});
+const dir=fs.mkdtempSync(path.join(root,'work','monthly-')),checks=[],errors=[];let server,browser,page,log='';
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+(async()=>{
+ const port=await new Promise(resolve=>{const s=net.createServer();s.listen(0,'127.0.0.1',()=>{const p=s.address().port;s.close(()=>resolve(p));});}),url=`http://127.0.0.1:${port}`;
+ server=spawn(process.env.LASTPLATE_TEST_PYTHON||'python',['scripts/e2e_server.py',String(port)],{cwd:root,windowsHide:true,env:{...process.env,PYTHONUTF8:'1',LASTPLATE_DB_PATH:path.join(dir,'test.db'),LASTPLATE_MODE:'demo',LASTPLATE_E2E_TOKEN:'monthly'}});server.stderr.on('data',d=>log+=d);server.stdout.on('data',d=>log+=d);
+ for(let i=0;i<100;i++){try{if((await fetch(url+'/api/health')).ok)break;}catch{}await sleep(250);}
+ browser=await chromium.launch({headless:true,executablePath:'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});page=await browser.newPage({viewport:{width:1440,height:900}});page.setDefaultTimeout(180000);page.on('pageerror',e=>errors.push(String(e)));
+ const ready=()=>page.waitForFunction(()=>!document.body.classList.contains('is-busy')&&document.querySelector('#context-status').textContent===''&&document.querySelector('#month-calendar button'));
+ const shot=name=>page.screenshot({path:path.join(reports,name+'.png'),fullPage:true});
+ const day='2026-09-19',base='/api/ui/months/2026-09';
+ await page.goto(url+'/#/create?site=DEMO-LH&date='+day);await ready();
+ assert.equal(await page.locator('#month-calendar button').count(),30);assert.equal(await page.locator('#demo-note').count(),0);assert.doesNotMatch(await page.locator('.main-nav').innerText(),/플래너/);checks.push('30-day calendar, removed banner and planner suffix');
+ const month=await(await fetch(url+base+'?site_id=DEMO-LH')).json();const rows=month.days.slice(18,21);const csv='\ufeffdate,rice,soup,main,side\n'+rows.map(d=>[d.date,...Object.values(d.menus)].join(',')).join('\n');fs.writeFileSync(path.join(dir,'month.csv'),csv);
+ await page.locator('#menu-file').setInputFiles(path.join(dir,'month.csv'));await page.locator('#month-create-status').filter({hasText:'3일 식단'}).waitFor();await ready();await shot('01-month-upload');checks.push('monthly CSV with four meal components');
+ // One day fails; completed dates remain available and the next click resumes.
+ let failed=false;await page.route('**/months/2026-09/days/2026-09-20/generate',async route=>{if(!failed){failed=true;await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'테스트 일시 오류'})});}else await route.continue();});
+ await page.locator('#plan-button').click();await page.locator('#month-status').filter({hasText:'다시 확인할 날짜'}).waitFor();await ready();assert.equal(await page.locator('#planner-screen').isVisible(),true);
+ assert.match(await page.locator('[data-calendar-date="2026-09-19"]').innerText(),/계획 생성됨|확인 필요/);checks.push('batch partial failure retains successful dates');
+ await page.locator('#month-generate').click();await page.locator('#month-status').filter({hasText:'3/3일 처리'}).waitFor();await ready();assert.doesNotMatch(await page.locator('#month-status').innerText(),/다시 확인/);checks.push('resume reuses completed plans');
+ await page.locator('[data-calendar-date="2026-09-19"]').click();await ready();await page.locator('#plan-content').waitFor();
+ const old=await(await fetch(url+base+'?site_id=DEMO-LH')).json(),oldDay=old.days[0],first=await(await fetch(url+'/api/ui/plans/'+oldDay.plan_id)).json();assert.equal(first.menus.length,4);
+ await page.locator('#day-reason').fill('단체 방문 및 출장');await page.locator('#day-increase').fill('83');await page.locator('#day-decrease').fill('17');await page.locator('#day-note').fill('두부 사용 금지');
+ await page.locator('#day-apply').click();await page.locator('#month-status').filter({hasText:'변경사항을 반영했습니다'}).waitFor();await ready();
+ let changed=await(await fetch(url+base+'?site_id=DEMO-LH')).json(),d=changed.days[0],plan=await(await fetch(url+'/api/ui/plans/'+d.plan_id)).json();assert.equal(plan.operating_diners,first.operating_diners+66);assert.equal(plan.model_diners,first.model_diners);assert.equal(await page.locator('#day-increase').inputValue(),'83');checks.push('reason plus increase and decrease apply on selected date');
+ await page.locator('[data-review-kind="note"][data-review-decision="accept"]').click();await page.locator('#month-status').filter({hasText:'수용한 내용을 재계산했습니다'}).waitFor();await ready();checks.push('Agent other reason acceptance recalculates');
+ await shot('02-calendar-agent-1440');
+ const menuAccept=page.locator('[data-review-kind="menu"][data-review-decision="accept"]');assert.ok(await menuAccept.count()>0,'Native menu recommendations must exist for this fixture');
+ await menuAccept.first().click();await page.locator('#month-status').filter({hasText:'수용한 내용을 재계산했습니다'}).waitFor();await ready();checks.push('native menu recommendation accepted as new review plan');
+ const reject=page.locator('[data-review-kind="menu"][data-review-decision="reject"]');if(await reject.count()){await reject.first().click();await page.locator('#month-status').filter({hasText:'반영하지 않기로 기록'}).waitFor();await ready();checks.push('menu rejection recorded');}
+ await page.locator('#day-note').fill('어떤 내용인지 모르는 사유');await page.locator('#day-apply').click();await page.locator('#month-status').filter({hasText:'변경사항을 반영했습니다'}).waitFor();await ready();assert.equal(await page.locator('[data-review-kind="note"][data-review-decision="accept"]').isDisabled(),true);await page.locator('[data-review-kind="note"][data-review-decision="reject"]').click();await page.locator('#month-status').filter({hasText:'반영하지 않기로 기록'}).waitFor();await ready();checks.push('unparsed reason cannot be accepted');
+ await page.route('**/api/ui/history?*',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'테스트 이력 오류'})}));
+ await page.locator('#ack-button').click();await page.locator('#actual-screen').waitFor();await ready();
+ await page.locator('#actual_diners').fill('1170');await page.locator('#prepared_servings').fill('1240');await page.locator('#plate_waste_kg').fill('0');await page.locator('#shortage').selectOption('false');await page.locator('#actual-button').click();await page.locator('#actual-status').filter({hasText:'저장했습니다'}).waitFor();await ready();
+ const record=await(await fetch(url+'/api/ui/actual?site_id=DEMO-LH&target_date='+day)).json();assert.equal(record.record.plate_waste_kg,0);assert.equal(record.record.ingredient_waste_kg,null);checks.push('acknowledge and save actual; null versus zero; history failure isolated');
+ await page.reload();await ready();assert.equal(await page.locator('#actual_diners').inputValue(),'1170');checks.push('reload restores month, plan and actual');
+ await page.locator('#nav-planner').click();
+ await page.locator('[data-calendar-date="2026-09-20"]').click();await ready();
+ await page.route('**/months/2026-09/days/2026-09-20',async route=>{if(route.request().method()==='PUT')await route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'입력 저장 테스트 오류'})});else await route.continue();});
+ await page.locator('#day-reason').fill('저장 실패 보존');await page.locator('#day-increase').fill('29');await page.locator('#day-apply').click();await page.locator('#month-status').filter({hasText:'입력 저장 테스트 오류'}).waitFor();await ready();assert.equal(await page.locator('#day-increase').inputValue(),'29');checks.push('failed day update preserves unsaved form');await page.unroute('**/months/2026-09/days/2026-09-20');
+ await fetch(url+'/__e2e_fail_next_save',{method:'POST'});await page.locator('#day-apply').click();await page.locator('#month-status').filter({hasText:'계산은 완료했으나 저장되지 않았습니다'}).waitFor();await ready();await page.locator('#retry-save').waitFor();
+ const pendingPlan=new URLSearchParams((await page.evaluate(()=>location.hash)).split('?')[1]).get('plan');
+ await page.locator('#retry-save').click();await ready();await page.waitForFunction(()=>document.querySelector('#plan-save-state').textContent.includes('저장됨'));
+ const recovered=await(await fetch(url+base+'?site_id=DEMO-LH')).json();assert.equal(recovered.days[1].plan_id,pendingPlan);checks.push('failed calculation save retained and retried without a new plan');
+ await page.setViewportSize({width:1366,height:768});await shot('03-calendar-1366');await page.locator('#day-workspace').scrollIntoViewIfNeeded();await page.screenshot({path:path.join(reports,'05-selected-day-1366.png')});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+ await page.setViewportSize({width:390,height:844});await shot('04-calendar-mobile');assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);checks.push('1440, 1366 and 390 layout');
+ assert.doesNotMatch(await page.locator('body').innerText(),/request_id|prediction_id|LangGraph|debug payload|[a-f0-9]{32}/);assert.deepEqual(errors,[]);checks.push('no internal IDs and no browser runtime errors');
+ await page.route('**/months/2026-10?*',route=>route.fulfill({status:503,contentType:'application/json',body:JSON.stringify({message:'다른 월 조회 오류'})}));await page.locator('#month-input').fill('2026-10');await page.locator('#month-input').dispatchEvent('change');await page.locator('#month-status').filter({hasText:'다른 월 조회 오류'}).waitFor();assert.equal(await page.locator('#day-workspace').isVisible(),false);assert.equal(await page.locator('#month-calendar button').count(),0);checks.push('different month GET failure clears previous month content');
+ fs.writeFileSync(path.join(reports,'browser-monthly.json'),JSON.stringify({passed:checks.length,checks,errors},null,2));console.log(JSON.stringify({passed:checks.length,checks},null,2));
+})().catch(async e=>{console.error(e);if(page)await page.screenshot({path:path.join(reports,'failure.png'),fullPage:true}).catch(()=>{});fs.writeFileSync(path.join(reports,'failure.log'),String(e)+'\n'+errors.join('\n')+'\n'+log);process.exitCode=1;}).finally(async()=>{if(browser)await browser.close();if(server){server.stdin.end('stop\n');await new Promise(resolve=>{server.once('exit',resolve);setTimeout(resolve,10000);});}});

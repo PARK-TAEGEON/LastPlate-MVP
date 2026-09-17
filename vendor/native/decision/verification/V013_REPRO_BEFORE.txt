@@ -1,0 +1,199 @@
+Before InventoryUse fix; v0.1.2 production code
+test_ingredient_empty_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_empty_alone) ... FAIL
+test_ingredient_empty_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_empty_with_expiry_alert) ... FAIL
+test_ingredient_missing_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_missing_alone) ... FAIL
+test_ingredient_missing_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_missing_with_expiry_alert) ... ERROR
+test_ingredient_null_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_null_alone) ... FAIL
+test_ingredient_null_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_null_with_expiry_alert) ... ERROR
+test_ingredient_whitespace_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_whitespace_alone) ... FAIL
+test_ingredient_whitespace_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_whitespace_with_expiry_alert) ... FAIL
+test_menu_substitution_without_ingredient_remains_supported (tests.test_inventory_use_contract.InventoryUseContractTests.test_menu_substitution_without_ingredient_remains_supported) ... ok
+test_non_string_inventory_identity_rejected (tests.test_inventory_use_contract.InventoryUseContractTests.test_non_string_inventory_identity_rejected) ... ok
+test_unit_empty_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_empty_alone) ... FAIL
+test_unit_empty_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_empty_with_expiry_alert) ... FAIL
+test_unit_missing_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_missing_alone) ... FAIL
+test_unit_missing_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_missing_with_expiry_alert) ... FAIL
+test_unit_null_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_null_alone) ... FAIL
+test_unit_null_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_null_with_expiry_alert) ... FAIL
+test_unit_whitespace_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_whitespace_alone) ... FAIL
+test_unit_whitespace_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_whitespace_with_expiry_alert) ... FAIL
+test_valid_inventory_values_are_trimmed (tests.test_inventory_use_contract.InventoryUseContractTests.test_valid_inventory_values_are_trimmed) ... FAIL
+
+======================================================================
+ERROR: test_ingredient_missing_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_missing_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+                                                      ^^^^^^^^^^^
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\lastplate_decision\agents\decision.py", line 234, in make_final_recommendation
+    if alert.type == "expiry_risk" and not any(
+                                           ^^^^
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\lastplate_decision\agents\decision.py", line 235, in <genexpr>
+    alert.ingredient and policy.normalize(c.ingredient) == policy.normalize(alert.ingredient)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\lastplate_decision\config\decision_policy.py", line 27, in normalize
+    key = "".join(name.split()).casefold()
+                  ^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'split'
+
+======================================================================
+ERROR: test_ingredient_null_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_null_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+                                                      ^^^^^^^^^^^
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\lastplate_decision\agents\decision.py", line 234, in make_final_recommendation
+    if alert.type == "expiry_risk" and not any(
+                                           ^^^^
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\lastplate_decision\agents\decision.py", line 235, in <genexpr>
+    alert.ingredient and policy.normalize(c.ingredient) == policy.normalize(alert.ingredient)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\lastplate_decision\config\decision_policy.py", line 27, in normalize
+    key = "".join(name.split()).casefold()
+                  ^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'split'
+
+======================================================================
+FAIL: test_ingredient_empty_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_empty_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_ingredient_empty_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_empty_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_ingredient_missing_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_missing_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_ingredient_null_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_null_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_ingredient_whitespace_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_whitespace_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_ingredient_whitespace_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_ingredient_whitespace_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_empty_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_empty_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_empty_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_empty_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_missing_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_missing_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_missing_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_missing_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_null_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_null_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_null_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_null_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_whitespace_alone (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_whitespace_alone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_unit_whitespace_with_expiry_alert (tests.test_inventory_use_contract.InventoryUseContractTests.test_unit_whitespace_with_expiry_alert)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 49, in test
+    with self.assertRaises(ValidationError) as raised:decide(**p)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValidationError not raised
+
+======================================================================
+FAIL: test_valid_inventory_values_are_trimmed (tests.test_inventory_use_contract.InventoryUseContractTests.test_valid_inventory_values_are_trimmed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.3\tests\test_inventory_use_contract.py", line 14, in test_valid_inventory_values_are_trimmed
+    self.assertEqual(parsed.ingredient,'두부');self.assertEqual(parsed.unit,'kg')
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '  두부  ' != '두부'
+-   두부  
++ 두부
+
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.032s
+
+FAILED (failures=15, errors=2)

@@ -1,0 +1,106 @@
+[
+  {
+    "source": "backend/app/__init__.py",
+    "output": "lastplate_backend/__init__.py",
+    "source_sha256": "3a1e1623129860787fda10370c4b139126a0e9a8df664cc0c226f39aaf2d1606",
+    "output_sha256": "3a1e1623129860787fda10370c4b139126a0e9a8df664cc0c226f39aaf2d1606",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/schemas.py",
+    "output": "lastplate_backend/schemas.py",
+    "source_sha256": "116505cea3b1177d7a63ec3f758b87e9c11f57ea46560871f6aa74fd11f27842",
+    "output_sha256": "116505cea3b1177d7a63ec3f758b87e9c11f57ea46560871f6aa74fd11f27842",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/services/inventory_planning.py",
+    "output": "lastplate_backend/services/inventory_planning.py",
+    "source_sha256": "71917e5840ea7a8449c4f601d500ea9d11f9e8fcc38e8d090946aca94a911c77",
+    "output_sha256": "3d1005bd7fd3e4aa3c7924a2349ce974baa8f19329993f07eb352f31af13e220",
+    "byte_identical": false,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/services/operation_plan_service.py",
+    "output": "lastplate_backend/services/operation_plan_service.py",
+    "source_sha256": "0873e9dfdf6ce03076225a380a4cf773649693036156a93e60d878addc055377",
+    "output_sha256": "6dcb03fcff805c4bf5c4267ad2c1b4345ef0c5a4064533225b779667ee0fcd07",
+    "byte_identical": false,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/services/__init__.py",
+    "output": "lastplate_backend/services/__init__.py",
+    "source_sha256": "1e348e8e4d8263ef0f87276530f0134dd3f00501a1ffbc854ecb77555864bbdc",
+    "output_sha256": "1e348e8e4d8263ef0f87276530f0134dd3f00501a1ffbc854ecb77555864bbdc",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/engine/__init__.py",
+    "output": "lastplate_backend/engine/__init__.py",
+    "source_sha256": "f7e230dbf9e844efcc7cbde1c2de3fa61da793e21c3ac0111f52cfcbef6be669",
+    "output_sha256": "f7e230dbf9e844efcc7cbde1c2de3fa61da793e21c3ac0111f52cfcbef6be669",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/engine/decision_engine.py",
+    "output": "lastplate_backend/engine/decision_engine.py",
+    "source_sha256": "81d0c8472d506e720009495d32949a7a49c6675678b04ab46c7cbfc915bea120",
+    "output_sha256": "81d0c8472d506e720009495d32949a7a49c6675678b04ab46c7cbfc915bea120",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/repositories/operation_plan_repository.py",
+    "output": "lastplate_backend/repositories/operation_plan_repository.py",
+    "source_sha256": "150f7138501328b3600e50c305c7c2180579bfc04783aa5ab18d0392f3f4d1b8",
+    "output_sha256": "150f7138501328b3600e50c305c7c2180579bfc04783aa5ab18d0392f3f4d1b8",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/repositories/__init__.py",
+    "output": "lastplate_backend/repositories/__init__.py",
+    "source_sha256": "d510b0a33f499c783e942d0f4462209bcf5f0e8285e291771d9df7c24303c35e",
+    "output_sha256": "d510b0a33f499c783e942d0f4462209bcf5f0e8285e291771d9df7c24303c35e",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/api/demo_routes.py",
+    "output": "lastplate_backend/api/demo_routes.py",
+    "source_sha256": "05b068063ccfe97b0fa59641770f1076c8e53a3d8ca6c4f7e1a687358e120835",
+    "output_sha256": "c2b083087f836a072863ae3a749af0b5be312671731f9adbba443e120bfbf665",
+    "byte_identical": false,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/api/routes.py",
+    "output": "lastplate_backend/api/routes.py",
+    "source_sha256": "76aeb83083da600e85859f03b1d932e340c96c9b77fe054a26ebe29847d18f5b",
+    "output_sha256": "210960ad1871e1ff5352c910be607054d36e56bb12201f472dec50fb29cc284a",
+    "byte_identical": false,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/api/__init__.py",
+    "output": "lastplate_backend/api/__init__.py",
+    "source_sha256": "2494e51e7187b2e5c3adb0250977c92579bcc526733a36fd5ec1d2505e5474ec",
+    "output_sha256": "2494e51e7187b2e5c3adb0250977c92579bcc526733a36fd5ec1d2505e5474ec",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  },
+  {
+    "source": "backend/app/core/__init__.py",
+    "output": "lastplate_backend/core/__init__.py",
+    "source_sha256": "9187ab8a2f623c99b6a4c97c973fa16672e2e978f7d41127813f92cf7efb3dce",
+    "output_sha256": "9187ab8a2f623c99b6a4c97c973fa16672e2e978f7d41127813f92cf7efb3dce",
+    "byte_identical": true,
+    "identical_after_namespace_rename": true
+  }
+]

@@ -1,0 +1,641 @@
+{
+  "$defs": {
+    "Alert": {
+      "additionalProperties": false,
+      "properties": {
+        "severity": {
+          "enum": [
+            "INFO",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/$defs/AlertType"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "field": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Field"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "title": "Evidence",
+          "type": "object"
+        },
+        "trace_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Trace Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "severity",
+        "type",
+        "message"
+      ],
+      "title": "Alert",
+      "type": "object"
+    },
+    "AlertType": {
+      "enum": [
+        "DATA_MODE_UNSPECIFIED",
+        "MISSING_RECIPE",
+        "INVALID_INPUT",
+        "DUPLICATE_RECIPE",
+        "UNUSED_TRIM_POLICY",
+        "MISSING_INVENTORY",
+        "UNDER_PREPARATION",
+        "OVER_PREPARATION",
+        "STOCK_SHORTAGE",
+        "MISSING_PLANNED_ORDER",
+        "UNDER_ORDER",
+        "OVER_ORDER",
+        "UNMATCHED_ORDER",
+        "HARD_CONSTRAINT_VIOLATION",
+        "MISSING_CONSTRAINT_EVIDENCE",
+        "CONSTRAINTS_NOT_CONFIGURED",
+        "UNIT_MISMATCH",
+        "DEMAND_OOD",
+        "DEMAND_NOT_APPLICABLE",
+        "DEMAND_EVIDENCE_UNKNOWN",
+        "DEMAND_WARNING",
+        "CAPACITY_EXCEEDED",
+        "CAPACITY_UNSPECIFIED",
+        "INPUT_DEMAND_OUT_OF_RANGE",
+        "FRACTIONAL_EA_INVENTORY",
+        "NUMERIC_ERROR",
+        "OUTPUT_PRECISION_LIMIT",
+        "NUTRITION_VERSION_MISMATCH",
+        "PROVENANCE_MISMATCH",
+        "OPERATION_EVIDENCE_MISSING",
+        "LEGACY_ROUNDING_POLICY",
+        "COOKING_ROUNDING_EXTRA"
+      ],
+      "title": "AlertType",
+      "type": "string"
+    },
+    "ConstraintReport": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN",
+            "NOT_CONFIGURED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "checks": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ConstraintReport",
+      "type": "object"
+    },
+    "EvidenceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "recipe": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "inventory": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "nutrition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NutritionEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "EvidenceBundle",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "meal_id": {
+          "minLength": 1,
+          "title": "Meal Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "version",
+        "snapshot_id",
+        "meal_id"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "NutritionEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "meal_id": {
+          "minLength": 1,
+          "title": "Meal Id",
+          "type": "string"
+        },
+        "recipe_version": {
+          "minLength": 1,
+          "title": "Recipe Version",
+          "type": "string"
+        },
+        "recipe_snapshot_id": {
+          "minLength": 1,
+          "title": "Recipe Snapshot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "version",
+        "snapshot_id",
+        "meal_id",
+        "recipe_version",
+        "recipe_snapshot_id"
+      ],
+      "title": "NutritionEvidence",
+      "type": "object"
+    },
+    "OrderReview": {
+      "additionalProperties": false,
+      "properties": {
+        "ingredient": {
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "planned_order": {
+          "title": "Planned Order",
+          "type": "number"
+        },
+        "recommended_min": {
+          "title": "Recommended Min",
+          "type": "number"
+        },
+        "recommended_max": {
+          "title": "Recommended Max",
+          "type": "number"
+        },
+        "status": {
+          "enum": [
+            "UNDER",
+            "OK",
+            "OVER"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "difference": {
+          "title": "Difference",
+          "type": "number"
+        },
+        "unit": {
+          "enum": [
+            "g",
+            "ml",
+            "ea"
+          ],
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ingredient",
+        "planned_order",
+        "recommended_min",
+        "recommended_max",
+        "status",
+        "difference",
+        "unit"
+      ],
+      "title": "OrderReview",
+      "type": "object"
+    },
+    "Requirement": {
+      "additionalProperties": false,
+      "properties": {
+        "ingredient": {
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "edible_required": {
+          "title": "Edible Required",
+          "type": "number"
+        },
+        "raw_required": {
+          "description": "Raw quantity before any rounding; approximate JSON number. Use raw_required_exact for exact comparisons.",
+          "title": "Raw Required",
+          "type": "number"
+        },
+        "raw_required_exact": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "description": "Exact rational quantity: numerator / denominator in canonical unit",
+          "title": "Raw Required Exact",
+          "type": "object"
+        },
+        "cooking_required": {
+          "title": "Cooking Required",
+          "type": "number"
+        },
+        "cooking_extra": {
+          "title": "Cooking Extra",
+          "type": "number"
+        },
+        "rounding_policy": {
+          "enum": [
+            "legacy_combined",
+            "purchase_only",
+            "cooking_and_purchase"
+          ],
+          "title": "Rounding Policy",
+          "type": "string"
+        },
+        "gross_required": {
+          "deprecated": true,
+          "description": "Alias of edible_required; migrate to edible_required",
+          "title": "Gross Required",
+          "type": "number"
+        },
+        "trim_loss_pct": {
+          "title": "Trim Loss Pct",
+          "type": "number"
+        },
+        "adjusted_required": {
+          "deprecated": true,
+          "description": "Alias of cooking_required; migrate to cooking_required, not raw_required",
+          "title": "Adjusted Required",
+          "type": "number"
+        },
+        "stock": {
+          "title": "Stock",
+          "type": "number"
+        },
+        "purchase_need": {
+          "title": "Purchase Need",
+          "type": "number"
+        },
+        "unit": {
+          "enum": [
+            "g",
+            "ml",
+            "ea"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "recommended_min": {
+          "title": "Recommended Min",
+          "type": "number"
+        },
+        "recommended_max": {
+          "title": "Recommended Max",
+          "type": "number"
+        }
+      },
+      "required": [
+        "ingredient",
+        "edible_required",
+        "raw_required",
+        "raw_required_exact",
+        "cooking_required",
+        "cooking_extra",
+        "rounding_policy",
+        "gross_required",
+        "trim_loss_pct",
+        "adjusted_required",
+        "stock",
+        "purchase_need",
+        "unit",
+        "recommended_min",
+        "recommended_max"
+      ],
+      "title": "Requirement",
+      "type": "object"
+    },
+    "Trace": {
+      "additionalProperties": false,
+      "properties": {
+        "trace_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Trace Id"
+        },
+        "step": {
+          "title": "Step",
+          "type": "string"
+        },
+        "formula": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Formula"
+        },
+        "inputs": {
+          "additionalProperties": true,
+          "title": "Inputs",
+          "type": "object"
+        },
+        "result": {
+          "default": null,
+          "title": "Result"
+        }
+      },
+      "required": [
+        "step"
+      ],
+      "title": "Trace",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "2.0",
+      "default": "2.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "review",
+        "needs_clarification",
+        "invalid_input"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "predicted_diners": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Predicted Diners"
+    },
+    "base_demand": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Base Demand"
+    },
+    "safety_margin_pct": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Safety Margin Pct"
+    },
+    "recommended_servings": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommended Servings"
+    },
+    "required_servings": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Required Servings"
+    },
+    "capacity_servings": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Capacity Servings"
+    },
+    "capacity_excess": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Capacity Excess"
+    },
+    "provenance": {
+      "$ref": "#/$defs/EvidenceBundle"
+    },
+    "ingredient_requirements": {
+      "items": {
+        "$ref": "#/$defs/Requirement"
+      },
+      "title": "Ingredient Requirements",
+      "type": "array"
+    },
+    "order_reviews": {
+      "items": {
+        "$ref": "#/$defs/OrderReview"
+      },
+      "title": "Order Reviews",
+      "type": "array"
+    },
+    "constraints": {
+      "$ref": "#/$defs/ConstraintReport"
+    },
+    "alerts": {
+      "items": {
+        "$ref": "#/$defs/Alert"
+      },
+      "title": "Alerts",
+      "type": "array"
+    },
+    "decision_trace": {
+      "items": {
+        "$ref": "#/$defs/Trace"
+      },
+      "title": "Decision Trace",
+      "type": "array"
+    },
+    "requires_human_approval": {
+      "const": true,
+      "default": true,
+      "title": "Requires Human Approval",
+      "type": "boolean"
+    },
+    "advisory_only": {
+      "const": true,
+      "default": true,
+      "title": "Advisory Only",
+      "type": "boolean"
+    },
+    "data_mode": {
+      "default": "UNSPECIFIED",
+      "enum": [
+        "DEMO",
+        "REAL",
+        "UNSPECIFIED"
+      ],
+      "title": "Data Mode",
+      "type": "string"
+    },
+    "source": {
+      "additionalProperties": true,
+      "title": "Source",
+      "type": "object"
+    },
+    "policy": {
+      "additionalProperties": true,
+      "title": "Policy",
+      "type": "object"
+    }
+  },
+  "required": [
+    "status"
+  ],
+  "title": "OperationOutput",
+  "type": "object"
+}

@@ -1,0 +1,110 @@
+{
+  "method": "Native FastAPI TestClient + actual native subprocess workers + backend HTTP MockTransport; no network server",
+  "source_name": "lastplate-integrated-v0.1.2",
+  "source_files_unchanged": 633,
+  "package_namespace_coexistence": true,
+  "input_top_level_fields_match": true,
+  "mode": "demo",
+  "unit_tests_rerunnable_without_peer": "python -m unittest discover -s tests -v",
+  "cases": [
+    {
+      "case": "normal",
+      "http_status": 200,
+      "pipeline_status": "COMPLETE",
+      "predicted_diners": 883.0,
+      "recommended_servings": 910,
+      "decision_type": "BLOCK",
+      "requires_human_approval": true,
+      "applicability": "IN_RANGE",
+      "errors": [],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    },
+    {
+      "case": "input-limit",
+      "http_status": 422,
+      "pipeline_status": "PARTIAL",
+      "predicted_diners": 883.0,
+      "recommended_servings": null,
+      "decision_type": "NEEDS_CONFIRMATION",
+      "requires_human_approval": true,
+      "applicability": "IN_RANGE",
+      "errors": [
+        "INPUT_DEMAND_OUT_OF_RANGE"
+      ],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    },
+    {
+      "case": "raw-loss",
+      "http_status": 200,
+      "pipeline_status": "COMPLETE",
+      "predicted_diners": 883.0,
+      "recommended_servings": 910,
+      "decision_type": "BLOCK",
+      "requires_human_approval": true,
+      "applicability": "IN_RANGE",
+      "errors": [],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    },
+    {
+      "case": "small-site",
+      "http_status": 200,
+      "pipeline_status": "COMPLETE",
+      "predicted_diners": 856.0,
+      "recommended_servings": 882,
+      "decision_type": "BLOCK",
+      "requires_human_approval": true,
+      "applicability": "OUT_OF_DISTRIBUTION",
+      "errors": [],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    },
+    {
+      "case": "unsupported-unit",
+      "http_status": 422,
+      "pipeline_status": "PARTIAL",
+      "predicted_diners": null,
+      "recommended_servings": null,
+      "decision_type": null,
+      "requires_human_approval": null,
+      "applicability": null,
+      "errors": [
+        "UNIT_ERROR"
+      ],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    },
+    {
+      "case": "invalid-expiry",
+      "http_status": 422,
+      "pipeline_status": "FAILED",
+      "predicted_diners": null,
+      "recommended_servings": null,
+      "decision_type": null,
+      "requires_human_approval": null,
+      "applicability": null,
+      "errors": [
+        "INPUT_VALIDATION_ERROR"
+      ],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    },
+    {
+      "case": "same-id-changed-input",
+      "http_status": 409,
+      "pipeline_status": "PARTIAL",
+      "predicted_diners": null,
+      "recommended_servings": null,
+      "decision_type": "NEEDS_CONFIRMATION",
+      "requires_human_approval": true,
+      "applicability": null,
+      "errors": [
+        "idempotency_conflict"
+      ],
+      "full_native_result_preserved": true,
+      "stored_request_and_result_match": true
+    }
+  ]
+}

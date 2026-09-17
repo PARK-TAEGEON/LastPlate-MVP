@@ -1,0 +1,166 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "request_id": {
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Request Id",
+      "type": "string"
+    },
+    "site_id": {
+      "minLength": 1,
+      "title": "Site Id",
+      "type": "string"
+    },
+    "target_date": {
+      "title": "Target Date",
+      "type": "string"
+    },
+    "as_of": {
+      "title": "As Of",
+      "type": "string"
+    },
+    "meal_type": {
+      "const": "lunch",
+      "default": "lunch",
+      "title": "Meal Type",
+      "type": "string"
+    },
+    "meal_capacity": {
+      "minimum": 0,
+      "title": "Meal Capacity",
+      "type": "integer"
+    },
+    "attendance": {
+      "additionalProperties": true,
+      "title": "Attendance",
+      "type": "object"
+    },
+    "availability": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Availability"
+    },
+    "weekly_menu": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "minItems": 1,
+      "title": "Weekly Menu",
+      "type": "array"
+    },
+    "recipes": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Recipes",
+      "type": "array"
+    },
+    "inventory": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Inventory",
+      "type": "array"
+    },
+    "planned_orders": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Planned Orders",
+      "type": "array"
+    },
+    "nutrition": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Nutrition",
+      "type": "array"
+    },
+    "prices": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Prices",
+      "type": "array"
+    },
+    "monthly_prices": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Monthly Prices",
+      "type": "array"
+    },
+    "supply_events": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Supply Events",
+      "type": "array"
+    },
+    "sources": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Sources",
+      "type": "object"
+    },
+    "operation_policy": {
+      "additionalProperties": true,
+      "title": "Operation Policy",
+      "type": "object"
+    },
+    "event": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Event"
+    }
+  },
+  "required": [
+    "request_id",
+    "site_id",
+    "target_date",
+    "as_of",
+    "meal_capacity",
+    "attendance",
+    "weekly_menu",
+    "recipes",
+    "inventory",
+    "planned_orders",
+    "nutrition",
+    "prices",
+    "monthly_prices",
+    "supply_events",
+    "sources",
+    "operation_policy"
+  ],
+  "title": "PipelineInput",
+  "type": "object"
+}

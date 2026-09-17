@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lastplate-inventory-risk"
+version = "0.2.3"
+description = "Advisory Inventory & Risk subgraph for LastPlate (DEMO)"
+requires-python = ">=3.11"
+dependencies = ["langgraph>=1.0,<2", "pydantic>=2.7,<3", "openpyxl>=3.1,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+ui = ["streamlit>=1.40,<2"]
+
+[tool.setuptools.packages.find]
+include = ["agents*", "adapters*", "graph*", "schemas*", "tools*", "data*", "examples*"]
+
+[tool.setuptools]
+py-modules = ["config", "demo"]
+
+[tool.setuptools.package-data]
+data = ["demo/*.xlsx", "demo/*.csv"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

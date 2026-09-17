@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv*/
+
+# Local runtime data / secrets
+backend/data/
+.env
+
+# Test and editor files
+.pytest_cache/
+.mypy_cache/
+.idea/
+.vscode/
+
+# Temporary PDF inspection output
+tmp/
+output/

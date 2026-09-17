@@ -1,0 +1,22 @@
+[
+  {
+    "module": "demand",
+    "exit_code": 0,
+    "seconds": 23.83
+  },
+  {
+    "module": "operation",
+    "exit_code": 0,
+    "seconds": 7.145
+  },
+  {
+    "module": "inventory_risk",
+    "exit_code": 0,
+    "seconds": 15.622
+  },
+  {
+    "module": "decision",
+    "exit_code": 0,
+    "seconds": 10.749
+  }
+]

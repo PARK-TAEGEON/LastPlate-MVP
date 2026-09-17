@@ -1,0 +1,65 @@
+........................................................................ [ 30%]
+.........F.............................................................. [ 60%]
+.....................................................FF................. [ 90%]
+........................                                                 [100%]
+================================== FAILURES ===================================
+____________ test_compound_partial_is_visible_and_blocks_rechecks _____________
+
+bundle = AdapterBundle(recipe=<adapters.recipe_adapter.DemoRecipeAdapter object at 0x000001A6FADD42C0>, nutrition=<adapters.nut... at 0x000001A6F7FB8AD0>, supply_risk=<adapters.supply_risk_adapter.DemoSupplyRiskAdapter object at 0x000001A6FADD4440>)
+
+    def test_compound_partial_is_visible_and_blocks_rechecks(bundle):
+        text="내일 손님 35명 추가하고 냉장고 청소도 해주세요."
+        report=run(bundle,text)
+        assert report["status"]=="partial"
+        parsed=report["parsing_result"]
+        assert len(parsed["parsed_events"])==1
+        assert parsed["unparsed_segments"]==["냉장고 청소도 해주세요."]
+        assert "demand_forecast" not in report["recommended_rechecks"]
+>       assert report["recheck_status"]["demand_forecast"]["status"]=="blocked_clarification"
+E       AssertionError: assert 'not_requested' == 'blocked_clarification'
+E         
+E         - blocked_clarification
+E         + not_requested
+
+tests\test_p1_fixes.py:63: AssertionError
+_____________ test_vague_attendance_never_requests_forecast[full] _____________
+
+isolated = AdapterBundle(recipe=<adapters.recipe_adapter.DemoRecipeAdapter object at 0x000001A6FAC733B0>, nutrition=<adapters.nut... at 0x000001A6FBDCE900>, supply_risk=<adapters.supply_risk_adapter.DemoSupplyRiskAdapter object at 0x000001A6FBEE7440>)
+mode = 'full'
+
+    @pytest.mark.parametrize("mode",["full","event"])
+    def test_vague_attendance_never_requests_forecast(isolated,mode):
+        r=run(isolated,"내일 사람이 좀 많이 올 것 같아요.",mode=mode)
+        e=r["detected_events"][0]
+        assert e["event_type"]=="attendance_event" and e["date"]=="2026-09-18"
+        assert e["attendance_delta"] is None and e["needs_clarification"]
+>       assert r["recheck_status"]["demand_forecast"]["status"]=="blocked_clarification"
+E       AssertionError: assert 'not_requested' == 'blocked_clarification'
+E         
+E         - blocked_clarification
+E         + not_requested
+
+tests\test_review_regressions.py:112: AssertionError
+____________ test_vague_attendance_never_requests_forecast[event] _____________
+
+isolated = AdapterBundle(recipe=<adapters.recipe_adapter.DemoRecipeAdapter object at 0x000001A6FBEE7560>, nutrition=<adapters.nut... at 0x000001A6FBDCFE60>, supply_risk=<adapters.supply_risk_adapter.DemoSupplyRiskAdapter object at 0x000001A6FBEAFDA0>)
+mode = 'event'
+
+    @pytest.mark.parametrize("mode",["full","event"])
+    def test_vague_attendance_never_requests_forecast(isolated,mode):
+        r=run(isolated,"내일 사람이 좀 많이 올 것 같아요.",mode=mode)
+        e=r["detected_events"][0]
+        assert e["event_type"]=="attendance_event" and e["date"]=="2026-09-18"
+        assert e["attendance_delta"] is None and e["needs_clarification"]
+>       assert r["recheck_status"]["demand_forecast"]["status"]=="blocked_clarification"
+E       AssertionError: assert 'not_requested' == 'blocked_clarification'
+E         
+E         - blocked_clarification
+E         + not_requested
+
+tests\test_review_regressions.py:112: AssertionError
+=========================== short test summary info ===========================
+FAILED tests/test_p1_fixes.py::test_compound_partial_is_visible_and_blocks_rechecks
+FAILED tests/test_review_regressions.py::test_vague_attendance_never_requests_forecast[full]
+FAILED tests/test_review_regressions.py::test_vague_attendance_never_requests_forecast[event]
+3 failed, 237 passed in 14.34s

@@ -1,0 +1,17 @@
+[
+  {
+    "ingredient": "두부",
+    "stock": 0,
+    "unit": "g"
+  },
+  {
+    "ingredient": "두부",
+    "stock": 2,
+    "unit": "kg"
+  },
+  {
+    "ingredient": "두부",
+    "stock": 3000,
+    "unit": "g"
+  }
+]

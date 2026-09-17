@@ -1,0 +1,8 @@
+......                                                                   [100%]
+============================== warnings summary ===============================
+tests/integration/test_p0p1.py::test_04_http_error_semantics
+  C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8-5\work\.venv\Lib\site-packages\starlette\testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+6 passed, 1 warning in 51.61s

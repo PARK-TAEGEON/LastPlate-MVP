@@ -1,0 +1,36 @@
+{
+  "baseline_zip_sha256": "d1c3bc7c067a0d5e1f0bc93a7915125bcc1a8060f36283ae826f448a00e4f3fd",
+  "original_169_test_files_unchanged": true,
+  "graph_ui_agent_schemas_unchanged": true,
+  "baseline_numeric_results_unchanged": {
+    "inventory_status": true,
+    "price_risks": true,
+    "supply_risks": true,
+    "substitute_candidates": true,
+    "priority_use_candidates": true,
+    "nutrition_results": true,
+    "cost_impacts": true
+  },
+  "test_counts": {
+    "tests.test_data_quality_and_integration": 47,
+    "tests.test_inventory_risk_agent": 28,
+    "tests.test_p1_fixes": 36,
+    "tests.test_repeated_restrictions": 23,
+    "tests.test_review_regressions": 58
+  },
+  "modified": [
+    "pyproject.toml",
+    "README.md",
+    "tools/events.py",
+    "tools/ingredients.py",
+    "VALIDATION.md"
+  ],
+  "added": [
+    "examples/restriction-cases.json",
+    "examples/restriction-manifest.json",
+    "examples/restriction-test-results.xml",
+    "REPEATED_RESTRICTION_REPORT.md",
+    "tests/test_repeated_restrictions.py"
+  ],
+  "demo_files_unchanged": true
+}

@@ -1,0 +1,6 @@
+{
+  "status": "failed_not_a_completed_experiment",
+  "reason": "XGBoost get_params missing=NaN sentinel was not strict JSON serializable",
+  "resolution": "Parameter-only nonfinite sentinels encoded as explicit strings; rerun in rolling_v2_verified",
+  "performance_claim": "No completed performance comparison is claimed from this failed folder"
+}

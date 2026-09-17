@@ -1,0 +1,168 @@
+{
+  "normal_REAL": {
+    "status": "ok",
+    "confidence": "HIGH",
+    "confidence_reasons": [
+      "현재 계획의 필수 근거·소비 의존성·Hard Constraint 검증 통과"
+    ],
+    "confidence_evidence": [],
+    "data_quality_notes": [],
+    "provenance_notes": [
+      "REAL 출처: REAL:ERP"
+    ],
+    "recommended_servings": 523
+  },
+  "nutrition_FAIL": {
+    "status": "blocked",
+    "confidence": "LOW",
+    "confidence_reasons": [
+      "현재 계획 Hard Constraint FAIL: nutrition",
+      "현재 계획 constraint_violation HIGH: Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition"
+    ],
+    "confidence_evidence": [
+      {
+        "kind": "hard_constraint_failure",
+        "message": "현재 계획 Hard Constraint FAIL: nutrition",
+        "constraints": [
+          "nutrition"
+        ]
+      },
+      {
+        "kind": "current_plan_risk",
+        "message": "현재 계획 constraint_violation HIGH: Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition",
+        "alert": {
+          "type": "constraint_violation",
+          "severity": "HIGH",
+          "action_id": "servings",
+          "message": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition",
+          "constraints": [
+            "nutrition"
+          ],
+          "candidate_id": null
+        }
+      }
+    ],
+    "data_quality_notes": [],
+    "provenance_notes": [],
+    "recommended_servings": null
+  },
+  "allergy_FAIL": {
+    "status": "blocked",
+    "confidence": "LOW",
+    "confidence_reasons": [
+      "현재 계획 Hard Constraint FAIL: allergy",
+      "현재 계획 constraint_violation HIGH: Demand·Operation 결과와 제약 검증; Hard Constraint 위반: allergy"
+    ],
+    "confidence_evidence": [
+      {
+        "kind": "hard_constraint_failure",
+        "message": "현재 계획 Hard Constraint FAIL: allergy",
+        "constraints": [
+          "allergy"
+        ]
+      },
+      {
+        "kind": "current_plan_risk",
+        "message": "현재 계획 constraint_violation HIGH: Demand·Operation 결과와 제약 검증; Hard Constraint 위반: allergy",
+        "alert": {
+          "type": "constraint_violation",
+          "severity": "HIGH",
+          "action_id": "servings",
+          "message": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: allergy",
+          "constraints": [
+            "allergy"
+          ],
+          "candidate_id": null
+        }
+      }
+    ],
+    "data_quality_notes": [],
+    "provenance_notes": [],
+    "recommended_servings": null
+  },
+  "supply_HIGH": {
+    "status": "ok",
+    "confidence": "MEDIUM",
+    "confidence_reasons": [
+      "현재 계획 supply_risk HIGH: 위험 검토 필요"
+    ],
+    "confidence_evidence": [
+      {
+        "kind": "current_plan_risk",
+        "message": "현재 계획 supply_risk HIGH: 위험 검토 필요",
+        "alert": {
+          "type": "supply_risk",
+          "severity": "HIGH",
+          "scope_relation": "matched",
+          "provenance_notes": [],
+          "data_quality_notes": [],
+          "is_demo": false,
+          "data_sources": {},
+          "limitations": [],
+          "source_payload": {},
+          "scope": {
+            "target_date": null,
+            "end_date": null,
+            "meal_type": null,
+            "menu": null,
+            "ingredient": null,
+            "candidate_id": null,
+            "applies_to_all": false
+          },
+          "cause_event_ids": [],
+          "ingredient": "두부",
+          "message": "위험 검토 필요",
+          "unavailable": false,
+          "inventory_sufficient": null,
+          "affected_menus": []
+        }
+      }
+    ],
+    "data_quality_notes": [],
+    "provenance_notes": [],
+    "recommended_servings": 523
+  },
+  "simulation_source": {
+    "status": "ok",
+    "confidence": "MEDIUM",
+    "confidence_reasons": [
+      "SIMULATION 출처: simulation"
+    ],
+    "confidence_evidence": [
+      {
+        "kind": "SIMULATION",
+        "message": "SIMULATION 출처: simulation",
+        "path": "input.inventory_risk_result.source_type"
+      }
+    ],
+    "data_quality_notes": [
+      "input.inventory_risk_result.source_type: SIMULATION 출처: simulation"
+    ],
+    "provenance_notes": [],
+    "recommended_servings": 523
+  },
+  "stale_consumption": {
+    "status": "needs_confirmation",
+    "confidence": "LOW",
+    "confidence_reasons": [
+      "현재 계획 검증 미완료 또는 미해결 재실행 요청",
+      "operation: demand_forecast 소비 의존 근거 누락/불일치 (required=demand_result-1, consumed=old)"
+    ],
+    "confidence_evidence": [
+      {
+        "kind": "incomplete_evidence",
+        "message": "현재 계획 검증 미완료 또는 미해결 재실행 요청"
+      },
+      {
+        "kind": "VALIDATION",
+        "message": "operation: demand_forecast 소비 의존 근거 누락/불일치 (required=demand_result-1, consumed=old)",
+        "path": "decision"
+      }
+    ],
+    "data_quality_notes": [
+      "decision: operation: demand_forecast 소비 의존 근거 누락/불일치 (required=demand_result-1, consumed=old)"
+    ],
+    "provenance_notes": [],
+    "recommended_servings": null
+  }
+}

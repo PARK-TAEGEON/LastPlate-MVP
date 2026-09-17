@@ -1,0 +1,140 @@
+test_allergy_generated_violation_explains_low (tests.test_v012_reproductions.V012Reproductions.test_allergy_generated_violation_explains_low) ... FAIL
+test_initial_missing_demand_dependency_holds (tests.test_v012_reproductions.V012Reproductions.test_initial_missing_demand_dependency_holds) ... FAIL
+test_initial_missing_required_inventory_dependency_holds (tests.test_v012_reproductions.V012Reproductions.test_initial_missing_required_inventory_dependency_holds) ... FAIL
+test_initial_stale_demand_dependency_holds_without_ledger (tests.test_v012_reproductions.V012Reproductions.test_initial_stale_demand_dependency_holds_without_ledger) ... FAIL
+test_initial_stale_inventory_dependency_holds (tests.test_v012_reproductions.V012Reproductions.test_initial_stale_inventory_dependency_holds) ... FAIL
+test_normal_ml_mode_info_does_not_lower_confidence (tests.test_v012_reproductions.V012Reproductions.test_normal_ml_mode_info_does_not_lower_confidence) ... FAIL
+test_nutrition_block_cannot_have_high_confidence (tests.test_v012_reproductions.V012Reproductions.test_nutrition_block_cannot_have_high_confidence) ... FAIL
+test_real_provenance_is_not_quality_warning (tests.test_v012_reproductions.V012Reproductions.test_real_provenance_is_not_quality_warning) ... FAIL
+test_relevant_supply_risk_in_confidence (tests.test_v012_reproductions.V012Reproductions.test_relevant_supply_risk_in_confidence) ... FAIL
+test_source_type_simulation_is_quality_warning (tests.test_v012_reproductions.V012Reproductions.test_source_type_simulation_is_quality_warning) ... FAIL
+test_unknown_source_is_quality_warning (tests.test_v012_reproductions.V012Reproductions.test_unknown_source_is_quality_warning) ... FAIL
+test_unselected_candidate_demo_does_not_taint_current_plan (tests.test_v012_reproductions.V012Reproductions.test_unselected_candidate_demo_does_not_taint_current_plan) ... FAIL
+
+======================================================================
+FAIL: test_allergy_generated_violation_explains_low (tests.test_v012_reproductions.V012Reproductions.test_allergy_generated_violation_explains_low)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 47, in test_allergy_generated_violation_explains_low
+    self.assertEqual(r['confidence'],'LOW')
+AssertionError: 'HIGH' != 'LOW'
+- HIGH
++ LOW
+
+
+======================================================================
+FAIL: test_initial_missing_demand_dependency_holds (tests.test_v012_reproductions.V012Reproductions.test_initial_missing_demand_dependency_holds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 21, in test_initial_missing_demand_dependency_holds
+    self.assertEqual(r['serving_action']['decision'],'NEEDS_CONFIRMATION')
+AssertionError: 'KEEP' != 'NEEDS_CONFIRMATION'
+- KEEP
++ NEEDS_CONFIRMATION
+
+
+======================================================================
+FAIL: test_initial_missing_required_inventory_dependency_holds (tests.test_v012_reproductions.V012Reproductions.test_initial_missing_required_inventory_dependency_holds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 30, in test_initial_missing_required_inventory_dependency_holds
+    self.assertIsNone(decide(**p)['recommended_servings'])
+AssertionError: 523 is not None
+
+======================================================================
+FAIL: test_initial_stale_demand_dependency_holds_without_ledger (tests.test_v012_reproductions.V012Reproductions.test_initial_stale_demand_dependency_holds_without_ledger)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 26, in test_initial_stale_demand_dependency_holds_without_ledger
+    self.assertIsNone(decide(**p)['recommended_servings'])
+AssertionError: 523 is not None
+
+======================================================================
+FAIL: test_initial_stale_inventory_dependency_holds (tests.test_v012_reproductions.V012Reproductions.test_initial_stale_inventory_dependency_holds)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 34, in test_initial_stale_inventory_dependency_holds
+    self.assertIsNone(decide(**p)['recommended_servings'])
+AssertionError: 523 is not None
+
+======================================================================
+FAIL: test_normal_ml_mode_info_does_not_lower_confidence (tests.test_v012_reproductions.V012Reproductions.test_normal_ml_mode_info_does_not_lower_confidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 77, in test_normal_ml_mode_info_does_not_lower_confidence
+    self.assertEqual(decide(**p)['confidence'],'HIGH')
+AssertionError: 'MEDIUM' != 'HIGH'
+- MEDIUM
++ HIGH
+
+
+======================================================================
+FAIL: test_nutrition_block_cannot_have_high_confidence (tests.test_v012_reproductions.V012Reproductions.test_nutrition_block_cannot_have_high_confidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 40, in test_nutrition_block_cannot_have_high_confidence
+    self.assertEqual(r['confidence'],'LOW')
+AssertionError: 'HIGH' != 'LOW'
+- HIGH
++ LOW
+
+
+======================================================================
+FAIL: test_real_provenance_is_not_quality_warning (tests.test_v012_reproductions.V012Reproductions.test_real_provenance_is_not_quality_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 69, in test_real_provenance_is_not_quality_warning
+    self.assertEqual(r['confidence'],'HIGH')
+AssertionError: 'MEDIUM' != 'HIGH'
+- MEDIUM
++ HIGH
+
+
+======================================================================
+FAIL: test_relevant_supply_risk_in_confidence (tests.test_v012_reproductions.V012Reproductions.test_relevant_supply_risk_in_confidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 53, in test_relevant_supply_risk_in_confidence
+    self.assertEqual(r['confidence'],'MEDIUM')
+AssertionError: 'HIGH' != 'MEDIUM'
+- HIGH
++ MEDIUM
+
+
+======================================================================
+FAIL: test_source_type_simulation_is_quality_warning (tests.test_v012_reproductions.V012Reproductions.test_source_type_simulation_is_quality_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 59, in test_source_type_simulation_is_quality_warning
+    self.assertEqual(r['confidence'],'MEDIUM')
+AssertionError: 'HIGH' != 'MEDIUM'
+- HIGH
++ MEDIUM
+
+
+======================================================================
+FAIL: test_unknown_source_is_quality_warning (tests.test_v012_reproductions.V012Reproductions.test_unknown_source_is_quality_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 64, in test_unknown_source_is_quality_warning
+    self.assertEqual(decide(**p)['confidence'],'MEDIUM')
+AssertionError: 'HIGH' != 'MEDIUM'
+- HIGH
++ MEDIUM
+
+
+======================================================================
+FAIL: test_unselected_candidate_demo_does_not_taint_current_plan (tests.test_v012_reproductions.V012Reproductions.test_unselected_candidate_demo_does_not_taint_current_plan)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\user\Documents\Codex\2026-09-17\esg-chatgpt-conversation-6a9f6084-c5e4-83e8\outputs\lastplate-decision-v0.1.2\tests\test_v012_reproductions.py", line 83, in test_unselected_candidate_demo_does_not_taint_current_plan
+    self.assertEqual(decide(**p)['confidence'],'HIGH')
+AssertionError: 'MEDIUM' != 'HIGH'
+- MEDIUM
++ HIGH
+
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.018s
+
+FAILED (failures=12)

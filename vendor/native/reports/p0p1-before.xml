@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="6" time="51.752" timestamp="2026-09-17T23:41:43.336176+09:00" hostname="DESKTOP-UI4LKAS"><testcase classname="tests.integration.test_p0p1" name="test_01_cancelled_structured_supply_public" time="6.261"><failure message="AssertionError: assert not [{'event_type': 'supply_risk', 'action': None, 'superseded': True, 'event_id': 'event-7d0cad6901709d4ff85d', ...}]">p = {'request_id': 'p0p1', 'site_id': 'DEMO-LH', 'target_date': '2026-09-18', 'as_of': '2026-09-17', ...}
+run = &lt;function run.&lt;locals&gt;.&lt;lambda&gt; at 0x0000022101DFEA20&gt;
+
+    def test_01_cancelled_structured_supply_public(p,run):
+        p['event']=cancelled();r=run(p);save('01-cancelled-structured',r)
+        assert r['pipeline_status']=='COMPLETE',r['errors']
+        assert any(e.get('superseded') for e in r['inventory_risk']['detected_events'])
+&gt;       assert not r['inventory_risk']['supply_risks']
+E       AssertionError: assert not [{'event_type': 'supply_risk', 'action': None, 'superseded': True, 'event_id': 'event-7d0cad6901709d4ff85d', ...}]
+
+tests\integration\test_p0p1.py:39: AssertionError</failure></testcase><testcase classname="tests.integration.test_p0p1" name="test_02_raw_cooking_basis" time="6.340"><failure message="assert (72800.0 == 145600.0)">p = {'request_id': 'p0p1', 'site_id': 'DEMO-LH', 'target_date': '2026-09-18', 'as_of': '2026-09-17', ...}
+run = &lt;function run.&lt;locals&gt;.&lt;lambda&gt; at 0x0000022101F33380&gt;
+
+    def test_02_raw_cooking_basis(p,run):
+        p['operation_policy']['trim_loss_pct']={'두부':50}
+        r=run(p);save('02-raw-basis',r)
+        assert r['operation']['recommended_servings']==910
+        o=next(x for x in r['operation']['ingredient_requirements'] if x['ingredient']=='두부')
+        i=next(x for x in r['inventory_risk']['inventory_status'] if x['ingredient']=='두부')
+        assert o['cooking_required']==145600 and o['purchase_need']==45600
+&gt;       assert i['required_g']==o['cooking_required'] and i['shortage_at_service_g']==45600
+E       assert (72800.0 == 145600.0)
+
+tests\integration\test_p0p1.py:50: AssertionError</failure></testcase><testcase classname="tests.integration.test_p0p1" name="test_03_units_public_boundary" time="8.965"><failure message="AssertionError: [{'stage': 'inventory_risk', 'code': 'ValueError', 'message': 'Inventory planned order requires an existing lot with matching unit'}]&#10;assert 'PARTIAL' == 'COMPLETE'&#10;  &#10;  - COMPLETE&#10;  + PARTIAL">p = {'request_id': 'p0p1', 'site_id': 'DEMO-LH', 'target_date': '2026-09-18', 'as_of': '2026-09-17', ...}
+run = &lt;function run.&lt;locals&gt;.&lt;lambda&gt; at 0x0000022101FD8180&gt;
+
+    def test_03_units_public_boundary(p,run):
+        p['planned_orders']=[dict(ingredient='두부',planned_order=2,unit='kg')]
+        good=run(p)
+        bad=copy.deepcopy(p);bad['request_id']='bad-unit';bad['inventory'][0]['unit']='ml'
+        unsupported=run(bad)
+        save('03-units',dict(convertible=good,unsupported=unsupported))
+&gt;       assert good['pipeline_status']=='COMPLETE',good['errors']
+E       AssertionError: [{'stage': 'inventory_risk', 'code': 'ValueError', 'message': 'Inventory planned order requires an existing lot with matching unit'}]
+E       assert 'PARTIAL' == 'COMPLETE'
+E         
+E         - COMPLETE
+E         + PARTIAL
+
+tests\integration\test_p0p1.py:58: AssertionError</failure></testcase><testcase classname="tests.integration.test_p0p1" name="test_04_http_error_semantics" time="16.865"><failure message="AssertionError: assert {'ok': 200, '...onflict': 200} == {'ok': 200, '...onflict': 409}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Differing items:&#10;  {'conflict': 200} != {'conflict': 409}&#10;  {'ml': 200} != {'ml': 422}&#10;  {'nested': 200} != {'nested': 422}&#10;  Use -v to get more diff">p = {'request_id': 'p0p1', 'site_id': 'DEMO-LH', 'target_date': '2026-09-18', 'as_of': '2026-09-17', ...}
+tmp_path = WindowsPath('C:/Users/user/AppData/Local/Temp/pytest-of-user/pytest-53/test_04_http_error_semantics0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x0000022101FD6AE0&gt;
+
+    def test_04_http_error_semantics(p,tmp_path,monkeypatch):
+        from fastapi.testclient import TestClient
+        from app.main import app
+        monkeypatch.setenv('LASTPLATE_STORAGE',str(tmp_path/'api'))
+        monkeypatch.setenv('LASTPLATE_MODE','demo')
+        cases={}
+        with TestClient(app) as c:
+            for name,body in [('ok',p),('ml',{**p,'request_id':'invalid-ml','attendance':{**p['attendance'],'vacation':-1}}),
+                ('nested',{**p,'request_id':'invalid-nested','nutrition':[{'ingredient':'두부'}]}),
+                ('conflict',{**p,'attendance':{**p['attendance'],'overtime':552}})]:
+                res=c.post('/api/plan',json=body);cases[name]={'status':res.status_code,'body':res.json()}
+        save('04-http',cases)
+&gt;       assert {k:v['status'] for k,v in cases.items()}=={'ok':200,'ml':422,'nested':422,'conflict':409}
+E       AssertionError: assert {'ok': 200, '...onflict': 200} == {'ok': 200, '...onflict': 409}
+E         
+E         Omitting 1 identical items, use -vv to show
+E         Differing items:
+E         {'conflict': 200} != {'conflict': 409}
+E         {'ml': 200} != {'ml': 422}
+E         {'nested': 200} != {'nested': 422}
+E         Use -v to get more diff
+
+tests\integration\test_p0p1.py:75: AssertionError</failure></testcase><testcase classname="tests.integration.test_p0p1" name="test_05_audit_and_demand_envelope" time="6.275"><failure message="assert False&#10; +  where False = any(&lt;generator object test_05_audit_and_demand_envelope.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000221032CC110&gt;)">p = {'request_id': 'p0p1', 'site_id': 'DEMO-LH', 'target_date': '2026-09-18', 'as_of': '2026-09-17', ...}
+run = &lt;function run.&lt;locals&gt;.&lt;lambda&gt; at 0x000002210330C860&gt;
+
+    def test_05_audit_and_demand_envelope(p,run):
+        p['supply_events']=[cancelled()]
+        p['attendance'].update(registered_population=600,vacation=30,business_trip=50,work_from_home=10,overtime=50)
+        r=run(p);save('05-audit-envelope',r)
+&gt;       assert any(e.get('superseded') for e in r['inventory_risk']['detected_events'])
+E       assert False
+E        +  where False = any(&lt;generator object test_05_audit_and_demand_envelope.&lt;locals&gt;.&lt;genexpr&gt; at 0x00000221032CC110&gt;)
+
+tests\integration\test_p0p1.py:82: AssertionError</failure></testcase><testcase classname="tests.integration.test_p0p1" name="test_06_last_adapter_defense_and_native_gates" time="6.739"><failure message="assert not True&#10; +  where True = any(&lt;generator object test_06_last_adapter_defense_and_native_gates.&lt;locals&gt;.&lt;genexpr&gt; at 0x0000022103346C20&gt;)">p = {'request_id': 'p0p1', 'site_id': 'DEMO-LH', 'target_date': '2026-09-18', 'as_of': '2026-09-17', ...}
+run = &lt;function run.&lt;locals&gt;.&lt;lambda&gt; at 0x000002210330D760&gt;
+
+    def test_06_last_adapter_defense_and_native_gates(p,run):
+        base=run(p);r=copy.deepcopy(base['inventory_risk'])
+        dead=cancelled();cid='cancelled-candidate'
+        r['detected_events'].append(dead)
+        linked=dict(ingredient='두부',date=p['target_date'],meal_type='lunch',cause_event_ids=[dead['event_id']],candidate_id=cid)
+        r['price_risks']=[{**linked,'severity':'HIGH','message':'cancelled-price'}]
+        r['supply_risks']=[{**dead,'inventory_context':{}}]
+        r['affected_menus']=[{**linked,'cause_event_id':dead['event_id'],'cause':'supply_risk','menu_name':'두부조림'}]
+        r['alerts']=[{**linked,'type':'supply_risk','severity':'HIGH','message':'cancelled alert','evidence':['cancelled']}]
+        r['priority_use_candidates']=[{**linked,'quantity_g':1,'expiry_date':p['target_date'],'menu_name':'두부조림'}]
+        r['substitute_candidates']=[{**linked,'original_menu':'두부조림','candidate_menu':'계란찜','nutrition_check':'FAIL'}]
+        r['nutrition_results']=[{**linked,'status':'FAIL'}];r['cost_impacts']=[{**linked,'delta_total':100}]
+        r['recommended_rechecks']=['operation_agent']
+        p['input_revision']=base['input_revision']
+        scope=base['decision']['adapter_provenance']['operation']['analysis_scope']
+        final=invoke('decision',dict(payload=p,demand=base['demand'],operation=base['operation'],inventory_risk=r,scope=scope))
+        save('06-adapter-defense',dict(input=r,decision=final))
+&gt;       assert not any(a['type']=='supply_risk' for a in final['critical_alerts'])
+E       assert not True
+E        +  where True = any(&lt;generator object test_06_last_adapter_defense_and_native_gates.&lt;locals&gt;.&lt;genexpr&gt; at 0x0000022103346C20&gt;)
+
+tests\integration\test_p0p1.py:105: AssertionError</failure></testcase></testsuite></testsuites>

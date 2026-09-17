@@ -1,0 +1,16 @@
+﻿recipe_id,menu_name,category,ingredient,amount_per_serving,unit
+R1,두부조림,protein_side,두부,80,g
+R1,두부조림,protein_side,간장,3,g
+R2,계란찜,protein_side,계란,70,g
+R2,계란찜,protein_side,양파,10,g
+R3,계란말이,protein_side,계란,80,g
+R3,계란말이,protein_side,양파,10,g
+R4,닭갈비,protein_main,닭고기,100,g
+R4,닭갈비,protein_main,양배추,30,g
+R5,제육볶음,protein_main,돼지고기,120,g
+R5,제육볶음,protein_main,양파,20,g
+R6,버섯볶음,protein_side,버섯,80,g
+R7,짜게조린두부,protein_side,두부,80,g
+R7,짜게조린두부,protein_side,간장,20,g
+R8,소고기볶음,protein_main,소고기,120,g
+R8,소고기볶음,protein_main,양파,20,g

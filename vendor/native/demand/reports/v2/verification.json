@@ -1,0 +1,20 @@
+{
+  "original_results_files_hash_verified": 46,
+  "original_zip_hash": "3e4ee4052bda5a69c0c1daa1c381e3f1def2dad83880aca5b9dbbb26138ecbef",
+  "revised_tests": 73,
+  "retained_test_bodies": 24,
+  "new_or_migrated_tests": 49,
+  "original_tests_after_revision": 31,
+  "rolling_model_fits": 96,
+  "rolling_baseline_evaluations": 16,
+  "rolling_common_validation_dates": 604,
+  "fit_metadata_count": 96,
+  "fit_code_snapshot_hash": "sha256:89b2df23cffdc0b8905f331f539344d9b8fbff10b04f48e5eb7dfdfcf49aba73",
+  "all_fold_mae_recomputed": true,
+  "all_validation_dates_aligned": true,
+  "operation_rows": 0,
+  "test_or_demo_sqlite_in_delivery": false,
+  "original_model_pointers_unchanged": true,
+  "publicly_deployed": false,
+  "real_forecast_model_trained": false
+}

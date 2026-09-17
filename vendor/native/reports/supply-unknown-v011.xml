@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="6.945" timestamp="2026-09-17T23:49:05.824385+09:00" hostname="DESKTOP-UI4LKAS"><testcase classname="tests.integration.test_supply_unknown" name="test_undated_supply_is_preserved_and_not_a_pass" time="6.887" /></testsuite></testsuites>

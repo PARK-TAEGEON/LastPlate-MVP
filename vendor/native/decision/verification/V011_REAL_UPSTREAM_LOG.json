@@ -1,0 +1,43 @@
+{
+  "scope": "Real Inventory DEMO + real saved ML model DEMO calls. No real Operation. Not full operational E2E.",
+  "sources": {
+    "inventory": {
+      "file": "agents/inventory_risk.py",
+      "sha256": "c7a06184fe598b919ccf6d9c62ab74093ea0754b82bb5787020ce67e1c2c3a48"
+    },
+    "ml": {
+      "file": "tools/demand.py",
+      "sha256": "3cbbf438b979c7d9de2bbc05d8ca6fbe0d04f94087b26e019ffa72eaceeb8b4f"
+    }
+  },
+  "calls": [
+    {
+      "case": "inventory_full",
+      "status": "ok",
+      "stderr": "",
+      "fixture_sha256": "89ee4f588fab6abe30f948c9d830b87c286a8fa3a38a030b4bdfa52907c696f7"
+    },
+    {
+      "case": "inventory_clarification",
+      "status": "needs_clarification",
+      "stderr": "",
+      "fixture_sha256": "fe67492e420dd2b844be7e1e68fac88deeb075941cd2f6b88404c9b7e09df5c7"
+    },
+    {
+      "case": "ml_v2_demo",
+      "prediction": 1034,
+      "mode": "demo",
+      "operational_eligible": false,
+      "stderr": "",
+      "fixture_sha256": "7a139ab790da8b4c09874ee70fa0ce82f8939dce1923fb31ec7aaf6c7e033374"
+    }
+  ],
+  "integration": {
+    "real_inventory": true,
+    "real_saved_ml_model": true,
+    "real_operation": false,
+    "decision_status": "needs_confirmation",
+    "recommended_servings": null,
+    "full_operational_e2e": "NOT RUN: no real Operation implementation and shared provenance"
+  }
+}

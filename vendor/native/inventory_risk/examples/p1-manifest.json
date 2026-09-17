@@ -1,0 +1,44 @@
+{
+  "baseline_version": "0.2.0",
+  "baseline_zip_sha256": "72c2ad907a3a591d094347212b5722419c86264faf179390cfaac6705b06f9d3",
+  "original_133_tests_unchanged": true,
+  "test_counts": {
+    "tests.test_data_quality_and_integration": 47,
+    "tests.test_inventory_risk_agent": 28,
+    "tests.test_p1_fixes": 36,
+    "tests.test_review_regressions": 58
+  },
+  "baseline_demo_numeric_results_unchanged": {
+    "inventory_status": true,
+    "price_risks": true,
+    "supply_risks": true,
+    "substitute_candidates": true,
+    "priority_use_candidates": true,
+    "nutrition_results": true,
+    "cost_impacts": true
+  },
+  "modified": [
+    "adapters/inventory_adapter.py",
+    "agents/inventory_risk.py",
+    "config.py",
+    "examples/forecast_wrapper.py",
+    "examples/streamlit_app.py",
+    "graph/inventory_risk_workflow.py",
+    "pyproject.toml",
+    "README.md",
+    "schemas/event.py",
+    "schemas/risk_report.py",
+    "tools/events.py",
+    "tools/identity.py",
+    "VALIDATION.md"
+  ],
+  "added": [
+    "examples/p1-cases.json",
+    "examples/p1-manifest.json",
+    "examples/p1-test-results.xml",
+    "P1_FIX_REPORT.md",
+    "tests/test_p1_fixes.py",
+    "tools/ingredients.py"
+  ],
+  "demo_files_unchanged": true
+}

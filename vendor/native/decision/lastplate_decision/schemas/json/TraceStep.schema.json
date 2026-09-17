@@ -1,0 +1,45 @@
+{
+  "properties": {
+    "step": {
+      "title": "Step",
+      "type": "integer"
+    },
+    "source": {
+      "title": "Source",
+      "type": "string"
+    },
+    "rule": {
+      "title": "Rule",
+      "type": "string"
+    },
+    "finding": {
+      "title": "Finding",
+      "type": "string"
+    },
+    "evidence": {
+      "additionalProperties": true,
+      "title": "Evidence",
+      "type": "object"
+    },
+    "decision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Decision"
+    }
+  },
+  "required": [
+    "step",
+    "source",
+    "rule",
+    "finding"
+  ],
+  "title": "TraceStep",
+  "type": "object"
+}

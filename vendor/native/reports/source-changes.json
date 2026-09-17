@@ -1,0 +1,104 @@
+[
+  {
+    "file": "app/main.py",
+    "change": "modified",
+    "before_sha256": "627f1435cc7e174048281078244dd24fe7b36f11be3ec098347c8bbf541186f4",
+    "after_sha256": "de5feb6ffce95ff5d6538f798cff30d76b1b26e8026fc6fd6d94f655acec183a"
+  },
+  {
+    "file": "integration/adapters/decision_adapter.py",
+    "change": "modified",
+    "before_sha256": "892017dfa6315e50c5033ada973f244349c2738a60a4919bd03922983ddcd915",
+    "after_sha256": "f5bbe62ac50eef38908626feee709aca28a8a791e5f6a36fff4d072ded465776"
+  },
+  {
+    "file": "integration/adapters/inventory_risk_adapter.py",
+    "change": "modified",
+    "before_sha256": "1aad9625e96d6d1a7b705e43294ed45e59398b34e577a9d7e7919c9b082c6c09",
+    "after_sha256": "a33db2fb56545f1aa011c7b35ac10ae2105f2b744c7cac8b5b3cfe4c1b5a6261"
+  },
+  {
+    "file": "integration/adapters/operation_adapter.py",
+    "change": "modified",
+    "before_sha256": "701710391f41e9e5da543bb59e109e49598e89da9492716e77d79467f190623e",
+    "after_sha256": "c11309c6c79a984ea507d9ca37715be29ffb33d1c44da6673137b722356e9e74"
+  },
+  {
+    "file": "integration/bridge.py",
+    "change": "modified",
+    "before_sha256": "ebbfe5de380c3be04577e48aafd2ffea0cdec482e9fbf6518c7e4d6096ff9e3c",
+    "after_sha256": "26c794cc43006599991f3dc31bb32af96726ee1e4af24936e158897da2ce59d4"
+  },
+  {
+    "file": "integration/errors.py",
+    "change": "modified",
+    "before_sha256": "06e10467cd89243ef2f4d3a5d4c5b120cbe6a624e0b8e4fcd833dac9706c31c1",
+    "after_sha256": "1ca73eefebf33d206ee85ca8cbc8355ced837d6f0df65301a3122763ecc6153e"
+  },
+  {
+    "file": "integration/orchestrator.py",
+    "change": "modified",
+    "before_sha256": "e645a92acc1ef71d29ad4cba84ad2be70f47ba4acbf5f296bb44a29478fbef9f",
+    "after_sha256": "8b2ef04c4af6307a25956d2381ba716489a430b6f0985b04d7268fc2249ae06b"
+  },
+  {
+    "file": "integration/risk_evidence.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "bb7404d859a8a0b3584da57eafc67892b720de1e8c36746bb4e311d094cdea3c"
+  },
+  {
+    "file": "integration/worker.py",
+    "change": "modified",
+    "before_sha256": "9bbc2e000cb8c61bea84669a0ef6b62c00810f947ca363408036be6089542b19",
+    "after_sha256": "4a555310917c0aa2038fc73426e755b955b14143aaed1d3d8f906a48023f1636"
+  },
+  {
+    "file": "inventory_risk/agents/inventory_risk.py",
+    "change": "modified",
+    "before_sha256": "2dcd50a31b353d301b660458230da7e1e197a819bea0a85a960e9404f2157c42",
+    "after_sha256": "8c067f1cd3d0082834a09c44841897c61d8f1ec127f635f64bb111958a8ff6f6"
+  },
+  {
+    "file": "inventory_risk/graph/inventory_risk_workflow.py",
+    "change": "modified",
+    "before_sha256": "686cc2c1a38895b6ef23a5373ece0b8d27664109fa4a79e768ee40e74a3b1926",
+    "after_sha256": "5a35b3f7d0870107d2168cd16028b75407fe8c1c7c80e55e359f66cb470b8998"
+  },
+  {
+    "file": "inventory_risk/schemas/risk_report.py",
+    "change": "modified",
+    "before_sha256": "82198259f11697094ae41be4a3bc604e73825f4198c43e8e83a2ebbd4f3350b5",
+    "after_sha256": "b69eeae88d85fb58a28b977aa98e8d56b1b7ab34955fe766836c9f750c7855a5"
+  },
+  {
+    "file": "inventory_risk/tools/active_evidence.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "b69df20f18ba5d910c30dfea0feac7622c9a91f36b61477acfae07ff79daf77a"
+  },
+  {
+    "file": "inventory_risk/tools/inventory.py",
+    "change": "modified",
+    "before_sha256": "32a40552336f84c5bc721816c04c67f3cc5bfb95d303d33b10121c54e26cd5cd",
+    "after_sha256": "cd4759d0395ee76c2a904ca5fabced74f605aaf1d3d6c57fb0dd551dd3150052"
+  },
+  {
+    "file": "tests/integration/test_p0p1.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "047cf66f54922dea11dc357dec1d02b5502e9db5e04c8a13bececd80e2de3518"
+  },
+  {
+    "file": "tests/integration/test_p0p1_edges.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "7c8ad917e667f8d25dcbf3454291cfe7a50fdc6517b6d22c8fb2a1430796be97"
+  },
+  {
+    "file": "tests/integration/test_supply_unknown.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "bf3a39ed90511fb5ef94a45589449513c4f36c0d906b864614b885f7a0eebd1e"
+  }
+]

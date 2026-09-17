@@ -1,0 +1,10 @@
+date,observed_date,reason
+2016-02-01,2016-01-31,previous_date_not_in_source
+2016-02-02,2016-02-01,incomplete_hourly_day
+2016-06-28,2016-06-27,incomplete_hourly_day
+2018-02-20,2018-02-19,missing_temperature_or_humidity
+2018-02-21,2018-02-20,missing_temperature_or_humidity
+2018-02-27,2018-02-26,missing_temperature_or_humidity
+2018-03-12,2018-03-11,missing_temperature_or_humidity
+2018-07-03,2018-07-02,incomplete_hourly_day
+2018-11-02,2018-11-01,incomplete_hourly_day

@@ -1,0 +1,5684 @@
+{
+  "pipeline_status": "COMPLETE",
+  "demand": {
+    "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+    "target_date": "2026-09-18",
+    "predicted_diners": 883.0,
+    "lower_bound": null,
+    "upper_bound": null,
+    "predicted_rate": null,
+    "available_population": null,
+    "model_version": "v20260917T054002-4222a35a",
+    "model_type": "lightgbm",
+    "applicability": "IN_RANGE",
+    "confidence": "UNKNOWN",
+    "warnings": [],
+    "training_ranges": {
+      "features": {
+        "employees": {
+          "min": 2601.0,
+          "max": 3305.0
+        },
+        "vacation": {
+          "min": 23.0,
+          "max": 1224.0
+        },
+        "business_trip": {
+          "min": 41.0,
+          "max": 378.0
+        },
+        "work_from_home": {
+          "min": 0.0,
+          "max": 533.0
+        },
+        "overtime": {
+          "min": 0.0,
+          "max": 1044.0
+        }
+      },
+      "period": {
+        "start": "2016-02-01",
+        "end": "2021-01-26",
+        "rows": 1205
+      },
+      "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+      "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+      "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+    },
+    "source_type": "MODEL",
+    "source_payload": {
+      "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+      "prediction": 883,
+      "model_version": "v20260917T054002-4222a35a",
+      "created_at": "2026-09-17T15:21:19.408072+00:00",
+      "target_date": "2026-09-18",
+      "deadline_at": "2026-09-18T01:00:00+00:00",
+      "timezone": "Asia/Seoul",
+      "mode": "demo",
+      "input_data": {
+        "employees": 3000.0,
+        "vacation": 69.0,
+        "business_trip": 183.0,
+        "work_from_home": 362.0,
+        "overtime": 551.0,
+        "date": "2026-09-18",
+        "weekday": "금",
+        "menu": "두부조림"
+      },
+      "availability": {},
+      "weather": null,
+      "policy": {
+        "timezone": "Asia/Seoul",
+        "cutoff_time": "10:00",
+        "actual_ready_time": "14:00",
+        "deadline_days_before": 0,
+        "mode": "demo"
+      },
+      "operational_eligible": false,
+      "availability_status": "historical_unknown"
+    }
+  },
+  "operation": {
+    "schema_version": "2.0",
+    "status": "needs_clarification",
+    "predicted_diners": 883.0,
+    "base_demand": 883.0,
+    "safety_margin_pct": 3.0,
+    "recommended_servings": 910,
+    "required_servings": 910,
+    "capacity_servings": 2000,
+    "capacity_excess": 0,
+    "provenance": {
+      "recipe": null,
+      "inventory": null,
+      "nutrition": null,
+      "policy": null
+    },
+    "ingredient_requirements": [
+      {
+        "ingredient": "간장",
+        "edible_required": 2730.0,
+        "raw_required": 2730.0,
+        "raw_required_exact": {
+          "numerator": "2730",
+          "denominator": "1"
+        },
+        "cooking_required": 2730.0,
+        "cooking_extra": 0.0,
+        "rounding_policy": "legacy_combined",
+        "gross_required": 2730.0,
+        "trim_loss_pct": 0.0,
+        "adjusted_required": 2730.0,
+        "stock": 1000000.0,
+        "purchase_need": 0.0,
+        "unit": "g",
+        "recommended_min": 0.0,
+        "recommended_max": 0.0
+      },
+      {
+        "ingredient": "두부",
+        "edible_required": 72800.0,
+        "raw_required": 72800.0,
+        "raw_required_exact": {
+          "numerator": "72800",
+          "denominator": "1"
+        },
+        "cooking_required": 72800.0,
+        "cooking_extra": 0.0,
+        "rounding_policy": "legacy_combined",
+        "gross_required": 72800.0,
+        "trim_loss_pct": 0.0,
+        "adjusted_required": 72800.0,
+        "stock": 2000000.0,
+        "purchase_need": 0.0,
+        "unit": "g",
+        "recommended_min": 0.0,
+        "recommended_max": 0.0
+      }
+    ],
+    "order_reviews": [],
+    "constraints": {
+      "status": "FAIL",
+      "checks": [
+        {
+          "constraint": "minimum_protein",
+          "status": "FAIL",
+          "actual": 1.0,
+          "minimum": 20.0,
+          "maximum": null
+        },
+        {
+          "constraint": "calorie_range",
+          "status": "PASS",
+          "actual": 700.0,
+          "minimum": 500.0,
+          "maximum": 900.0
+        },
+        {
+          "constraint": "sodium_max",
+          "status": "PASS",
+          "actual": 1000.0,
+          "minimum": null,
+          "maximum": 1500.0
+        },
+        {
+          "constraint": "allergy_restriction",
+          "status": "PASS",
+          "matched": []
+        }
+      ]
+    },
+    "alerts": [
+      {
+        "severity": "HIGH",
+        "type": "DEMAND_NOT_APPLICABLE",
+        "message": "Demand가 operational_eligible=false를 반환했습니다.",
+        "ingredient": null,
+        "field": null,
+        "evidence": {
+          "operational_eligible": false,
+          "availability_status": "historical_unknown"
+        },
+        "trace_refs": [
+          "trace-0002"
+        ]
+      },
+      {
+        "severity": "HIGH",
+        "type": "DEMAND_EVIDENCE_UNKNOWN",
+        "message": "Demand 가용성 근거가 historical_unknown입니다.",
+        "ingredient": null,
+        "field": null,
+        "evidence": {
+          "availability_status": "historical_unknown"
+        },
+        "trace_refs": [
+          "trace-0003"
+        ]
+      },
+      {
+        "severity": "MEDIUM",
+        "type": "LEGACY_ROUNDING_POLICY",
+        "message": "호환 정책: quantity_quantum을 조리와 구매에 함께 적용합니다.",
+        "ingredient": null,
+        "field": null,
+        "evidence": {
+          "rounding_policy": "legacy_combined",
+          "quantity_quantum": {
+            "g": 1.0,
+            "ml": 1.0,
+            "ea": 1.0
+          }
+        },
+        "trace_refs": []
+      },
+      {
+        "severity": "MEDIUM",
+        "type": "MISSING_PLANNED_ORDER",
+        "message": "예정 발주량이 없어 검수하지 않았습니다. 미발주는 0을 명시하세요.",
+        "ingredient": "간장",
+        "field": null,
+        "evidence": {},
+        "trace_refs": []
+      },
+      {
+        "severity": "MEDIUM",
+        "type": "MISSING_PLANNED_ORDER",
+        "message": "예정 발주량이 없어 검수하지 않았습니다. 미발주는 0을 명시하세요.",
+        "ingredient": "두부",
+        "field": null,
+        "evidence": {},
+        "trace_refs": []
+      },
+      {
+        "severity": "HIGH",
+        "type": "HARD_CONSTRAINT_VIOLATION",
+        "message": "Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+        "ingredient": null,
+        "field": null,
+        "evidence": {
+          "status": "FAIL",
+          "checks": [
+            {
+              "constraint": "minimum_protein",
+              "status": "FAIL",
+              "actual": 1.0,
+              "minimum": 20.0,
+              "maximum": null
+            },
+            {
+              "constraint": "calorie_range",
+              "status": "PASS",
+              "actual": 700.0,
+              "minimum": 500.0,
+              "maximum": 900.0
+            },
+            {
+              "constraint": "sodium_max",
+              "status": "PASS",
+              "actual": 1000.0,
+              "minimum": null,
+              "maximum": 1500.0
+            },
+            {
+              "constraint": "allergy_restriction",
+              "status": "PASS",
+              "matched": []
+            }
+          ]
+        },
+        "trace_refs": [
+          "trace-0023"
+        ]
+      }
+    ],
+    "decision_trace": [
+      {
+        "trace_id": "trace-0001",
+        "step": "demand_source",
+        "formula": null,
+        "inputs": {
+          "prediction": 883.0,
+          "prediction_interval": null,
+          "model_version": "v20260917T054002-4222a35a",
+          "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+          "applicability": {
+            "status": "IN_DOMAIN",
+            "reasons": []
+          },
+          "warnings": [],
+          "operational_eligible": false,
+          "availability_status": "historical_unknown",
+          "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+          "created_at": "2026-09-17T15:21:19.408072+00:00",
+          "target_date": "2026-09-18",
+          "deadline_at": "2026-09-18T01:00:00+00:00",
+          "timezone": "Asia/Seoul",
+          "mode": "demo",
+          "input_data": {
+            "employees": 3000.0,
+            "vacation": 69.0,
+            "business_trip": 183.0,
+            "work_from_home": 362.0,
+            "overtime": 551.0,
+            "date": "2026-09-18",
+            "weekday": "금",
+            "menu": "두부조림"
+          },
+          "availability": {},
+          "weather": null,
+          "policy": {
+            "timezone": "Asia/Seoul",
+            "cutoff_time": "10:00",
+            "actual_ready_time": "14:00",
+            "deadline_days_before": 0,
+            "mode": "demo"
+          }
+        },
+        "result": "preserved"
+      },
+      {
+        "trace_id": "trace-0002",
+        "step": "evidence_check",
+        "formula": null,
+        "inputs": {
+          "alert_type": "DEMAND_NOT_APPLICABLE",
+          "evidence": {
+            "operational_eligible": false,
+            "availability_status": "historical_unknown"
+          }
+        },
+        "result": {
+          "status": "review",
+          "invalid_nutrition": false
+        }
+      },
+      {
+        "trace_id": "trace-0003",
+        "step": "evidence_check",
+        "formula": null,
+        "inputs": {
+          "alert_type": "DEMAND_EVIDENCE_UNKNOWN",
+          "evidence": {
+            "availability_status": "historical_unknown"
+          }
+        },
+        "result": {
+          "status": "needs_clarification",
+          "invalid_nutrition": false
+        }
+      },
+      {
+        "trace_id": "trace-0004",
+        "step": "evidence_gate",
+        "formula": null,
+        "inputs": {
+          "provenance": {
+            "recipe": null,
+            "inventory": null,
+            "nutrition": null,
+            "policy": null
+          },
+          "execution_mode": "simulation"
+        },
+        "result": {
+          "status_floor": "needs_clarification",
+          "nutrition_evidence_valid": true
+        }
+      },
+      {
+        "trace_id": "trace-0005",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "recipe",
+          "row": 0,
+          "ingredient": "두부",
+          "amount": 80.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 80.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0006",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "recipe",
+          "row": 1,
+          "ingredient": "간장",
+          "amount": 3.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 3.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0007",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 0,
+          "ingredient": "두부",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0008",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 1,
+          "ingredient": "두부",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0009",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 2,
+          "ingredient": "계란",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0010",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 3,
+          "ingredient": "닭고기",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0011",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 4,
+          "ingredient": "돼지고기",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0012",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 5,
+          "ingredient": "양파",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0013",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 6,
+          "ingredient": "간장",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0014",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 7,
+          "ingredient": "양배추",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0015",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 8,
+          "ingredient": "버섯",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0016",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 9,
+          "ingredient": "소금",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0017",
+        "step": "unit_normalization",
+        "formula": "canonical_amount = input_amount * unit_factor",
+        "inputs": {
+          "source": "inventory",
+          "row": 10,
+          "ingredient": "소고기",
+          "amount": 1000000.0,
+          "unit": "g"
+        },
+        "result": {
+          "amount": 1000000.0,
+          "unit": "g"
+        }
+      },
+      {
+        "trace_id": "trace-0018",
+        "step": "serving_calculator",
+        "formula": "max(minimum_servings, ceil(base * (1 + safety_margin_pct / 100)))",
+        "inputs": {
+          "basis": "prediction",
+          "prediction": 883.0,
+          "base": 883.0,
+          "safety_margin_pct": 3.0,
+          "minimum_servings": 0,
+          "capacity_servings": 2000,
+          "planned_servings": null
+        },
+        "result": 910
+      },
+      {
+        "trace_id": "trace-0019",
+        "step": "recipe_requirement",
+        "formula": "servings * per_serving",
+        "inputs": {
+          "ingredient": "간장",
+          "amount_per_serving": 3.0,
+          "unit": "g",
+          "servings": 910
+        },
+        "result": 2730.0
+      },
+      {
+        "trace_id": "trace-0020",
+        "step": "recipe_requirement",
+        "formula": "servings * per_serving",
+        "inputs": {
+          "ingredient": "두부",
+          "amount_per_serving": 80.0,
+          "unit": "g",
+          "servings": 910
+        },
+        "result": 72800.0
+      },
+      {
+        "trace_id": "trace-0021",
+        "step": "inventory_offset_and_range",
+        "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+        "inputs": {
+          "ingredient": "간장",
+          "edible_required": 2730.0,
+          "trim_loss_pct": 0.0,
+          "stock": 1000000.0,
+          "cooking_quantum": 1.0,
+          "purchase_quantum": 1.0,
+          "tolerance_pct": 5.0,
+          "rounding_policy": "legacy_combined",
+          "unit": "g"
+        },
+        "result": {
+          "ingredient": "간장",
+          "edible_required": 2730.0,
+          "raw_required": 2730.0,
+          "raw_required_exact": {
+            "numerator": "2730",
+            "denominator": "1"
+          },
+          "cooking_required": 2730.0,
+          "cooking_extra": 0.0,
+          "rounding_policy": "legacy_combined",
+          "gross_required": 2730.0,
+          "trim_loss_pct": 0.0,
+          "adjusted_required": 2730.0,
+          "stock": 1000000.0,
+          "purchase_need": 0.0,
+          "unit": "g",
+          "recommended_min": 0.0,
+          "recommended_max": 0.0
+        }
+      },
+      {
+        "trace_id": "trace-0022",
+        "step": "inventory_offset_and_range",
+        "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+        "inputs": {
+          "ingredient": "두부",
+          "edible_required": 72800.0,
+          "trim_loss_pct": 0.0,
+          "stock": 2000000.0,
+          "cooking_quantum": 1.0,
+          "purchase_quantum": 1.0,
+          "tolerance_pct": 5.0,
+          "rounding_policy": "legacy_combined",
+          "unit": "g"
+        },
+        "result": {
+          "ingredient": "두부",
+          "edible_required": 72800.0,
+          "raw_required": 72800.0,
+          "raw_required_exact": {
+            "numerator": "72800",
+            "denominator": "1"
+          },
+          "cooking_required": 72800.0,
+          "cooking_extra": 0.0,
+          "rounding_policy": "legacy_combined",
+          "gross_required": 72800.0,
+          "trim_loss_pct": 0.0,
+          "adjusted_required": 72800.0,
+          "stock": 2000000.0,
+          "purchase_need": 0.0,
+          "unit": "g",
+          "recommended_min": 0.0,
+          "recommended_max": 0.0
+        }
+      },
+      {
+        "trace_id": "trace-0023",
+        "step": "constraint_check",
+        "formula": null,
+        "inputs": {},
+        "result": {
+          "status": "FAIL",
+          "checks": [
+            {
+              "constraint": "minimum_protein",
+              "status": "FAIL",
+              "actual": 1.0,
+              "minimum": 20.0,
+              "maximum": null
+            },
+            {
+              "constraint": "calorie_range",
+              "status": "PASS",
+              "actual": 700.0,
+              "minimum": 500.0,
+              "maximum": 900.0
+            },
+            {
+              "constraint": "sodium_max",
+              "status": "PASS",
+              "actual": 1000.0,
+              "minimum": null,
+              "maximum": 1500.0
+            },
+            {
+              "constraint": "allergy_restriction",
+              "status": "PASS",
+              "matched": []
+            }
+          ]
+        }
+      }
+    ],
+    "requires_human_approval": true,
+    "advisory_only": true,
+    "data_mode": "DEMO",
+    "source": {
+      "prediction": 883.0,
+      "prediction_interval": null,
+      "model_version": "v20260917T054002-4222a35a",
+      "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+      "applicability": {
+        "status": "IN_DOMAIN",
+        "reasons": []
+      },
+      "warnings": [],
+      "operational_eligible": false,
+      "availability_status": "historical_unknown",
+      "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+      "created_at": "2026-09-17T15:21:19.408072+00:00",
+      "target_date": "2026-09-18",
+      "deadline_at": "2026-09-18T01:00:00+00:00",
+      "timezone": "Asia/Seoul",
+      "mode": "demo",
+      "input_data": {
+        "employees": 3000.0,
+        "vacation": 69.0,
+        "business_trip": 183.0,
+        "work_from_home": 362.0,
+        "overtime": 551.0,
+        "date": "2026-09-18",
+        "weekday": "금",
+        "menu": "두부조림"
+      },
+      "availability": {},
+      "weather": null,
+      "policy": {
+        "timezone": "Asia/Seoul",
+        "cutoff_time": "10:00",
+        "actual_ready_time": "14:00",
+        "deadline_days_before": 0,
+        "mode": "demo"
+      }
+    },
+    "policy": {
+      "execution_mode": "simulation",
+      "policy_acknowledged": false,
+      "capacity_servings": 2000,
+      "maximum_input_servings": 100000,
+      "provenance": {
+        "recipe": null,
+        "inventory": null,
+        "nutrition": null,
+        "policy": null
+      },
+      "rounding_policy": "legacy_combined",
+      "cooking_quantum": null,
+      "purchase_quantum": null,
+      "fractional_ea_inventory": false,
+      "safety_margin_pct": 3.0,
+      "trim_loss_pct": {},
+      "minimum_servings": 0,
+      "shortage_policy": "conservative",
+      "order_tolerance_pct": 5.0,
+      "quantity_quantum": {
+        "g": 1.0,
+        "ml": 1.0,
+        "ea": 1.0
+      },
+      "planned_servings": null,
+      "required_menus": [
+        "두부조림"
+      ],
+      "constraints": {
+        "minimum_serving_amount": {},
+        "minimum_protein": 20.0,
+        "calorie_range": [
+          500.0,
+          900.0
+        ],
+        "sodium_max": 1500.0,
+        "allergy_restriction": [
+          "땅콩"
+        ]
+      },
+      "nutrition_per_serving": {
+        "protein": 1.0,
+        "calories": 700.0,
+        "sodium": 1000.0,
+        "allergens": [
+          "대두"
+        ]
+      },
+      "data_mode": "DEMO"
+    },
+    "demand_envelope": {
+      "confidence": "UNKNOWN",
+      "model_type": "lightgbm",
+      "training_ranges": {
+        "features": {
+          "employees": {
+            "min": 2601.0,
+            "max": 3305.0
+          },
+          "vacation": {
+            "min": 23.0,
+            "max": 1224.0
+          },
+          "business_trip": {
+            "min": 41.0,
+            "max": 378.0
+          },
+          "work_from_home": {
+            "min": 0.0,
+            "max": 533.0
+          },
+          "overtime": {
+            "min": 0.0,
+            "max": 1044.0
+          }
+        },
+        "period": {
+          "start": "2016-02-01",
+          "end": "2021-01-26",
+          "rows": 1205
+        },
+        "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+        "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+        "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+      },
+      "warnings": [],
+      "model_version": "v20260917T054002-4222a35a",
+      "predicted_diners": 883.0,
+      "applicability": "IN_RANGE"
+    }
+  },
+  "inventory_risk": {
+    "schema_version": "2.0",
+    "advisory_only": true,
+    "as_of": "2026-09-17",
+    "analysis_mode": "full",
+    "status": "ok",
+    "parsing_result": {
+      "status": "ok",
+      "parsed_events": [],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": []
+    },
+    "validation_warnings": [],
+    "period": {
+      "start": "2026-09-18",
+      "end": "2026-09-18"
+    },
+    "forecast_version": "77ed262ae772cffcf1b65c6f424793776da7894babe4a1357ef25a5a383e41f6",
+    "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+    "clarification": {
+      "status": "not_required",
+      "event_ids": []
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "requested",
+        "executed": false
+      }
+    },
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "full",
+      "previous_report_reused": false
+    },
+    "errors": [],
+    "inventory_status": [
+      {
+        "ingredient": "간장",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 2730.0,
+        "shortage_at_service_g": 0.0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "계란",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "닭고기",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "돼지고기",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "두부",
+        "current_stock_g": 2000000.0,
+        "usable_today_g": 2000000.0,
+        "required_g": 72800.0,
+        "shortage_at_service_g": 0.0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "버섯",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "소고기",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "소금",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "양배추",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      },
+      {
+        "ingredient": "양파",
+        "current_stock_g": 1000000.0,
+        "usable_today_g": 1000000.0,
+        "required_g": 0,
+        "shortage_at_service_g": 0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      }
+    ],
+    "allocation_audit": [
+      {
+        "date": "2026-09-18",
+        "meal_type": "lunch",
+        "menu_name": "두부조림",
+        "ingredient": "두부",
+        "required_g": 72800.0,
+        "shortage_g": 0.0,
+        "allocations": [
+          {
+            "lot_index": 0,
+            "quantity_g": 72800.0
+          }
+        ],
+        "restricted": false,
+        "edible_required_g": 72800.0,
+        "quantity_basis": "operation_cooking_raw_g"
+      },
+      {
+        "date": "2026-09-18",
+        "meal_type": "lunch",
+        "menu_name": "두부조림",
+        "ingredient": "간장",
+        "required_g": 2730.0,
+        "shortage_g": 0.0,
+        "allocations": [
+          {
+            "lot_index": 6,
+            "quantity_g": 2730.0
+          }
+        ],
+        "restricted": false,
+        "edible_required_g": 2730.0,
+        "quantity_basis": "operation_cooking_raw_g"
+      }
+    ],
+    "current_plan_checks": {
+      "shortage": "PASS",
+      "expiry": "PASS",
+      "restriction": "PASS",
+      "supply": "PASS"
+    },
+    "evidence_projection": {
+      "superseded_event_ids": [],
+      "removed_candidate_ids": [],
+      "audit_excluded": true
+    },
+    "detected_events": [],
+    "alerts": [
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "간장: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 2730.0g"
+        ],
+        "ingredient": "간장",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "계란: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "계란",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "닭고기: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "닭고기",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "돼지고기: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "돼지고기",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "두부: excess_inventory",
+        "evidence": [
+          "usable 2000000.0g; demand 72800.0g"
+        ],
+        "ingredient": "두부",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "버섯: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "버섯",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "소고기: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "소고기",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "소금: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "소금",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "양배추: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "양배추",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      },
+      {
+        "type": "overstock",
+        "severity": "MEDIUM",
+        "message": "양파: excess_inventory",
+        "evidence": [
+          "usable 1000000.0g; demand 0g"
+        ],
+        "ingredient": "양파",
+        "candidate_id": null,
+        "candidate_action": null,
+        "cause_event_ids": [],
+        "details": {}
+      }
+    ],
+    "price_risks": [],
+    "supply_risks": [],
+    "affected_menus": [],
+    "affected_ingredients": [
+      "간장",
+      "계란",
+      "닭고기",
+      "돼지고기",
+      "두부",
+      "버섯",
+      "소고기",
+      "소금",
+      "양배추",
+      "양파"
+    ],
+    "substitute_candidates": [],
+    "priority_use_candidates": [],
+    "nutrition_results": [],
+    "cost_impacts": [],
+    "recommended_rechecks": [
+      "operation_agent"
+    ],
+    "decision_trace": [
+      "Event Parser: mode=full, status=ok, 0 events; selected=['inventory_analyzer', 'price_risk_analyzer', 'supply_risk_analyzer', 'impact_analyzer', 'substitute_candidate_generator', 'nutrition_constraint_checker']",
+      "Inventory Analyzer: 10 ingredients; 0 impacts; 0 priority-use candidates",
+      "Inventory: 간장 current=1000000.0g, required=2730.0g, service shortage=0.0g, planned=0g",
+      "Inventory: 계란 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 닭고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 돼지고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 두부 current=2000000.0g, required=72800.0g, service shortage=0.0g, planned=0g",
+      "Inventory: 버섯 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 소고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 소금 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 양배추 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Inventory: 양파 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+      "Supply Risk Analyzer: 0 observations, 0 unique active events",
+      "SKIP substitute_candidate_generator: no_relevant_impacts_or_candidates",
+      "SKIP nutrition_constraint_checker: no_relevant_impacts_or_candidates",
+      "Risk Report Builder: 0 menu alternatives, 0 priority-use candidates; approval required"
+    ],
+    "data_sources": {
+      "recipe": "DEMO:demo_recipe_ingredients.csv",
+      "nutrition": "DEMO:demo_nutrition.csv",
+      "price_trend": "DEMO:demo_price_trend.csv",
+      "monthly_price": "DEMO:demo_monthly_price.csv",
+      "inventory": "DEMO:food_inventory.xlsx",
+      "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+      "weekly_menu": "DEMO:weekly_menu.xlsx",
+      "constraints": "DEMO configurable dish-level thresholds",
+      "risk_constraints": "DEMO:original RiskConfig dish-level thresholds",
+      "operation_constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+    },
+    "limitations": [
+      "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+      "Independent candidates require reallocation before joint selection. No automatic operational action.",
+      "Planned orders are not available stock; arrival dates are unknown.",
+      "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+      "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+      "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID."
+    ],
+    "risk_events": [],
+    "audit": {
+      "supply_events": [],
+      "event": null
+    },
+    "quantity_basis": {
+      "current_plan": "operation_cooking_raw_g",
+      "operation_revision": "77ed262ae772cffcf1b65c6f424793776da7894babe4a1357ef25a5a383e41f6",
+      "requirements": [
+        {
+          "ingredient": "간장",
+          "edible_required": 2730.0,
+          "raw_required": 2730.0,
+          "raw_required_exact": {
+            "numerator": "2730",
+            "denominator": "1"
+          },
+          "cooking_required": 2730.0,
+          "cooking_extra": 0.0,
+          "rounding_policy": "legacy_combined",
+          "gross_required": 2730.0,
+          "trim_loss_pct": 0.0,
+          "adjusted_required": 2730.0,
+          "stock": 1000000.0,
+          "purchase_need": 0.0,
+          "unit": "g",
+          "recommended_min": 0.0,
+          "recommended_max": 0.0
+        },
+        {
+          "ingredient": "두부",
+          "edible_required": 72800.0,
+          "raw_required": 72800.0,
+          "raw_required_exact": {
+            "numerator": "72800",
+            "denominator": "1"
+          },
+          "cooking_required": 72800.0,
+          "cooking_extra": 0.0,
+          "rounding_policy": "legacy_combined",
+          "gross_required": 72800.0,
+          "trim_loss_pct": 0.0,
+          "adjusted_required": 72800.0,
+          "stock": 2000000.0,
+          "purchase_need": 0.0,
+          "unit": "g",
+          "recommended_min": 0.0,
+          "recommended_max": 0.0
+        }
+      ],
+      "nutrition": "original edible recipe; dish-level candidate checks",
+      "candidate_stock": "native independent edible-basis estimate; Operation raw/cooking recheck required before selection"
+    },
+    "requires_confirmation": false
+  },
+  "decision": {
+    "schema_version": "0.1.3",
+    "run_id": "review-nutrition-hard-fail",
+    "recommendation_revision": "rec-7a7dc108b01bffaa3e066e9f",
+    "selected_action_ids": [
+      "servings"
+    ],
+    "rejected_candidate_ids": [],
+    "recheck_history": [
+      {
+        "analysis_mode": null,
+        "request_id": "rq-e522bcf290ce76d1c4fb3fac",
+        "agent": "demand_forecast",
+        "reason": "demand_ineligible",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "source_agent": "decision",
+        "source_result_revision": null,
+        "baseline_result_revision": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+        "result_revision": null,
+        "status": "pending",
+        "attempts": 0,
+        "required_dependencies": {},
+        "error": null
+      },
+      {
+        "analysis_mode": null,
+        "request_id": "rq-c600c9b17e72c00b4cb5c3f2",
+        "agent": "operation",
+        "reason": "upstream_request:operation",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "source_agent": "inventory_risk",
+        "source_result_revision": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f",
+        "baseline_result_revision": "operation-b591830bbc6f8f7ea86e484d378ada203a92ff5e7ff9024a5405dfd349f1b828",
+        "result_revision": null,
+        "status": "pending",
+        "attempts": 0,
+        "required_dependencies": {
+          "demand_forecast": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+          "inventory_risk": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f"
+        },
+        "error": null
+      }
+    ],
+    "upstream_traces": {
+      "demand_forecast": [],
+      "operation": [
+        {
+          "trace_id": "trace-0001",
+          "step": "demand_source",
+          "formula": null,
+          "inputs": {
+            "prediction": 883.0,
+            "prediction_interval": null,
+            "model_version": "v20260917T054002-4222a35a",
+            "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+            "applicability": {
+              "status": "IN_DOMAIN",
+              "reasons": []
+            },
+            "warnings": [],
+            "operational_eligible": false,
+            "availability_status": "historical_unknown",
+            "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+            "created_at": "2026-09-17T15:21:19.408072+00:00",
+            "target_date": "2026-09-18",
+            "deadline_at": "2026-09-18T01:00:00+00:00",
+            "timezone": "Asia/Seoul",
+            "mode": "demo",
+            "input_data": {
+              "employees": 3000.0,
+              "vacation": 69.0,
+              "business_trip": 183.0,
+              "work_from_home": 362.0,
+              "overtime": 551.0,
+              "date": "2026-09-18",
+              "weekday": "금",
+              "menu": "두부조림"
+            },
+            "availability": {},
+            "weather": null,
+            "policy": {
+              "timezone": "Asia/Seoul",
+              "cutoff_time": "10:00",
+              "actual_ready_time": "14:00",
+              "deadline_days_before": 0,
+              "mode": "demo"
+            }
+          },
+          "result": "preserved"
+        },
+        {
+          "trace_id": "trace-0002",
+          "step": "evidence_check",
+          "formula": null,
+          "inputs": {
+            "alert_type": "DEMAND_NOT_APPLICABLE",
+            "evidence": {
+              "operational_eligible": false,
+              "availability_status": "historical_unknown"
+            }
+          },
+          "result": {
+            "status": "review",
+            "invalid_nutrition": false
+          }
+        },
+        {
+          "trace_id": "trace-0003",
+          "step": "evidence_check",
+          "formula": null,
+          "inputs": {
+            "alert_type": "DEMAND_EVIDENCE_UNKNOWN",
+            "evidence": {
+              "availability_status": "historical_unknown"
+            }
+          },
+          "result": {
+            "status": "needs_clarification",
+            "invalid_nutrition": false
+          }
+        },
+        {
+          "trace_id": "trace-0004",
+          "step": "evidence_gate",
+          "formula": null,
+          "inputs": {
+            "provenance": {
+              "recipe": null,
+              "inventory": null,
+              "nutrition": null,
+              "policy": null
+            },
+            "execution_mode": "simulation"
+          },
+          "result": {
+            "status_floor": "needs_clarification",
+            "nutrition_evidence_valid": true
+          }
+        },
+        {
+          "trace_id": "trace-0005",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "recipe",
+            "row": 0,
+            "ingredient": "두부",
+            "amount": 80.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 80.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0006",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "recipe",
+            "row": 1,
+            "ingredient": "간장",
+            "amount": 3.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 3.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0007",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 0,
+            "ingredient": "두부",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0008",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 1,
+            "ingredient": "두부",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0009",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 2,
+            "ingredient": "계란",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0010",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 3,
+            "ingredient": "닭고기",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0011",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 4,
+            "ingredient": "돼지고기",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0012",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 5,
+            "ingredient": "양파",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0013",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 6,
+            "ingredient": "간장",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0014",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 7,
+            "ingredient": "양배추",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0015",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 8,
+            "ingredient": "버섯",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0016",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 9,
+            "ingredient": "소금",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0017",
+          "step": "unit_normalization",
+          "formula": "canonical_amount = input_amount * unit_factor",
+          "inputs": {
+            "source": "inventory",
+            "row": 10,
+            "ingredient": "소고기",
+            "amount": 1000000.0,
+            "unit": "g"
+          },
+          "result": {
+            "amount": 1000000.0,
+            "unit": "g"
+          }
+        },
+        {
+          "trace_id": "trace-0018",
+          "step": "serving_calculator",
+          "formula": "max(minimum_servings, ceil(base * (1 + safety_margin_pct / 100)))",
+          "inputs": {
+            "basis": "prediction",
+            "prediction": 883.0,
+            "base": 883.0,
+            "safety_margin_pct": 3.0,
+            "minimum_servings": 0,
+            "capacity_servings": 2000,
+            "planned_servings": null
+          },
+          "result": 910
+        },
+        {
+          "trace_id": "trace-0019",
+          "step": "recipe_requirement",
+          "formula": "servings * per_serving",
+          "inputs": {
+            "ingredient": "간장",
+            "amount_per_serving": 3.0,
+            "unit": "g",
+            "servings": 910
+          },
+          "result": 2730.0
+        },
+        {
+          "trace_id": "trace-0020",
+          "step": "recipe_requirement",
+          "formula": "servings * per_serving",
+          "inputs": {
+            "ingredient": "두부",
+            "amount_per_serving": 80.0,
+            "unit": "g",
+            "servings": 910
+          },
+          "result": 72800.0
+        },
+        {
+          "trace_id": "trace-0021",
+          "step": "inventory_offset_and_range",
+          "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+          "inputs": {
+            "ingredient": "간장",
+            "edible_required": 2730.0,
+            "trim_loss_pct": 0.0,
+            "stock": 1000000.0,
+            "cooking_quantum": 1.0,
+            "purchase_quantum": 1.0,
+            "tolerance_pct": 5.0,
+            "rounding_policy": "legacy_combined",
+            "unit": "g"
+          },
+          "result": {
+            "ingredient": "간장",
+            "edible_required": 2730.0,
+            "raw_required": 2730.0,
+            "raw_required_exact": {
+              "numerator": "2730",
+              "denominator": "1"
+            },
+            "cooking_required": 2730.0,
+            "cooking_extra": 0.0,
+            "rounding_policy": "legacy_combined",
+            "gross_required": 2730.0,
+            "trim_loss_pct": 0.0,
+            "adjusted_required": 2730.0,
+            "stock": 1000000.0,
+            "purchase_need": 0.0,
+            "unit": "g",
+            "recommended_min": 0.0,
+            "recommended_max": 0.0
+          }
+        },
+        {
+          "trace_id": "trace-0022",
+          "step": "inventory_offset_and_range",
+          "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+          "inputs": {
+            "ingredient": "두부",
+            "edible_required": 72800.0,
+            "trim_loss_pct": 0.0,
+            "stock": 2000000.0,
+            "cooking_quantum": 1.0,
+            "purchase_quantum": 1.0,
+            "tolerance_pct": 5.0,
+            "rounding_policy": "legacy_combined",
+            "unit": "g"
+          },
+          "result": {
+            "ingredient": "두부",
+            "edible_required": 72800.0,
+            "raw_required": 72800.0,
+            "raw_required_exact": {
+              "numerator": "72800",
+              "denominator": "1"
+            },
+            "cooking_required": 72800.0,
+            "cooking_extra": 0.0,
+            "rounding_policy": "legacy_combined",
+            "gross_required": 72800.0,
+            "trim_loss_pct": 0.0,
+            "adjusted_required": 72800.0,
+            "stock": 2000000.0,
+            "purchase_need": 0.0,
+            "unit": "g",
+            "recommended_min": 0.0,
+            "recommended_max": 0.0
+          }
+        },
+        {
+          "trace_id": "trace-0023",
+          "step": "constraint_check",
+          "formula": null,
+          "inputs": {},
+          "result": {
+            "status": "FAIL",
+            "checks": [
+              {
+                "constraint": "minimum_protein",
+                "status": "FAIL",
+                "actual": 1.0,
+                "minimum": 20.0,
+                "maximum": null
+              },
+              {
+                "constraint": "calorie_range",
+                "status": "PASS",
+                "actual": 700.0,
+                "minimum": 500.0,
+                "maximum": 900.0
+              },
+              {
+                "constraint": "sodium_max",
+                "status": "PASS",
+                "actual": 1000.0,
+                "minimum": null,
+                "maximum": 1500.0
+              },
+              {
+                "constraint": "allergy_restriction",
+                "status": "PASS",
+                "matched": []
+              }
+            ]
+          }
+        }
+      ],
+      "inventory_risk": [
+        "Event Parser: mode=full, status=ok, 0 events; selected=['inventory_analyzer', 'price_risk_analyzer', 'supply_risk_analyzer', 'impact_analyzer', 'substitute_candidate_generator', 'nutrition_constraint_checker']",
+        "Inventory Analyzer: 10 ingredients; 0 impacts; 0 priority-use candidates",
+        "Inventory: 간장 current=1000000.0g, required=2730.0g, service shortage=0.0g, planned=0g",
+        "Inventory: 계란 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 닭고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 돼지고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 두부 current=2000000.0g, required=72800.0g, service shortage=0.0g, planned=0g",
+        "Inventory: 버섯 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 소고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 소금 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 양배추 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Inventory: 양파 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+        "Supply Risk Analyzer: 0 observations, 0 unique active events",
+        "SKIP substitute_candidate_generator: no_relevant_impacts_or_candidates",
+        "SKIP nutrition_constraint_checker: no_relevant_impacts_or_candidates",
+        "Risk Report Builder: 0 menu alternatives, 0 priority-use candidates; approval required"
+      ]
+    },
+    "status": "blocked",
+    "critical_alerts": [
+      {
+        "type": "constraint_violation",
+        "severity": "HIGH",
+        "action_id": "servings",
+        "message": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+        "constraints": [
+          "nutrition"
+        ],
+        "candidate_id": null
+      }
+    ],
+    "recommended_servings": null,
+    "serving_action": {
+      "action_id": "servings",
+      "ingredient": null,
+      "menu": null,
+      "candidate_id": null,
+      "decision": "BLOCK",
+      "action": "[DEMO 검토용] 상위 Operation 조리량 유지 검토",
+      "reason": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+      "current_plan": null,
+      "recommended": null,
+      "unit": null,
+      "failed_constraints": [
+        "nutrition"
+      ],
+      "unknown_constraints": [],
+      "selected": true,
+      "scope": {
+        "target_date": "2026-09-18",
+        "meal_type": "lunch",
+        "menu": null,
+        "ingredient": null
+      },
+      "candidates": []
+    },
+    "procurement_actions": [],
+    "inventory_actions": [],
+    "menu_actions": [],
+    "candidate_evaluations": [],
+    "confidence": "LOW",
+    "provenance_notes": [
+      "INFO 출처: MODEL",
+      "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown"
+    ],
+    "source_provenance": [
+      {
+        "kind": "INFO",
+        "message": "INFO 출처: MODEL",
+        "path": "input.demand_result.source_type",
+        "warning": false,
+        "affects_confidence": false
+      },
+      {
+        "kind": "DEMO",
+        "message": "Demand demo 모드: 운영 근거로 사용 불가",
+        "path": "input.demand_result.mode",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "INFO",
+        "message": "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "path": "input.demand_result.provenance_notes",
+        "warning": false,
+        "affects_confidence": false
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "path": "input.operation_result.data_sources.recipe",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+        "path": "input.operation_result.data_sources.nutrition",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+        "path": "input.operation_result.data_sources.price_trend",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "path": "input.operation_result.data_sources.monthly_price",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+        "path": "input.operation_result.data_sources.inventory",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "path": "input.operation_result.data_sources.supply_risk",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "path": "input.operation_result.data_sources.weekly_menu",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "path": "input.operation_result.data_sources.constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "path": "input.inventory_risk_result.data_sources.recipe",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+        "path": "input.inventory_risk_result.data_sources.nutrition",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+        "path": "input.inventory_risk_result.data_sources.price_trend",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "path": "input.inventory_risk_result.data_sources.monthly_price",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+        "path": "input.inventory_risk_result.data_sources.inventory",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "path": "input.inventory_risk_result.data_sources.supply_risk",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "path": "input.inventory_risk_result.data_sources.weekly_menu",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO configurable dish-level thresholds",
+        "path": "input.inventory_risk_result.data_sources.constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:original RiskConfig dish-level thresholds",
+        "path": "input.inventory_risk_result.data_sources.risk_constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "path": "input.inventory_risk_result.data_sources.operation_constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "UNKNOWN",
+        "message": "Planned orders are not available stock; arrival dates are unknown.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      }
+    ],
+    "quality_records": [
+      {
+        "kind": "INFO",
+        "message": "INFO 출처: MODEL",
+        "path": "input.demand_result.source_type",
+        "warning": false,
+        "affects_confidence": false
+      },
+      {
+        "kind": "DEMO",
+        "message": "Demand demo 모드: 운영 근거로 사용 불가",
+        "path": "input.demand_result.mode",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "INFO",
+        "message": "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "path": "input.demand_result.provenance_notes",
+        "warning": false,
+        "affects_confidence": false
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "path": "input.operation_result.data_sources.recipe",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+        "path": "input.operation_result.data_sources.nutrition",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+        "path": "input.operation_result.data_sources.price_trend",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "path": "input.operation_result.data_sources.monthly_price",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+        "path": "input.operation_result.data_sources.inventory",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "path": "input.operation_result.data_sources.supply_risk",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "path": "input.operation_result.data_sources.weekly_menu",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "path": "input.operation_result.data_sources.constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "WARNING",
+        "message": "Demand가 operational_eligible=false를 반환했습니다.",
+        "path": "input.operation_result.data_quality_notes",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "WARNING",
+        "message": "Demand 가용성 근거가 historical_unknown입니다.",
+        "path": "input.operation_result.data_quality_notes",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "WARNING",
+        "message": "Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+        "path": "input.operation_result.data_quality_notes",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "WARNING",
+        "message": "Operation requires confirmation: needs_clarification",
+        "path": "input.operation_result.data_quality_notes",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "path": "input.inventory_risk_result.data_sources.recipe",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+        "path": "input.inventory_risk_result.data_sources.nutrition",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+        "path": "input.inventory_risk_result.data_sources.price_trend",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "path": "input.inventory_risk_result.data_sources.monthly_price",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+        "path": "input.inventory_risk_result.data_sources.inventory",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "path": "input.inventory_risk_result.data_sources.supply_risk",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "path": "input.inventory_risk_result.data_sources.weekly_menu",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO configurable dish-level thresholds",
+        "path": "input.inventory_risk_result.data_sources.constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:original RiskConfig dish-level thresholds",
+        "path": "input.inventory_risk_result.data_sources.risk_constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "path": "input.inventory_risk_result.data_sources.operation_constraints",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Independent candidates require reallocation before joint selection. No automatic operational action.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "UNKNOWN",
+        "message": "Planned orders are not available stock; arrival dates are unknown.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID.",
+        "path": "input.inventory_risk_result.limitations",
+        "warning": true,
+        "affects_confidence": true
+      },
+      {
+        "kind": "VALIDATION",
+        "message": "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "path": "decision",
+        "warning": true,
+        "affects_confidence": true
+      }
+    ],
+    "confidence_evidence": [
+      {
+        "kind": "hard_constraint_failure",
+        "message": "현재 계획 Hard Constraint FAIL: nutrition",
+        "constraints": [
+          "nutrition"
+        ]
+      },
+      {
+        "kind": "current_plan_risk",
+        "message": "현재 계획 constraint_violation HIGH: Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+        "alert": {
+          "type": "constraint_violation",
+          "severity": "HIGH",
+          "action_id": "servings",
+          "message": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+          "constraints": [
+            "nutrition"
+          ],
+          "candidate_id": null
+        }
+      },
+      {
+        "kind": "DEMO",
+        "message": "Demand demo 모드: 운영 근거로 사용 불가",
+        "path": "input.demand_result.mode"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "path": "input.operation_result.data_sources.recipe"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+        "path": "input.operation_result.data_sources.nutrition"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+        "path": "input.operation_result.data_sources.price_trend"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "path": "input.operation_result.data_sources.monthly_price"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+        "path": "input.operation_result.data_sources.inventory"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "path": "input.operation_result.data_sources.supply_risk"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "path": "input.operation_result.data_sources.weekly_menu"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "path": "input.operation_result.data_sources.constraints"
+      },
+      {
+        "kind": "WARNING",
+        "message": "Demand가 operational_eligible=false를 반환했습니다.",
+        "path": "input.operation_result.data_quality_notes"
+      },
+      {
+        "kind": "WARNING",
+        "message": "Demand 가용성 근거가 historical_unknown입니다.",
+        "path": "input.operation_result.data_quality_notes"
+      },
+      {
+        "kind": "WARNING",
+        "message": "Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+        "path": "input.operation_result.data_quality_notes"
+      },
+      {
+        "kind": "WARNING",
+        "message": "Operation requires confirmation: needs_clarification",
+        "path": "input.operation_result.data_quality_notes"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "path": "input.inventory_risk_result.data_sources.recipe"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+        "path": "input.inventory_risk_result.data_sources.nutrition"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+        "path": "input.inventory_risk_result.data_sources.price_trend"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "path": "input.inventory_risk_result.data_sources.monthly_price"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+        "path": "input.inventory_risk_result.data_sources.inventory"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "path": "input.inventory_risk_result.data_sources.supply_risk"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "path": "input.inventory_risk_result.data_sources.weekly_menu"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO configurable dish-level thresholds",
+        "path": "input.inventory_risk_result.data_sources.constraints"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:original RiskConfig dish-level thresholds",
+        "path": "input.inventory_risk_result.data_sources.risk_constraints"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "path": "input.inventory_risk_result.data_sources.operation_constraints"
+      },
+      {
+        "kind": "DEMO",
+        "message": "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+        "path": "input.inventory_risk_result.limitations"
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Independent candidates require reallocation before joint selection. No automatic operational action.",
+        "path": "input.inventory_risk_result.limitations"
+      },
+      {
+        "kind": "UNKNOWN",
+        "message": "Planned orders are not available stock; arrival dates are unknown.",
+        "path": "input.inventory_risk_result.limitations"
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+        "path": "input.inventory_risk_result.limitations"
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+        "path": "input.inventory_risk_result.limitations"
+      },
+      {
+        "kind": "LIMITATION",
+        "message": "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID.",
+        "path": "input.inventory_risk_result.limitations"
+      },
+      {
+        "kind": "VALIDATION",
+        "message": "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "path": "decision"
+      }
+    ],
+    "confidence_reasons": [
+      "현재 계획 Hard Constraint FAIL: nutrition",
+      "현재 계획 constraint_violation HIGH: Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+      "Demand demo 모드: 운영 근거로 사용 불가",
+      "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+      "DEMO 출처: DEMO:demo_nutrition.csv",
+      "DEMO 출처: DEMO:demo_price_trend.csv",
+      "DEMO 출처: DEMO:demo_monthly_price.csv",
+      "DEMO 출처: DEMO:food_inventory.xlsx",
+      "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+      "DEMO 출처: DEMO:weekly_menu.xlsx",
+      "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+      "Demand가 operational_eligible=false를 반환했습니다.",
+      "Demand 가용성 근거가 historical_unknown입니다.",
+      "Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+      "Operation requires confirmation: needs_clarification",
+      "DEMO 출처: DEMO configurable dish-level thresholds",
+      "DEMO 출처: DEMO:original RiskConfig dish-level thresholds",
+      "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+      "Independent candidates require reallocation before joint selection. No automatic operational action.",
+      "Planned orders are not available stock; arrival dates are unknown.",
+      "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+      "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+      "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID.",
+      "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown"
+    ],
+    "requires_human_approval": true,
+    "approval_status": "pending",
+    "recommended_rechecks": [
+      {
+        "analysis_mode": null,
+        "request_id": "rq-e522bcf290ce76d1c4fb3fac",
+        "agent": "demand_forecast",
+        "reason": "demand_ineligible",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "source_agent": "decision",
+        "source_result_revision": null,
+        "baseline_result_revision": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+        "result_revision": null,
+        "status": "pending",
+        "attempts": 0,
+        "required_dependencies": {},
+        "error": null
+      },
+      {
+        "analysis_mode": null,
+        "request_id": "rq-c600c9b17e72c00b4cb5c3f2",
+        "agent": "operation",
+        "reason": "upstream_request:operation",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "source_agent": "inventory_risk",
+        "source_result_revision": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f",
+        "baseline_result_revision": "operation-b591830bbc6f8f7ea86e484d378ada203a92ff5e7ff9024a5405dfd349f1b828",
+        "result_revision": null,
+        "status": "pending",
+        "attempts": 0,
+        "required_dependencies": {
+          "demand_forecast": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+          "inventory_risk": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f"
+        },
+        "error": null
+      }
+    ],
+    "decision_trace": [
+      {
+        "step": 1,
+        "source": "demand_forecast",
+        "rule": "provenance_gate",
+        "finding": "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "evidence": {},
+        "decision": null
+      },
+      {
+        "step": 2,
+        "source": "Demand Forecast",
+        "rule": "upstream_prediction",
+        "finding": "상위 Agent 예측 보존",
+        "evidence": {
+          "provenance_notes": [
+            "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown"
+          ],
+          "data_quality_notes": [],
+          "is_demo": false,
+          "data_sources": {},
+          "limitations": [],
+          "source_payload": {
+            "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+            "prediction": 883,
+            "model_version": "v20260917T054002-4222a35a",
+            "created_at": "2026-09-17T15:21:19.408072+00:00",
+            "target_date": "2026-09-18",
+            "deadline_at": "2026-09-18T01:00:00+00:00",
+            "timezone": "Asia/Seoul",
+            "mode": "demo",
+            "input_data": {
+              "employees": 3000.0,
+              "vacation": 69.0,
+              "business_trip": 183.0,
+              "work_from_home": 362.0,
+              "overtime": 551.0,
+              "date": "2026-09-18",
+              "weekday": "금",
+              "menu": "두부조림"
+            },
+            "availability": {},
+            "weather": null,
+            "policy": {
+              "timezone": "Asia/Seoul",
+              "cutoff_time": "10:00",
+              "actual_ready_time": "14:00",
+              "deadline_days_before": 0,
+              "mode": "demo"
+            },
+            "operational_eligible": false,
+            "availability_status": "historical_unknown"
+          },
+          "provenance": {
+            "dependency_basis": "independent",
+            "target_date": "2026-09-18",
+            "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+            "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+            "result_revision": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+            "analysis_scope": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menus": [
+                {
+                  "menu": "두부조림",
+                  "ingredients": [
+                    "두부",
+                    "간장"
+                  ],
+                  "ingredients_complete": true
+                }
+              ],
+              "menus_complete": true,
+              "coverage": "full"
+            },
+            "consumed_results": {},
+            "metadata_source": "parent-service-execution-record"
+          },
+          "mode": "demo",
+          "operational_eligible": false,
+          "availability_status": "historical_unknown",
+          "prediction": 883.0,
+          "model_version": "v20260917T054002-4222a35a",
+          "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+          "validation_mae": null,
+          "input_summary": {
+            "employees": 3000.0,
+            "vacation": 69.0,
+            "business_trip": 183.0,
+            "work_from_home": 362.0,
+            "overtime": 551.0,
+            "date": "2026-09-18",
+            "weekday": "금",
+            "menu": "두부조림"
+          },
+          "applied_event_ids": [],
+          "applicability": "IN_RANGE",
+          "warnings": [],
+          "source_type": "MODEL",
+          "integration_envelope": {
+            "confidence": "UNKNOWN",
+            "model_type": "lightgbm",
+            "training_ranges": {
+              "features": {
+                "employees": {
+                  "min": 2601.0,
+                  "max": 3305.0
+                },
+                "vacation": {
+                  "min": 23.0,
+                  "max": 1224.0
+                },
+                "business_trip": {
+                  "min": 41.0,
+                  "max": 378.0
+                },
+                "work_from_home": {
+                  "min": 0.0,
+                  "max": 533.0
+                },
+                "overtime": {
+                  "min": 0.0,
+                  "max": 1044.0
+                }
+              },
+              "period": {
+                "start": "2016-02-01",
+                "end": "2021-01-26",
+                "rows": 1205
+              },
+              "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+              "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+              "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+            },
+            "warnings": [],
+            "model_version": "v20260917T054002-4222a35a",
+            "predicted_diners": 883.0,
+            "applicability": "IN_RANGE"
+          }
+        },
+        "decision": null
+      },
+      {
+        "step": 3,
+        "source": "Operation Agent",
+        "rule": "upstream_servings",
+        "finding": "상위 Agent 조리량 보존",
+        "evidence": {
+          "provenance_notes": [],
+          "data_quality_notes": [
+            "Demand가 operational_eligible=false를 반환했습니다.",
+            "Demand 가용성 근거가 historical_unknown입니다.",
+            "Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+            "Operation requires confirmation: needs_clarification"
+          ],
+          "is_demo": false,
+          "data_sources": {
+            "recipe": "DEMO:demo_recipe_ingredients.csv",
+            "nutrition": "DEMO:demo_nutrition.csv",
+            "price_trend": "DEMO:demo_price_trend.csv",
+            "monthly_price": "DEMO:demo_monthly_price.csv",
+            "inventory": "DEMO:food_inventory.xlsx",
+            "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+            "weekly_menu": "DEMO:weekly_menu.xlsx",
+            "constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+          },
+          "limitations": [],
+          "source_payload": {
+            "schema_version": "2.0",
+            "status": "needs_clarification",
+            "predicted_diners": 883.0,
+            "base_demand": 883.0,
+            "safety_margin_pct": 3.0,
+            "recommended_servings": 910,
+            "required_servings": 910,
+            "capacity_servings": 2000,
+            "capacity_excess": 0,
+            "provenance": {
+              "recipe": null,
+              "inventory": null,
+              "nutrition": null,
+              "policy": null
+            },
+            "ingredient_requirements": [
+              {
+                "ingredient": "간장",
+                "edible_required": 2730.0,
+                "raw_required": 2730.0,
+                "raw_required_exact": {
+                  "numerator": "2730",
+                  "denominator": "1"
+                },
+                "cooking_required": 2730.0,
+                "cooking_extra": 0.0,
+                "rounding_policy": "legacy_combined",
+                "gross_required": 2730.0,
+                "trim_loss_pct": 0.0,
+                "adjusted_required": 2730.0,
+                "stock": 1000000.0,
+                "purchase_need": 0.0,
+                "unit": "g",
+                "recommended_min": 0.0,
+                "recommended_max": 0.0
+              },
+              {
+                "ingredient": "두부",
+                "edible_required": 72800.0,
+                "raw_required": 72800.0,
+                "raw_required_exact": {
+                  "numerator": "72800",
+                  "denominator": "1"
+                },
+                "cooking_required": 72800.0,
+                "cooking_extra": 0.0,
+                "rounding_policy": "legacy_combined",
+                "gross_required": 72800.0,
+                "trim_loss_pct": 0.0,
+                "adjusted_required": 72800.0,
+                "stock": 2000000.0,
+                "purchase_need": 0.0,
+                "unit": "g",
+                "recommended_min": 0.0,
+                "recommended_max": 0.0
+              }
+            ],
+            "order_reviews": [],
+            "constraints": {
+              "status": "FAIL",
+              "checks": [
+                {
+                  "constraint": "minimum_protein",
+                  "status": "FAIL",
+                  "actual": 1.0,
+                  "minimum": 20.0,
+                  "maximum": null
+                },
+                {
+                  "constraint": "calorie_range",
+                  "status": "PASS",
+                  "actual": 700.0,
+                  "minimum": 500.0,
+                  "maximum": 900.0
+                },
+                {
+                  "constraint": "sodium_max",
+                  "status": "PASS",
+                  "actual": 1000.0,
+                  "minimum": null,
+                  "maximum": 1500.0
+                },
+                {
+                  "constraint": "allergy_restriction",
+                  "status": "PASS",
+                  "matched": []
+                }
+              ]
+            },
+            "alerts": [
+              {
+                "severity": "HIGH",
+                "type": "DEMAND_NOT_APPLICABLE",
+                "message": "Demand가 operational_eligible=false를 반환했습니다.",
+                "ingredient": null,
+                "field": null,
+                "evidence": {
+                  "operational_eligible": false,
+                  "availability_status": "historical_unknown"
+                },
+                "trace_refs": [
+                  "trace-0002"
+                ]
+              },
+              {
+                "severity": "HIGH",
+                "type": "DEMAND_EVIDENCE_UNKNOWN",
+                "message": "Demand 가용성 근거가 historical_unknown입니다.",
+                "ingredient": null,
+                "field": null,
+                "evidence": {
+                  "availability_status": "historical_unknown"
+                },
+                "trace_refs": [
+                  "trace-0003"
+                ]
+              },
+              {
+                "severity": "MEDIUM",
+                "type": "LEGACY_ROUNDING_POLICY",
+                "message": "호환 정책: quantity_quantum을 조리와 구매에 함께 적용합니다.",
+                "ingredient": null,
+                "field": null,
+                "evidence": {
+                  "rounding_policy": "legacy_combined",
+                  "quantity_quantum": {
+                    "g": 1.0,
+                    "ml": 1.0,
+                    "ea": 1.0
+                  }
+                },
+                "trace_refs": []
+              },
+              {
+                "severity": "MEDIUM",
+                "type": "MISSING_PLANNED_ORDER",
+                "message": "예정 발주량이 없어 검수하지 않았습니다. 미발주는 0을 명시하세요.",
+                "ingredient": "간장",
+                "field": null,
+                "evidence": {},
+                "trace_refs": []
+              },
+              {
+                "severity": "MEDIUM",
+                "type": "MISSING_PLANNED_ORDER",
+                "message": "예정 발주량이 없어 검수하지 않았습니다. 미발주는 0을 명시하세요.",
+                "ingredient": "두부",
+                "field": null,
+                "evidence": {},
+                "trace_refs": []
+              },
+              {
+                "severity": "HIGH",
+                "type": "HARD_CONSTRAINT_VIOLATION",
+                "message": "Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+                "ingredient": null,
+                "field": null,
+                "evidence": {
+                  "status": "FAIL",
+                  "checks": [
+                    {
+                      "constraint": "minimum_protein",
+                      "status": "FAIL",
+                      "actual": 1.0,
+                      "minimum": 20.0,
+                      "maximum": null
+                    },
+                    {
+                      "constraint": "calorie_range",
+                      "status": "PASS",
+                      "actual": 700.0,
+                      "minimum": 500.0,
+                      "maximum": 900.0
+                    },
+                    {
+                      "constraint": "sodium_max",
+                      "status": "PASS",
+                      "actual": 1000.0,
+                      "minimum": null,
+                      "maximum": 1500.0
+                    },
+                    {
+                      "constraint": "allergy_restriction",
+                      "status": "PASS",
+                      "matched": []
+                    }
+                  ]
+                },
+                "trace_refs": [
+                  "trace-0023"
+                ]
+              }
+            ],
+            "decision_trace": [
+              {
+                "trace_id": "trace-0001",
+                "step": "demand_source",
+                "formula": null,
+                "inputs": {
+                  "prediction": 883.0,
+                  "prediction_interval": null,
+                  "model_version": "v20260917T054002-4222a35a",
+                  "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+                  "applicability": {
+                    "status": "IN_DOMAIN",
+                    "reasons": []
+                  },
+                  "warnings": [],
+                  "operational_eligible": false,
+                  "availability_status": "historical_unknown",
+                  "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+                  "created_at": "2026-09-17T15:21:19.408072+00:00",
+                  "target_date": "2026-09-18",
+                  "deadline_at": "2026-09-18T01:00:00+00:00",
+                  "timezone": "Asia/Seoul",
+                  "mode": "demo",
+                  "input_data": {
+                    "employees": 3000.0,
+                    "vacation": 69.0,
+                    "business_trip": 183.0,
+                    "work_from_home": 362.0,
+                    "overtime": 551.0,
+                    "date": "2026-09-18",
+                    "weekday": "금",
+                    "menu": "두부조림"
+                  },
+                  "availability": {},
+                  "weather": null,
+                  "policy": {
+                    "timezone": "Asia/Seoul",
+                    "cutoff_time": "10:00",
+                    "actual_ready_time": "14:00",
+                    "deadline_days_before": 0,
+                    "mode": "demo"
+                  }
+                },
+                "result": "preserved"
+              },
+              {
+                "trace_id": "trace-0002",
+                "step": "evidence_check",
+                "formula": null,
+                "inputs": {
+                  "alert_type": "DEMAND_NOT_APPLICABLE",
+                  "evidence": {
+                    "operational_eligible": false,
+                    "availability_status": "historical_unknown"
+                  }
+                },
+                "result": {
+                  "status": "review",
+                  "invalid_nutrition": false
+                }
+              },
+              {
+                "trace_id": "trace-0003",
+                "step": "evidence_check",
+                "formula": null,
+                "inputs": {
+                  "alert_type": "DEMAND_EVIDENCE_UNKNOWN",
+                  "evidence": {
+                    "availability_status": "historical_unknown"
+                  }
+                },
+                "result": {
+                  "status": "needs_clarification",
+                  "invalid_nutrition": false
+                }
+              },
+              {
+                "trace_id": "trace-0004",
+                "step": "evidence_gate",
+                "formula": null,
+                "inputs": {
+                  "provenance": {
+                    "recipe": null,
+                    "inventory": null,
+                    "nutrition": null,
+                    "policy": null
+                  },
+                  "execution_mode": "simulation"
+                },
+                "result": {
+                  "status_floor": "needs_clarification",
+                  "nutrition_evidence_valid": true
+                }
+              },
+              {
+                "trace_id": "trace-0005",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "recipe",
+                  "row": 0,
+                  "ingredient": "두부",
+                  "amount": 80.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 80.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0006",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "recipe",
+                  "row": 1,
+                  "ingredient": "간장",
+                  "amount": 3.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 3.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0007",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 0,
+                  "ingredient": "두부",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0008",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 1,
+                  "ingredient": "두부",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0009",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 2,
+                  "ingredient": "계란",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0010",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 3,
+                  "ingredient": "닭고기",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0011",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 4,
+                  "ingredient": "돼지고기",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0012",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 5,
+                  "ingredient": "양파",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0013",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 6,
+                  "ingredient": "간장",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0014",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 7,
+                  "ingredient": "양배추",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0015",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 8,
+                  "ingredient": "버섯",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0016",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 9,
+                  "ingredient": "소금",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0017",
+                "step": "unit_normalization",
+                "formula": "canonical_amount = input_amount * unit_factor",
+                "inputs": {
+                  "source": "inventory",
+                  "row": 10,
+                  "ingredient": "소고기",
+                  "amount": 1000000.0,
+                  "unit": "g"
+                },
+                "result": {
+                  "amount": 1000000.0,
+                  "unit": "g"
+                }
+              },
+              {
+                "trace_id": "trace-0018",
+                "step": "serving_calculator",
+                "formula": "max(minimum_servings, ceil(base * (1 + safety_margin_pct / 100)))",
+                "inputs": {
+                  "basis": "prediction",
+                  "prediction": 883.0,
+                  "base": 883.0,
+                  "safety_margin_pct": 3.0,
+                  "minimum_servings": 0,
+                  "capacity_servings": 2000,
+                  "planned_servings": null
+                },
+                "result": 910
+              },
+              {
+                "trace_id": "trace-0019",
+                "step": "recipe_requirement",
+                "formula": "servings * per_serving",
+                "inputs": {
+                  "ingredient": "간장",
+                  "amount_per_serving": 3.0,
+                  "unit": "g",
+                  "servings": 910
+                },
+                "result": 2730.0
+              },
+              {
+                "trace_id": "trace-0020",
+                "step": "recipe_requirement",
+                "formula": "servings * per_serving",
+                "inputs": {
+                  "ingredient": "두부",
+                  "amount_per_serving": 80.0,
+                  "unit": "g",
+                  "servings": 910
+                },
+                "result": 72800.0
+              },
+              {
+                "trace_id": "trace-0021",
+                "step": "inventory_offset_and_range",
+                "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+                "inputs": {
+                  "ingredient": "간장",
+                  "edible_required": 2730.0,
+                  "trim_loss_pct": 0.0,
+                  "stock": 1000000.0,
+                  "cooking_quantum": 1.0,
+                  "purchase_quantum": 1.0,
+                  "tolerance_pct": 5.0,
+                  "rounding_policy": "legacy_combined",
+                  "unit": "g"
+                },
+                "result": {
+                  "ingredient": "간장",
+                  "edible_required": 2730.0,
+                  "raw_required": 2730.0,
+                  "raw_required_exact": {
+                    "numerator": "2730",
+                    "denominator": "1"
+                  },
+                  "cooking_required": 2730.0,
+                  "cooking_extra": 0.0,
+                  "rounding_policy": "legacy_combined",
+                  "gross_required": 2730.0,
+                  "trim_loss_pct": 0.0,
+                  "adjusted_required": 2730.0,
+                  "stock": 1000000.0,
+                  "purchase_need": 0.0,
+                  "unit": "g",
+                  "recommended_min": 0.0,
+                  "recommended_max": 0.0
+                }
+              },
+              {
+                "trace_id": "trace-0022",
+                "step": "inventory_offset_and_range",
+                "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+                "inputs": {
+                  "ingredient": "두부",
+                  "edible_required": 72800.0,
+                  "trim_loss_pct": 0.0,
+                  "stock": 2000000.0,
+                  "cooking_quantum": 1.0,
+                  "purchase_quantum": 1.0,
+                  "tolerance_pct": 5.0,
+                  "rounding_policy": "legacy_combined",
+                  "unit": "g"
+                },
+                "result": {
+                  "ingredient": "두부",
+                  "edible_required": 72800.0,
+                  "raw_required": 72800.0,
+                  "raw_required_exact": {
+                    "numerator": "72800",
+                    "denominator": "1"
+                  },
+                  "cooking_required": 72800.0,
+                  "cooking_extra": 0.0,
+                  "rounding_policy": "legacy_combined",
+                  "gross_required": 72800.0,
+                  "trim_loss_pct": 0.0,
+                  "adjusted_required": 72800.0,
+                  "stock": 2000000.0,
+                  "purchase_need": 0.0,
+                  "unit": "g",
+                  "recommended_min": 0.0,
+                  "recommended_max": 0.0
+                }
+              },
+              {
+                "trace_id": "trace-0023",
+                "step": "constraint_check",
+                "formula": null,
+                "inputs": {},
+                "result": {
+                  "status": "FAIL",
+                  "checks": [
+                    {
+                      "constraint": "minimum_protein",
+                      "status": "FAIL",
+                      "actual": 1.0,
+                      "minimum": 20.0,
+                      "maximum": null
+                    },
+                    {
+                      "constraint": "calorie_range",
+                      "status": "PASS",
+                      "actual": 700.0,
+                      "minimum": 500.0,
+                      "maximum": 900.0
+                    },
+                    {
+                      "constraint": "sodium_max",
+                      "status": "PASS",
+                      "actual": 1000.0,
+                      "minimum": null,
+                      "maximum": 1500.0
+                    },
+                    {
+                      "constraint": "allergy_restriction",
+                      "status": "PASS",
+                      "matched": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "requires_human_approval": true,
+            "advisory_only": true,
+            "data_mode": "DEMO",
+            "source": {
+              "prediction": 883.0,
+              "prediction_interval": null,
+              "model_version": "v20260917T054002-4222a35a",
+              "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+              "applicability": {
+                "status": "IN_DOMAIN",
+                "reasons": []
+              },
+              "warnings": [],
+              "operational_eligible": false,
+              "availability_status": "historical_unknown",
+              "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+              "created_at": "2026-09-17T15:21:19.408072+00:00",
+              "target_date": "2026-09-18",
+              "deadline_at": "2026-09-18T01:00:00+00:00",
+              "timezone": "Asia/Seoul",
+              "mode": "demo",
+              "input_data": {
+                "employees": 3000.0,
+                "vacation": 69.0,
+                "business_trip": 183.0,
+                "work_from_home": 362.0,
+                "overtime": 551.0,
+                "date": "2026-09-18",
+                "weekday": "금",
+                "menu": "두부조림"
+              },
+              "availability": {},
+              "weather": null,
+              "policy": {
+                "timezone": "Asia/Seoul",
+                "cutoff_time": "10:00",
+                "actual_ready_time": "14:00",
+                "deadline_days_before": 0,
+                "mode": "demo"
+              }
+            },
+            "policy": {
+              "execution_mode": "simulation",
+              "policy_acknowledged": false,
+              "capacity_servings": 2000,
+              "maximum_input_servings": 100000,
+              "provenance": {
+                "recipe": null,
+                "inventory": null,
+                "nutrition": null,
+                "policy": null
+              },
+              "rounding_policy": "legacy_combined",
+              "cooking_quantum": null,
+              "purchase_quantum": null,
+              "fractional_ea_inventory": false,
+              "safety_margin_pct": 3.0,
+              "trim_loss_pct": {},
+              "minimum_servings": 0,
+              "shortage_policy": "conservative",
+              "order_tolerance_pct": 5.0,
+              "quantity_quantum": {
+                "g": 1.0,
+                "ml": 1.0,
+                "ea": 1.0
+              },
+              "planned_servings": null,
+              "required_menus": [
+                "두부조림"
+              ],
+              "constraints": {
+                "minimum_serving_amount": {},
+                "minimum_protein": 20.0,
+                "calorie_range": [
+                  500.0,
+                  900.0
+                ],
+                "sodium_max": 1500.0,
+                "allergy_restriction": [
+                  "땅콩"
+                ]
+              },
+              "nutrition_per_serving": {
+                "protein": 1.0,
+                "calories": 700.0,
+                "sodium": 1000.0,
+                "allergens": [
+                  "대두"
+                ]
+              },
+              "data_mode": "DEMO"
+            },
+            "demand_envelope": {
+              "confidence": "UNKNOWN",
+              "model_type": "lightgbm",
+              "training_ranges": {
+                "features": {
+                  "employees": {
+                    "min": 2601.0,
+                    "max": 3305.0
+                  },
+                  "vacation": {
+                    "min": 23.0,
+                    "max": 1224.0
+                  },
+                  "business_trip": {
+                    "min": 41.0,
+                    "max": 378.0
+                  },
+                  "work_from_home": {
+                    "min": 0.0,
+                    "max": 533.0
+                  },
+                  "overtime": {
+                    "min": 0.0,
+                    "max": 1044.0
+                  }
+                },
+                "period": {
+                  "start": "2016-02-01",
+                  "end": "2021-01-26",
+                  "rows": 1205
+                },
+                "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+                "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+                "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+              },
+              "warnings": [],
+              "model_version": "v20260917T054002-4222a35a",
+              "predicted_diners": 883.0,
+              "applicability": "IN_RANGE"
+            }
+          },
+          "current_plan": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "menus": [
+              {
+                "menu": "두부조림",
+                "ingredients": [
+                  "두부",
+                  "간장"
+                ],
+                "ingredients_complete": true
+              }
+            ],
+            "menus_complete": true,
+            "coverage": "full"
+          },
+          "provenance": {
+            "dependency_basis": "independent",
+            "target_date": "2026-09-18",
+            "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+            "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+            "result_revision": "operation-b591830bbc6f8f7ea86e484d378ada203a92ff5e7ff9024a5405dfd349f1b828",
+            "analysis_scope": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menus": [
+                {
+                  "menu": "두부조림",
+                  "ingredients": [
+                    "두부",
+                    "간장"
+                  ],
+                  "ingredients_complete": true
+                }
+              ],
+              "menus_complete": true,
+              "coverage": "full"
+            },
+            "consumed_results": {
+              "demand_forecast": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+              "inventory_risk": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f"
+            },
+            "metadata_source": "parent-service-execution-record"
+          },
+          "recommended_servings": 910,
+          "safety_margin": null,
+          "shortage_probability": null,
+          "nutrition_constraints": {
+            "provenance_notes": [],
+            "data_quality_notes": [],
+            "is_demo": false,
+            "data_sources": {},
+            "limitations": [],
+            "source_payload": {},
+            "status": "FAIL"
+          },
+          "constraints": {
+            "shortage": "PASS",
+            "expiry": "PASS",
+            "allergy": "PASS",
+            "nutrition": "FAIL",
+            "restriction": "PASS",
+            "supply": "PASS"
+          },
+          "order_recommendations": [],
+          "applied_event_ids": [],
+          "decision_trace": [
+            {
+              "trace_id": "trace-0001",
+              "step": "demand_source",
+              "formula": null,
+              "inputs": {
+                "prediction": 883.0,
+                "prediction_interval": null,
+                "model_version": "v20260917T054002-4222a35a",
+                "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+                "applicability": {
+                  "status": "IN_DOMAIN",
+                  "reasons": []
+                },
+                "warnings": [],
+                "operational_eligible": false,
+                "availability_status": "historical_unknown",
+                "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+                "created_at": "2026-09-17T15:21:19.408072+00:00",
+                "target_date": "2026-09-18",
+                "deadline_at": "2026-09-18T01:00:00+00:00",
+                "timezone": "Asia/Seoul",
+                "mode": "demo",
+                "input_data": {
+                  "employees": 3000.0,
+                  "vacation": 69.0,
+                  "business_trip": 183.0,
+                  "work_from_home": 362.0,
+                  "overtime": 551.0,
+                  "date": "2026-09-18",
+                  "weekday": "금",
+                  "menu": "두부조림"
+                },
+                "availability": {},
+                "weather": null,
+                "policy": {
+                  "timezone": "Asia/Seoul",
+                  "cutoff_time": "10:00",
+                  "actual_ready_time": "14:00",
+                  "deadline_days_before": 0,
+                  "mode": "demo"
+                }
+              },
+              "result": "preserved"
+            },
+            {
+              "trace_id": "trace-0002",
+              "step": "evidence_check",
+              "formula": null,
+              "inputs": {
+                "alert_type": "DEMAND_NOT_APPLICABLE",
+                "evidence": {
+                  "operational_eligible": false,
+                  "availability_status": "historical_unknown"
+                }
+              },
+              "result": {
+                "status": "review",
+                "invalid_nutrition": false
+              }
+            },
+            {
+              "trace_id": "trace-0003",
+              "step": "evidence_check",
+              "formula": null,
+              "inputs": {
+                "alert_type": "DEMAND_EVIDENCE_UNKNOWN",
+                "evidence": {
+                  "availability_status": "historical_unknown"
+                }
+              },
+              "result": {
+                "status": "needs_clarification",
+                "invalid_nutrition": false
+              }
+            },
+            {
+              "trace_id": "trace-0004",
+              "step": "evidence_gate",
+              "formula": null,
+              "inputs": {
+                "provenance": {
+                  "recipe": null,
+                  "inventory": null,
+                  "nutrition": null,
+                  "policy": null
+                },
+                "execution_mode": "simulation"
+              },
+              "result": {
+                "status_floor": "needs_clarification",
+                "nutrition_evidence_valid": true
+              }
+            },
+            {
+              "trace_id": "trace-0005",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "recipe",
+                "row": 0,
+                "ingredient": "두부",
+                "amount": 80.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 80.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0006",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "recipe",
+                "row": 1,
+                "ingredient": "간장",
+                "amount": 3.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 3.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0007",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 0,
+                "ingredient": "두부",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0008",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 1,
+                "ingredient": "두부",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0009",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 2,
+                "ingredient": "계란",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0010",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 3,
+                "ingredient": "닭고기",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0011",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 4,
+                "ingredient": "돼지고기",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0012",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 5,
+                "ingredient": "양파",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0013",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 6,
+                "ingredient": "간장",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0014",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 7,
+                "ingredient": "양배추",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0015",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 8,
+                "ingredient": "버섯",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0016",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 9,
+                "ingredient": "소금",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0017",
+              "step": "unit_normalization",
+              "formula": "canonical_amount = input_amount * unit_factor",
+              "inputs": {
+                "source": "inventory",
+                "row": 10,
+                "ingredient": "소고기",
+                "amount": 1000000.0,
+                "unit": "g"
+              },
+              "result": {
+                "amount": 1000000.0,
+                "unit": "g"
+              }
+            },
+            {
+              "trace_id": "trace-0018",
+              "step": "serving_calculator",
+              "formula": "max(minimum_servings, ceil(base * (1 + safety_margin_pct / 100)))",
+              "inputs": {
+                "basis": "prediction",
+                "prediction": 883.0,
+                "base": 883.0,
+                "safety_margin_pct": 3.0,
+                "minimum_servings": 0,
+                "capacity_servings": 2000,
+                "planned_servings": null
+              },
+              "result": 910
+            },
+            {
+              "trace_id": "trace-0019",
+              "step": "recipe_requirement",
+              "formula": "servings * per_serving",
+              "inputs": {
+                "ingredient": "간장",
+                "amount_per_serving": 3.0,
+                "unit": "g",
+                "servings": 910
+              },
+              "result": 2730.0
+            },
+            {
+              "trace_id": "trace-0020",
+              "step": "recipe_requirement",
+              "formula": "servings * per_serving",
+              "inputs": {
+                "ingredient": "두부",
+                "amount_per_serving": 80.0,
+                "unit": "g",
+                "servings": 910
+              },
+              "result": 72800.0
+            },
+            {
+              "trace_id": "trace-0021",
+              "step": "inventory_offset_and_range",
+              "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+              "inputs": {
+                "ingredient": "간장",
+                "edible_required": 2730.0,
+                "trim_loss_pct": 0.0,
+                "stock": 1000000.0,
+                "cooking_quantum": 1.0,
+                "purchase_quantum": 1.0,
+                "tolerance_pct": 5.0,
+                "rounding_policy": "legacy_combined",
+                "unit": "g"
+              },
+              "result": {
+                "ingredient": "간장",
+                "edible_required": 2730.0,
+                "raw_required": 2730.0,
+                "raw_required_exact": {
+                  "numerator": "2730",
+                  "denominator": "1"
+                },
+                "cooking_required": 2730.0,
+                "cooking_extra": 0.0,
+                "rounding_policy": "legacy_combined",
+                "gross_required": 2730.0,
+                "trim_loss_pct": 0.0,
+                "adjusted_required": 2730.0,
+                "stock": 1000000.0,
+                "purchase_need": 0.0,
+                "unit": "g",
+                "recommended_min": 0.0,
+                "recommended_max": 0.0
+              }
+            },
+            {
+              "trace_id": "trace-0022",
+              "step": "inventory_offset_and_range",
+              "formula": "raw=edible/(1-loss/100); cooking=raw or ceil_c(raw); need=ceil_p(max(0,cooking-stock)); max=ceil_p(need*(1+tolerance/100))",
+              "inputs": {
+                "ingredient": "두부",
+                "edible_required": 72800.0,
+                "trim_loss_pct": 0.0,
+                "stock": 2000000.0,
+                "cooking_quantum": 1.0,
+                "purchase_quantum": 1.0,
+                "tolerance_pct": 5.0,
+                "rounding_policy": "legacy_combined",
+                "unit": "g"
+              },
+              "result": {
+                "ingredient": "두부",
+                "edible_required": 72800.0,
+                "raw_required": 72800.0,
+                "raw_required_exact": {
+                  "numerator": "72800",
+                  "denominator": "1"
+                },
+                "cooking_required": 72800.0,
+                "cooking_extra": 0.0,
+                "rounding_policy": "legacy_combined",
+                "gross_required": 72800.0,
+                "trim_loss_pct": 0.0,
+                "adjusted_required": 72800.0,
+                "stock": 2000000.0,
+                "purchase_need": 0.0,
+                "unit": "g",
+                "recommended_min": 0.0,
+                "recommended_max": 0.0
+              }
+            },
+            {
+              "trace_id": "trace-0023",
+              "step": "constraint_check",
+              "formula": null,
+              "inputs": {},
+              "result": {
+                "status": "FAIL",
+                "checks": [
+                  {
+                    "constraint": "minimum_protein",
+                    "status": "FAIL",
+                    "actual": 1.0,
+                    "minimum": 20.0,
+                    "maximum": null
+                  },
+                  {
+                    "constraint": "calorie_range",
+                    "status": "PASS",
+                    "actual": 700.0,
+                    "minimum": 500.0,
+                    "maximum": 900.0
+                  },
+                  {
+                    "constraint": "sodium_max",
+                    "status": "PASS",
+                    "actual": 1000.0,
+                    "minimum": null,
+                    "maximum": 1500.0
+                  },
+                  {
+                    "constraint": "allergy_restriction",
+                    "status": "PASS",
+                    "matched": []
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "decision": null
+      },
+      {
+        "step": 4,
+        "source": "Inventory & Risk",
+        "rule": "upstream_report",
+        "finding": "위험 보고서 및 원본 trace 보존",
+        "evidence": {
+          "provenance_notes": [],
+          "data_quality_notes": [],
+          "is_demo": false,
+          "data_sources": {
+            "recipe": "DEMO:demo_recipe_ingredients.csv",
+            "nutrition": "DEMO:demo_nutrition.csv",
+            "price_trend": "DEMO:demo_price_trend.csv",
+            "monthly_price": "DEMO:demo_monthly_price.csv",
+            "inventory": "DEMO:food_inventory.xlsx",
+            "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+            "weekly_menu": "DEMO:weekly_menu.xlsx",
+            "constraints": "DEMO configurable dish-level thresholds",
+            "risk_constraints": "DEMO:original RiskConfig dish-level thresholds",
+            "operation_constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+          },
+          "limitations": [
+            "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+            "Independent candidates require reallocation before joint selection. No automatic operational action.",
+            "Planned orders are not available stock; arrival dates are unknown.",
+            "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+            "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+            "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID."
+          ],
+          "source_payload": {
+            "schema_version": "2.0",
+            "advisory_only": true,
+            "as_of": "2026-09-17",
+            "analysis_mode": "full",
+            "status": "ok",
+            "parsing_result": {
+              "status": "ok",
+              "parsed_events": [],
+              "unparsed_segments": [],
+              "validation_warnings": [],
+              "errors": [],
+              "decision_trace": []
+            },
+            "validation_warnings": [],
+            "period": {
+              "start": "2026-09-18",
+              "end": "2026-09-18"
+            },
+            "forecast_version": "77ed262ae772cffcf1b65c6f424793776da7894babe4a1357ef25a5a383e41f6",
+            "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+            "clarification": {
+              "status": "not_required",
+              "event_ids": []
+            },
+            "recheck_status": {
+              "demand_forecast": {
+                "status": "not_requested",
+                "execute_allowed": false,
+                "executed": false
+              },
+              "operation_agent": {
+                "status": "requested",
+                "executed": false
+              }
+            },
+            "execution": {
+              "executed_nodes": [
+                "event_parser",
+                "inventory_analyzer",
+                "price_risk_analyzer",
+                "supply_risk_analyzer",
+                "impact_analyzer",
+                "risk_report_builder"
+              ],
+              "skipped_nodes": [
+                "substitute_candidate_generator",
+                "nutrition_constraint_checker"
+              ],
+              "scope": "full",
+              "previous_report_reused": false
+            },
+            "errors": [],
+            "inventory_status": [
+              {
+                "ingredient": "간장",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 2730.0,
+                "shortage_at_service_g": 0.0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "계란",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "닭고기",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "돼지고기",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "두부",
+                "current_stock_g": 2000000.0,
+                "usable_today_g": 2000000.0,
+                "required_g": 72800.0,
+                "shortage_at_service_g": 0.0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "버섯",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "소고기",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "소금",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "양배추",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              },
+              {
+                "ingredient": "양파",
+                "current_stock_g": 1000000.0,
+                "usable_today_g": 1000000.0,
+                "required_g": 0,
+                "shortage_at_service_g": 0,
+                "planned_order_g": 0,
+                "uncovered_order_g": 0,
+                "order_arrival_verified": false
+              }
+            ],
+            "allocation_audit": [
+              {
+                "date": "2026-09-18",
+                "meal_type": "lunch",
+                "menu_name": "두부조림",
+                "ingredient": "두부",
+                "required_g": 72800.0,
+                "shortage_g": 0.0,
+                "allocations": [
+                  {
+                    "lot_index": 0,
+                    "quantity_g": 72800.0
+                  }
+                ],
+                "restricted": false,
+                "edible_required_g": 72800.0,
+                "quantity_basis": "operation_cooking_raw_g"
+              },
+              {
+                "date": "2026-09-18",
+                "meal_type": "lunch",
+                "menu_name": "두부조림",
+                "ingredient": "간장",
+                "required_g": 2730.0,
+                "shortage_g": 0.0,
+                "allocations": [
+                  {
+                    "lot_index": 6,
+                    "quantity_g": 2730.0
+                  }
+                ],
+                "restricted": false,
+                "edible_required_g": 2730.0,
+                "quantity_basis": "operation_cooking_raw_g"
+              }
+            ],
+            "current_plan_checks": {
+              "shortage": "PASS",
+              "expiry": "PASS",
+              "restriction": "PASS",
+              "supply": "PASS"
+            },
+            "evidence_projection": {
+              "superseded_event_ids": [],
+              "removed_candidate_ids": [],
+              "audit_excluded": true
+            },
+            "detected_events": [],
+            "alerts": [
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "간장: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 2730.0g"
+                ],
+                "ingredient": "간장",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "계란: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "계란",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "닭고기: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "닭고기",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "돼지고기: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "돼지고기",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "두부: excess_inventory",
+                "evidence": [
+                  "usable 2000000.0g; demand 72800.0g"
+                ],
+                "ingredient": "두부",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "버섯: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "버섯",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "소고기: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "소고기",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "소금: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "소금",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "양배추: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "양배추",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "양파: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "양파",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              }
+            ],
+            "price_risks": [],
+            "supply_risks": [],
+            "affected_menus": [],
+            "affected_ingredients": [
+              "간장",
+              "계란",
+              "닭고기",
+              "돼지고기",
+              "두부",
+              "버섯",
+              "소고기",
+              "소금",
+              "양배추",
+              "양파"
+            ],
+            "substitute_candidates": [],
+            "priority_use_candidates": [],
+            "nutrition_results": [],
+            "cost_impacts": [],
+            "recommended_rechecks": [
+              "operation_agent"
+            ],
+            "decision_trace": [
+              "Event Parser: mode=full, status=ok, 0 events; selected=['inventory_analyzer', 'price_risk_analyzer', 'supply_risk_analyzer', 'impact_analyzer', 'substitute_candidate_generator', 'nutrition_constraint_checker']",
+              "Inventory Analyzer: 10 ingredients; 0 impacts; 0 priority-use candidates",
+              "Inventory: 간장 current=1000000.0g, required=2730.0g, service shortage=0.0g, planned=0g",
+              "Inventory: 계란 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 닭고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 돼지고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 두부 current=2000000.0g, required=72800.0g, service shortage=0.0g, planned=0g",
+              "Inventory: 버섯 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 소고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 소금 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 양배추 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Inventory: 양파 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+              "Supply Risk Analyzer: 0 observations, 0 unique active events",
+              "SKIP substitute_candidate_generator: no_relevant_impacts_or_candidates",
+              "SKIP nutrition_constraint_checker: no_relevant_impacts_or_candidates",
+              "Risk Report Builder: 0 menu alternatives, 0 priority-use candidates; approval required"
+            ],
+            "data_sources": {
+              "recipe": "DEMO:demo_recipe_ingredients.csv",
+              "nutrition": "DEMO:demo_nutrition.csv",
+              "price_trend": "DEMO:demo_price_trend.csv",
+              "monthly_price": "DEMO:demo_monthly_price.csv",
+              "inventory": "DEMO:food_inventory.xlsx",
+              "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+              "weekly_menu": "DEMO:weekly_menu.xlsx",
+              "constraints": "DEMO configurable dish-level thresholds",
+              "risk_constraints": "DEMO:original RiskConfig dish-level thresholds",
+              "operation_constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+            },
+            "limitations": [
+              "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+              "Independent candidates require reallocation before joint selection. No automatic operational action.",
+              "Planned orders are not available stock; arrival dates are unknown.",
+              "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+              "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+              "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID."
+            ],
+            "risk_events": [],
+            "audit": {
+              "supply_events": [],
+              "event": null
+            },
+            "quantity_basis": {
+              "current_plan": "operation_cooking_raw_g",
+              "operation_revision": "77ed262ae772cffcf1b65c6f424793776da7894babe4a1357ef25a5a383e41f6",
+              "requirements": [
+                {
+                  "ingredient": "간장",
+                  "edible_required": 2730.0,
+                  "raw_required": 2730.0,
+                  "raw_required_exact": {
+                    "numerator": "2730",
+                    "denominator": "1"
+                  },
+                  "cooking_required": 2730.0,
+                  "cooking_extra": 0.0,
+                  "rounding_policy": "legacy_combined",
+                  "gross_required": 2730.0,
+                  "trim_loss_pct": 0.0,
+                  "adjusted_required": 2730.0,
+                  "stock": 1000000.0,
+                  "purchase_need": 0.0,
+                  "unit": "g",
+                  "recommended_min": 0.0,
+                  "recommended_max": 0.0
+                },
+                {
+                  "ingredient": "두부",
+                  "edible_required": 72800.0,
+                  "raw_required": 72800.0,
+                  "raw_required_exact": {
+                    "numerator": "72800",
+                    "denominator": "1"
+                  },
+                  "cooking_required": 72800.0,
+                  "cooking_extra": 0.0,
+                  "rounding_policy": "legacy_combined",
+                  "gross_required": 72800.0,
+                  "trim_loss_pct": 0.0,
+                  "adjusted_required": 72800.0,
+                  "stock": 2000000.0,
+                  "purchase_need": 0.0,
+                  "unit": "g",
+                  "recommended_min": 0.0,
+                  "recommended_max": 0.0
+                }
+              ],
+              "nutrition": "original edible recipe; dish-level candidate checks",
+              "candidate_stock": "native independent edible-basis estimate; Operation raw/cooking recheck required before selection"
+            },
+            "requires_confirmation": false
+          },
+          "provenance": {
+            "dependency_basis": "demand_scaled",
+            "target_date": "2026-09-18",
+            "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+            "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+            "result_revision": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f",
+            "analysis_scope": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menus": [
+                {
+                  "menu": "두부조림",
+                  "ingredients": [
+                    "두부",
+                    "간장"
+                  ],
+                  "ingredients_complete": true
+                }
+              ],
+              "menus_complete": true,
+              "coverage": "full"
+            },
+            "consumed_results": {
+              "demand_forecast": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c"
+            },
+            "metadata_source": "parent-service-execution-record"
+          },
+          "detected_events": [],
+          "adapter_notes": [],
+          "status": "ok",
+          "alerts": [
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "간장: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 2730.0g"
+                ],
+                "ingredient": "간장",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "간장",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "간장: excess_inventory",
+              "ingredient": "간장",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 2730.0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "계란: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "계란",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "계란",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "계란: excess_inventory",
+              "ingredient": "계란",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "닭고기: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "닭고기",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "닭고기",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "닭고기: excess_inventory",
+              "ingredient": "닭고기",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "돼지고기: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "돼지고기",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "돼지고기",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "돼지고기: excess_inventory",
+              "ingredient": "돼지고기",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "두부: excess_inventory",
+                "evidence": [
+                  "usable 2000000.0g; demand 72800.0g"
+                ],
+                "ingredient": "두부",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "두부",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "두부: excess_inventory",
+              "ingredient": "두부",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 2000000.0g; demand 72800.0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "버섯: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "버섯",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "버섯",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "버섯: excess_inventory",
+              "ingredient": "버섯",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "소고기: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "소고기",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "소고기",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "소고기: excess_inventory",
+              "ingredient": "소고기",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "소금: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "소금",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "소금",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "소금: excess_inventory",
+              "ingredient": "소금",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "양배추: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "양배추",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "양배추",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "양배추: excess_inventory",
+              "ingredient": "양배추",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            },
+            {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {
+                "type": "overstock",
+                "severity": "MEDIUM",
+                "message": "양파: excess_inventory",
+                "evidence": [
+                  "usable 1000000.0g; demand 0g"
+                ],
+                "ingredient": "양파",
+                "candidate_id": null,
+                "candidate_action": null,
+                "cause_event_ids": [],
+                "details": {}
+              },
+              "scope": {
+                "target_date": null,
+                "end_date": null,
+                "meal_type": null,
+                "menu": null,
+                "ingredient": "양파",
+                "candidate_id": null,
+                "applies_to_all": false
+              },
+              "cause_event_ids": [],
+              "type": "overstock",
+              "severity": "MEDIUM",
+              "message": "양파: excess_inventory",
+              "ingredient": "양파",
+              "candidate_id": null,
+              "menu": null,
+              "evidence": [
+                "usable 1000000.0g; demand 0g"
+              ],
+              "candidate_action": null,
+              "details": {}
+            }
+          ],
+          "price_risks": [],
+          "supply_risks": [],
+          "affected_menus": [],
+          "affected_ingredients": [
+            "간장",
+            "계란",
+            "닭고기",
+            "돼지고기",
+            "두부",
+            "버섯",
+            "소고기",
+            "소금",
+            "양배추",
+            "양파"
+          ],
+          "inventory_recommendations": [],
+          "substitute_candidates": [],
+          "nutrition_results": [],
+          "cost_impacts": [],
+          "recommended_rechecks": [
+            "operation"
+          ],
+          "decision_trace": [
+            "Event Parser: mode=full, status=ok, 0 events; selected=['inventory_analyzer', 'price_risk_analyzer', 'supply_risk_analyzer', 'impact_analyzer', 'substitute_candidate_generator', 'nutrition_constraint_checker']",
+            "Inventory Analyzer: 10 ingredients; 0 impacts; 0 priority-use candidates",
+            "Inventory: 간장 current=1000000.0g, required=2730.0g, service shortage=0.0g, planned=0g",
+            "Inventory: 계란 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 닭고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 돼지고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 두부 current=2000000.0g, required=72800.0g, service shortage=0.0g, planned=0g",
+            "Inventory: 버섯 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 소고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 소금 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 양배추 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Inventory: 양파 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+            "Supply Risk Analyzer: 0 observations, 0 unique active events",
+            "SKIP substitute_candidate_generator: no_relevant_impacts_or_candidates",
+            "SKIP nutrition_constraint_checker: no_relevant_impacts_or_candidates",
+            "Risk Report Builder: 0 menu alternatives, 0 priority-use candidates; approval required"
+          ],
+          "applied_event_ids": []
+        },
+        "decision": null
+      },
+      {
+        "step": 5,
+        "source": "Decision",
+        "rule": "hard_constraint_gate",
+        "finding": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition",
+        "evidence": {
+          "action_id": "servings",
+          "ingredient": null,
+          "menu": null,
+          "candidate_id": null,
+          "decision": "BLOCK",
+          "action": "상위 Operation 조리량 유지 검토",
+          "reason": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition",
+          "current_plan": null,
+          "recommended": null,
+          "unit": null,
+          "failed_constraints": [
+            "nutrition"
+          ],
+          "unknown_constraints": [],
+          "selected": false,
+          "scope": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "menu": null,
+            "ingredient": null
+          },
+          "candidates": []
+        },
+        "decision": "BLOCK"
+      },
+      {
+        "step": 6,
+        "source": "Decision",
+        "rule": "serving_resolution",
+        "finding": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+        "evidence": {
+          "action_id": "servings",
+          "ingredient": null,
+          "menu": null,
+          "candidate_id": null,
+          "decision": "BLOCK",
+          "action": "상위 Operation 조리량 유지 검토",
+          "reason": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+          "current_plan": null,
+          "recommended": null,
+          "unit": null,
+          "failed_constraints": [
+            "nutrition"
+          ],
+          "unknown_constraints": [],
+          "selected": false,
+          "scope": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "menu": null,
+            "ingredient": null
+          },
+          "candidates": []
+        },
+        "decision": "BLOCK"
+      },
+      {
+        "step": 7,
+        "source": "Decision",
+        "rule": "soft_objective_order",
+        "finding": "검증 통과 후보만 메뉴 검토에 포함; 제공 점수의 사전식 순위",
+        "evidence": {
+          "priorities": [
+            "shortage",
+            "safety",
+            "nutrition",
+            "supply",
+            "waste",
+            "cost",
+            "preference"
+          ],
+          "ranked": [],
+          "cost_impacts": []
+        },
+        "decision": null
+      },
+      {
+        "step": 8,
+        "source": "Decision",
+        "rule": "final_action",
+        "finding": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+        "evidence": {
+          "action_id": "servings",
+          "ingredient": null,
+          "menu": null,
+          "candidate_id": null,
+          "decision": "BLOCK",
+          "action": "[DEMO 검토용] 상위 Operation 조리량 유지 검토",
+          "reason": "Demand·Operation 결과와 제약 검증; Hard Constraint 위반: nutrition; 상위 결과 갱신/확인 필요",
+          "current_plan": null,
+          "recommended": null,
+          "unit": null,
+          "failed_constraints": [
+            "nutrition"
+          ],
+          "unknown_constraints": [],
+          "selected": true,
+          "scope": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "menu": null,
+            "ingredient": null
+          },
+          "candidates": []
+        },
+        "decision": "BLOCK"
+      },
+      {
+        "step": 9,
+        "source": "Human Approval",
+        "rule": "approval_required",
+        "finding": "권고만 반환; 발주·메뉴·재고 실행 기능 없음",
+        "evidence": {},
+        "decision": null
+      }
+    ],
+    "data_quality_notes": [
+      "input.demand_result.mode: Demand demo 모드: 운영 근거로 사용 불가",
+      "input.operation_result.data_sources.recipe: DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+      "input.operation_result.data_sources.nutrition: DEMO 출처: DEMO:demo_nutrition.csv",
+      "input.operation_result.data_sources.price_trend: DEMO 출처: DEMO:demo_price_trend.csv",
+      "input.operation_result.data_sources.monthly_price: DEMO 출처: DEMO:demo_monthly_price.csv",
+      "input.operation_result.data_sources.inventory: DEMO 출처: DEMO:food_inventory.xlsx",
+      "input.operation_result.data_sources.supply_risk: DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+      "input.operation_result.data_sources.weekly_menu: DEMO 출처: DEMO:weekly_menu.xlsx",
+      "input.operation_result.data_sources.constraints: DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+      "input.operation_result.data_quality_notes: Demand가 operational_eligible=false를 반환했습니다.",
+      "input.operation_result.data_quality_notes: Demand 가용성 근거가 historical_unknown입니다.",
+      "input.operation_result.data_quality_notes: Hard Constraint 위반: 해당 계획은 실행 가능한 권고가 아닙니다.",
+      "input.operation_result.data_quality_notes: Operation requires confirmation: needs_clarification",
+      "input.inventory_risk_result.data_sources.recipe: DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+      "input.inventory_risk_result.data_sources.nutrition: DEMO 출처: DEMO:demo_nutrition.csv",
+      "input.inventory_risk_result.data_sources.price_trend: DEMO 출처: DEMO:demo_price_trend.csv",
+      "input.inventory_risk_result.data_sources.monthly_price: DEMO 출처: DEMO:demo_monthly_price.csv",
+      "input.inventory_risk_result.data_sources.inventory: DEMO 출처: DEMO:food_inventory.xlsx",
+      "input.inventory_risk_result.data_sources.supply_risk: DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+      "input.inventory_risk_result.data_sources.weekly_menu: DEMO 출처: DEMO:weekly_menu.xlsx",
+      "input.inventory_risk_result.data_sources.constraints: DEMO 출처: DEMO configurable dish-level thresholds",
+      "input.inventory_risk_result.data_sources.risk_constraints: DEMO 출처: DEMO:original RiskConfig dish-level thresholds",
+      "input.inventory_risk_result.data_sources.operation_constraints: DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+      "input.inventory_risk_result.limitations: DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+      "input.inventory_risk_result.limitations: Independent candidates require reallocation before joint selection. No automatic operational action.",
+      "input.inventory_risk_result.limitations: Planned orders are not available stock; arrival dates are unknown.",
+      "input.inventory_risk_result.limitations: Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+      "input.inventory_risk_result.limitations: Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+      "input.inventory_risk_result.limitations: Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID.",
+      "decision: Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown"
+    ],
+    "decision_type": "BLOCK",
+    "confirmation_gates": [],
+    "operation_recommended_servings": 910,
+    "adapter_provenance": {
+      "demand": {
+        "dependency_basis": "independent",
+        "target_date": "2026-09-18",
+        "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "result_revision": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+        "analysis_scope": {
+          "target_date": "2026-09-18",
+          "meal_type": "lunch",
+          "menus": [
+            {
+              "menu": "두부조림",
+              "ingredients": [
+                "두부",
+                "간장"
+              ],
+              "ingredients_complete": true
+            }
+          ],
+          "menus_complete": true,
+          "coverage": "full"
+        },
+        "consumed_results": {},
+        "metadata_source": "parent-service-execution-record"
+      },
+      "operation": {
+        "target_date": "2026-09-18",
+        "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "result_revision": "operation-b591830bbc6f8f7ea86e484d378ada203a92ff5e7ff9024a5405dfd349f1b828",
+        "analysis_scope": {
+          "target_date": "2026-09-18",
+          "meal_type": "lunch",
+          "coverage": "full",
+          "menus_complete": true,
+          "menus": [
+            {
+              "menu": "두부조림",
+              "ingredients": [
+                "두부",
+                "간장"
+              ],
+              "ingredients_complete": true
+            }
+          ]
+        },
+        "consumed_results": {
+          "demand_forecast": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c",
+          "inventory_risk": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f"
+        },
+        "metadata_source": "parent-service-execution-record"
+      },
+      "inventory_risk": {
+        "dependency_basis": "demand_scaled",
+        "target_date": "2026-09-18",
+        "prediction_id": "e0a7109a82ee4bbc813884d3d6433566",
+        "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "result_revision": "inventory-9953193dccbcccd6fa1a95749af0ae77bf51c27b8bdaa35bd76877b448200d4f",
+        "analysis_scope": {
+          "target_date": "2026-09-18",
+          "meal_type": "lunch",
+          "menus": [
+            {
+              "menu": "두부조림",
+              "ingredients": [
+                "두부",
+                "간장"
+              ],
+              "ingredients_complete": true
+            }
+          ],
+          "menus_complete": true,
+          "coverage": "full"
+        },
+        "consumed_results": {
+          "demand_forecast": "demand-d21ada9147040e56225d5aa8b5809f948887280dc98155a8929c3a3395f6688c"
+        },
+        "metadata_source": "parent-service-execution-record"
+      }
+    },
+    "source_payload": {
+      "inventory_risk": {
+        "schema_version": "2.0",
+        "advisory_only": true,
+        "as_of": "2026-09-17",
+        "analysis_mode": "full",
+        "status": "ok",
+        "parsing_result": {
+          "status": "ok",
+          "parsed_events": [],
+          "unparsed_segments": [],
+          "validation_warnings": [],
+          "errors": [],
+          "decision_trace": []
+        },
+        "validation_warnings": [],
+        "period": {
+          "start": "2026-09-18",
+          "end": "2026-09-18"
+        },
+        "forecast_version": "77ed262ae772cffcf1b65c6f424793776da7894babe4a1357ef25a5a383e41f6",
+        "input_snapshot_id": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+        "clarification": {
+          "status": "not_required",
+          "event_ids": []
+        },
+        "recheck_status": {
+          "demand_forecast": {
+            "status": "not_requested",
+            "execute_allowed": false,
+            "executed": false
+          },
+          "operation_agent": {
+            "status": "requested",
+            "executed": false
+          }
+        },
+        "execution": {
+          "executed_nodes": [
+            "event_parser",
+            "inventory_analyzer",
+            "price_risk_analyzer",
+            "supply_risk_analyzer",
+            "impact_analyzer",
+            "risk_report_builder"
+          ],
+          "skipped_nodes": [
+            "substitute_candidate_generator",
+            "nutrition_constraint_checker"
+          ],
+          "scope": "full",
+          "previous_report_reused": false
+        },
+        "errors": [],
+        "inventory_status": [
+          {
+            "ingredient": "간장",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 2730.0,
+            "shortage_at_service_g": 0.0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "계란",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "닭고기",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "돼지고기",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "두부",
+            "current_stock_g": 2000000.0,
+            "usable_today_g": 2000000.0,
+            "required_g": 72800.0,
+            "shortage_at_service_g": 0.0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "버섯",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "소고기",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "소금",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "양배추",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          },
+          {
+            "ingredient": "양파",
+            "current_stock_g": 1000000.0,
+            "usable_today_g": 1000000.0,
+            "required_g": 0,
+            "shortage_at_service_g": 0,
+            "planned_order_g": 0,
+            "uncovered_order_g": 0,
+            "order_arrival_verified": false
+          }
+        ],
+        "allocation_audit": [
+          {
+            "date": "2026-09-18",
+            "meal_type": "lunch",
+            "menu_name": "두부조림",
+            "ingredient": "두부",
+            "required_g": 72800.0,
+            "shortage_g": 0.0,
+            "allocations": [
+              {
+                "lot_index": 0,
+                "quantity_g": 72800.0
+              }
+            ],
+            "restricted": false,
+            "edible_required_g": 72800.0,
+            "quantity_basis": "operation_cooking_raw_g"
+          },
+          {
+            "date": "2026-09-18",
+            "meal_type": "lunch",
+            "menu_name": "두부조림",
+            "ingredient": "간장",
+            "required_g": 2730.0,
+            "shortage_g": 0.0,
+            "allocations": [
+              {
+                "lot_index": 6,
+                "quantity_g": 2730.0
+              }
+            ],
+            "restricted": false,
+            "edible_required_g": 2730.0,
+            "quantity_basis": "operation_cooking_raw_g"
+          }
+        ],
+        "current_plan_checks": {
+          "shortage": "PASS",
+          "expiry": "PASS",
+          "restriction": "PASS",
+          "supply": "PASS"
+        },
+        "evidence_projection": {
+          "superseded_event_ids": [],
+          "removed_candidate_ids": [],
+          "audit_excluded": true
+        },
+        "detected_events": [],
+        "alerts": [
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "간장: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 2730.0g"
+            ],
+            "ingredient": "간장",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "계란: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "계란",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "닭고기: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "닭고기",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "돼지고기: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "돼지고기",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "두부: excess_inventory",
+            "evidence": [
+              "usable 2000000.0g; demand 72800.0g"
+            ],
+            "ingredient": "두부",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "버섯: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "버섯",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "소고기: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "소고기",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "소금: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "소금",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "양배추: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "양배추",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          },
+          {
+            "type": "overstock",
+            "severity": "MEDIUM",
+            "message": "양파: excess_inventory",
+            "evidence": [
+              "usable 1000000.0g; demand 0g"
+            ],
+            "ingredient": "양파",
+            "candidate_id": null,
+            "candidate_action": null,
+            "cause_event_ids": [],
+            "details": {}
+          }
+        ],
+        "price_risks": [],
+        "supply_risks": [],
+        "affected_menus": [],
+        "affected_ingredients": [
+          "간장",
+          "계란",
+          "닭고기",
+          "돼지고기",
+          "두부",
+          "버섯",
+          "소고기",
+          "소금",
+          "양배추",
+          "양파"
+        ],
+        "substitute_candidates": [],
+        "priority_use_candidates": [],
+        "nutrition_results": [],
+        "cost_impacts": [],
+        "recommended_rechecks": [
+          "operation_agent"
+        ],
+        "decision_trace": [
+          "Event Parser: mode=full, status=ok, 0 events; selected=['inventory_analyzer', 'price_risk_analyzer', 'supply_risk_analyzer', 'impact_analyzer', 'substitute_candidate_generator', 'nutrition_constraint_checker']",
+          "Inventory Analyzer: 10 ingredients; 0 impacts; 0 priority-use candidates",
+          "Inventory: 간장 current=1000000.0g, required=2730.0g, service shortage=0.0g, planned=0g",
+          "Inventory: 계란 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 닭고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 돼지고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 두부 current=2000000.0g, required=72800.0g, service shortage=0.0g, planned=0g",
+          "Inventory: 버섯 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 소고기 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 소금 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 양배추 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Inventory: 양파 current=1000000.0g, required=0g, service shortage=0g, planned=0g",
+          "Supply Risk Analyzer: 0 observations, 0 unique active events",
+          "SKIP substitute_candidate_generator: no_relevant_impacts_or_candidates",
+          "SKIP nutrition_constraint_checker: no_relevant_impacts_or_candidates",
+          "Risk Report Builder: 0 menu alternatives, 0 priority-use candidates; approval required"
+        ],
+        "data_sources": {
+          "recipe": "DEMO:demo_recipe_ingredients.csv",
+          "nutrition": "DEMO:demo_nutrition.csv",
+          "price_trend": "DEMO:demo_price_trend.csv",
+          "monthly_price": "DEMO:demo_monthly_price.csv",
+          "inventory": "DEMO:food_inventory.xlsx",
+          "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+          "weekly_menu": "DEMO:weekly_menu.xlsx",
+          "constraints": "DEMO configurable dish-level thresholds",
+          "risk_constraints": "DEMO:original RiskConfig dish-level thresholds",
+          "operation_constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+        },
+        "limitations": [
+          "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+          "Independent candidates require reallocation before joint selection. No automatic operational action.",
+          "Planned orders are not available stock; arrival dates are unknown.",
+          "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+          "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+          "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID."
+        ],
+        "risk_events": [],
+        "audit": {
+          "supply_events": [],
+          "event": null
+        },
+        "quantity_basis": {
+          "current_plan": "operation_cooking_raw_g",
+          "operation_revision": "77ed262ae772cffcf1b65c6f424793776da7894babe4a1357ef25a5a383e41f6",
+          "requirements": [
+            {
+              "ingredient": "간장",
+              "edible_required": 2730.0,
+              "raw_required": 2730.0,
+              "raw_required_exact": {
+                "numerator": "2730",
+                "denominator": "1"
+              },
+              "cooking_required": 2730.0,
+              "cooking_extra": 0.0,
+              "rounding_policy": "legacy_combined",
+              "gross_required": 2730.0,
+              "trim_loss_pct": 0.0,
+              "adjusted_required": 2730.0,
+              "stock": 1000000.0,
+              "purchase_need": 0.0,
+              "unit": "g",
+              "recommended_min": 0.0,
+              "recommended_max": 0.0
+            },
+            {
+              "ingredient": "두부",
+              "edible_required": 72800.0,
+              "raw_required": 72800.0,
+              "raw_required_exact": {
+                "numerator": "72800",
+                "denominator": "1"
+              },
+              "cooking_required": 72800.0,
+              "cooking_extra": 0.0,
+              "rounding_policy": "legacy_combined",
+              "gross_required": 72800.0,
+              "trim_loss_pct": 0.0,
+              "adjusted_required": 72800.0,
+              "stock": 2000000.0,
+              "purchase_need": 0.0,
+              "unit": "g",
+              "recommended_min": 0.0,
+              "recommended_max": 0.0
+            }
+          ],
+          "nutrition": "original edible recipe; dish-level candidate checks",
+          "candidate_stock": "native independent edible-basis estimate; Operation raw/cooking recheck required before selection"
+        },
+        "requires_confirmation": false
+      }
+    },
+    "active_evidence_summary": {
+      "current_plan_checks": {
+        "shortage": "PASS",
+        "expiry": "PASS",
+        "restriction": "PASS",
+        "supply": "PASS"
+      },
+      "recommended_rechecks": [
+        "operation_agent"
+      ],
+      "projection": {
+        "superseded_event_ids": [],
+        "removed_candidate_ids": [],
+        "audit_excluded": true
+      }
+    },
+    "demand_envelope": {
+      "confidence": "UNKNOWN",
+      "model_type": "lightgbm",
+      "training_ranges": {
+        "features": {
+          "employees": {
+            "min": 2601.0,
+            "max": 3305.0
+          },
+          "vacation": {
+            "min": 23.0,
+            "max": 1224.0
+          },
+          "business_trip": {
+            "min": 41.0,
+            "max": 378.0
+          },
+          "work_from_home": {
+            "min": 0.0,
+            "max": 533.0
+          },
+          "overtime": {
+            "min": 0.0,
+            "max": 1044.0
+          }
+        },
+        "period": {
+          "start": "2016-02-01",
+          "end": "2021-01-26",
+          "rows": 1205
+        },
+        "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+        "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+        "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+      },
+      "warnings": [],
+      "model_version": "v20260917T054002-4222a35a",
+      "predicted_diners": 883.0,
+      "applicability": "IN_RANGE"
+    }
+  },
+  "errors": [],
+  "warnings": [],
+  "timings": {
+    "demand": 2.7365,
+    "operation": 0.3988,
+    "inventory_risk": 1.8997,
+    "decision": 0.4901,
+    "total": 5.527
+  },
+  "input_revision": "10e528e25e19fdb39803f07eb3e539e6b1862a2a28a542af1be97e76787ae37e",
+  "advisory_only": true
+}

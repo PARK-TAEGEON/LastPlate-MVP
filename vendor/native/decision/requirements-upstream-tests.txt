@@ -1,0 +1,9 @@
+# Optional: only for examples/verify_real_upstreams.py against original ZIPs.
+scikit-learn==1.9.1
+lightgbm==4.7.0
+xgboost==3.4.1
+joblib==1.6.0
+filelock==4.0.0
+openpyxl>=3.1,<4
+pandas>=2.2,<4
+numpy>=1.26,<3

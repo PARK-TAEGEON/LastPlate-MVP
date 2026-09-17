@@ -1,0 +1,533 @@
+--- v0.1.1/README.md
++++ v0.1.2/README.md
+@@ -1,4 +1,9 @@
+-# LastPlate 통합 MVP backend v0.1.1
++# LastPlate 통합 MVP backend v0.1.2
++
++v0.1.2 최소 P1 수정과 실제 검증: `reports/P1_FINAL_REVIEW.md`.
++Operation invalid_input은 원본 alert/evidence를 보존한 HTTP 422이며, 성공한 단계 결과는 유지합니다.
++서비스 날짜의 사용 가능 재고는 native Inventory helper를 공유합니다.
++raw/cooking 후보의 재검토 요구는 기존 Decision pending recheck gate로 전달하며 자동 재실행하지 않습니다.
+ 
+ 세 Agent 원본을 보존하고 Inventory의 제한된 P0/P1 패치를 Adapter / Orchestrator에 연결한 **권고 전용 backend**입니다. 실제 저장된 ML 모델을 실행합니다. 레시피·재고·가격·영양 예제는 DEMO이며, 실제 API 연결이나 현장 정확도 검증을 의미하지 않습니다.
+ 
+--- v0.1.1/app/main.py
++++ v0.1.2/app/main.py
+@@ -6,7 +6,7 @@
+ from integration import run_lastplate_pipeline,PipelineConfig
+ from integration.contracts import PipelineInput,PipelineResult
+ 
+-app=FastAPI(title='LastPlate advisory pipeline',version='0.1.1')
++app=FastAPI(title='LastPlate advisory pipeline',version='0.1.2')
+ 
+ @app.exception_handler(RequestValidationError)
+ async def invalid_request(request,exc):
+--- v0.1.1/integration/adapters/decision_adapter.py
++++ v0.1.2/integration/adapters/decision_adapter.py
+@@ -22,12 +22,27 @@
+             data_quality_notes=[w['message'] for w in d['warnings']])
+         dd['integration_envelope']={k:deepcopy(d[k]) for k in ('confidence','model_type','training_ranges','warnings','model_version','predicted_diners','applicability') if k in d}
+         if d['applicability']!='IN_RANGE': dd['operational_eligible']=False
+-    rr={}; events=[]
++    rr={}; events=[]; confirmation_gates=[]
+     if r:
+         active=project_active(r)
+         pr=provenance('inventory',active,{'demand_forecast':dd['provenance']['result_revision']} if dd else {})
+         pr['dependency_basis']='demand_scaled'
+         rr=adapt_inventory_v020(active,provenance=pr)
++        # Transport the upstream requirement into Decision's existing pending-recheck gate.
++        # No quantity calculation or callback: native Decision holds selection/approval.
++        from lastplate_decision.schemas.context import RecheckRequest
++        for candidate in active.get('substitute_candidates',[]):
++            if not candidate.get('operation_quantity_recheck_required'):
++                continue
++            cid=candidate['candidate_id']
++            reason='operation_quantity_recheck_required:'+cid
++            request=RecheckRequest(request_id='rq-'+fingerprint([revision,pr['result_revision'],reason])[:24],
++                agent='operation',reason=reason,input_revision=revision,source_agent='inventory_risk',
++                source_result_revision=pr['result_revision'],status='pending')
++            rr['recommended_rechecks'].append(request.model_dump())
++            confirmation_gates.append(dict(candidate_id=cid,code='operation_quantity_recheck_required',
++                status='pending',request_id=request.request_id,requires_human_approval=True,
++                automatic_execution=False,quantity_basis=candidate.get('quantity_basis')))
+         # User-only events are delivered separately. Derived inventory events are already scoped alerts.
+         events=[e for e in rr['detected_events'] if e.get('event_type') in ('attendance_event','ingredient_restriction_event')]
+     oo={}
+@@ -61,6 +76,7 @@
+         decisions=[final['serving_action']['decision']]+[a['decision'] for k in ('procurement_actions','inventory_actions','menu_actions') for a in final[k] if a['selected']]
+         decision='REVIEW' if 'REVIEW' in decisions else 'ADJUST' if 'ADJUST' in decisions else 'KEEP'
+     final['decision_type']=decision
++    final['confirmation_gates']=confirmation_gates
+     final['operation_recommended_servings']=o.get('recommended_servings') if o else None
+     final['adapter_provenance']={k:v.get('provenance') for k,v in [('demand',dd),('operation',oo),('inventory_risk',rr)]}
+     final['source_payload']={'inventory_risk':deepcopy(r)} # audit only, never fed back into Decision
+--- v0.1.1/integration/adapters/operation_adapter.py
++++ v0.1.2/integration/adapters/operation_adapter.py
+@@ -1,4 +1,5 @@
+ from copy import deepcopy
++from ..native_stock import usable_stock
+ 
+ def build_operation(p, demand):
+     menus=[m['menu_name'] for m in p['weekly_menu'] if m['date']==p['target_date'] and m['meal_type']==p['meal_type']]
+@@ -14,5 +15,5 @@
+         'reasons':[x['message'] for x in demand['warnings']]}
+     raw['warnings']=[{k:w[k] for k in ('code','category','severity','message')} for w in demand['warnings']]
+     return dict(demand_result=raw,_demand_envelope={k:deepcopy(demand[k]) for k in ('confidence','model_type','training_ranges','warnings','model_version','predicted_diners','applicability') if k in demand},recipe_data=recipes,
+-        inventory_data=[dict(ingredient=x['ingredient'],stock=x['current_stock'] if x['expiry_date']>=p['target_date'] else 0,
++        inventory_data=[dict(ingredient=x['ingredient'],stock=usable_stock(x['current_stock'],x['expiry_date'],p['target_date']),
+             unit=x['unit']) for x in p['inventory']],planned_orders=p['planned_orders'],config=cfg)
+--- v0.1.1/integration/native_stock.py
++++ v0.1.2/integration/native_stock.py
+@@ -0,0 +1,9 @@
++"""Reuse the native pure helper without importing colliding legacy packages."""
++import importlib.util
++from .contracts import ROOT
++
++spec = importlib.util.spec_from_file_location(
++    '_lastplate_native_usable_stock', ROOT / 'inventory_risk/tools/usable_stock.py')
++native = importlib.util.module_from_spec(spec)
++spec.loader.exec_module(native)
++usable_stock = native.usable_stock
+--- v0.1.1/integration/orchestrator.py
++++ v0.1.2/integration/orchestrator.py
+@@ -74,7 +74,14 @@
+         except Exception as e:
+             result['errors'].append(dict(stage='operation',code='OPERATION_INPUT_ERROR',message=str(e)))
+     if o:
+-        for alert in o.get('alerts',[]):
++        # Status is authoritative: new/unknown or absent alerts must never hide invalid input.
++        if o.get('status')=='invalid_input':
++            alerts=deepcopy(o.get('alerts',[]))
++            first=alerts[0] if alerts else {}
++            result['errors'].append(dict(stage='operation',code=first.get('type') or 'OPERATION_INVALID_INPUT',
++                message=first.get('message') or 'Operation rejected the input',kind='input',http_status=422,
++                native_status='invalid_input',evidence=deepcopy(first.get('evidence',{})),alerts=alerts))
++        for alert in ([] if o.get('status')=='invalid_input' else o.get('alerts',[])):
+             kind=alert['type']
+             if kind in ('MISSING_RECIPE','MISSING_INVENTORY','UNIT_ERROR','UNIT_MISMATCH','UNSUPPORTED_UNIT','INVALID_INPUT','NUMERIC_ERROR'):
+                 result['errors'].append(dict(stage='operation',code='RECIPE_MISSING' if kind=='MISSING_RECIPE' else 'INVENTORY_DATA_MISSING' if kind=='MISSING_INVENTORY' else 'UNIT_ERROR' if 'UNIT' in kind else 'INPUT_VALIDATION_ERROR',message=alert['message'],kind='input',http_status=422))
+--- v0.1.1/inventory_risk/tools/inventory.py
++++ v0.1.2/inventory_risk/tools/inventory.py
+@@ -1,5 +1,6 @@
+ from collections import defaultdict
+ from .units import grams
++from .usable_stock import usable_stock
+ from .events import applies
+ from .recipe import menu_key
+ from .alerts import make_alert
+@@ -39,9 +40,9 @@
+             restricted = any(e.ingredient == item.ingredient and applies(e, menu.date) for e in restrictions)
+             for index in sorted(range(len(inventory)), key=lambda i:inventory[i].expiry_date):
+                 lot = inventory[index]
+-                if restricted or lot.ingredient != item.ingredient or lot.expiry_date < menu.date:
++                if restricted or lot.ingredient != item.ingredient:
+                     continue
+-                take = min(amount, remaining[index])
++                take = min(amount, usable_stock(remaining[index], lot.expiry_date, menu.date))
+                 remaining[index] -= take
+                 amount -= take
+                 if take:
+@@ -61,7 +62,7 @@
+     for name in names:
+         lots = [x for x in inventory if x.ingredient == name]
+         current = sum(grams(x.current_stock,x.unit) for x in lots)
+-        valid = sum(grams(x.current_stock,x.unit) for x in lots if x.expiry_date >= as_of)
++        valid = sum(usable_stock(grams(x.current_stock,x.unit),x.expiry_date,as_of) for x in lots)
+         order = sum(grams(x.planned_order,x.unit) for x in lots)
+         minimum = sum(grams(x.minimum_stock,x.unit) for x in lots)
+         demand = needed.get(name,0)
+--- v0.1.1/inventory_risk/tools/usable_stock.py
++++ v0.1.2/inventory_risk/tools/usable_stock.py
+@@ -0,0 +1,12 @@
++"""Native service-date stock eligibility; quantity stays in the caller's unit.
++
++Same-day expiry is usable, matching the Inventory allocator's existing policy.
++This helper does not allocate lots, apply restrictions, or include planned orders.
++"""
++from datetime import date
++
++
++def usable_stock(quantity, expiry_date, service_date):
++    expiry = date.fromisoformat(expiry_date) if isinstance(expiry_date, str) else expiry_date
++    service = date.fromisoformat(service_date) if isinstance(service_date, str) else service_date
++    return quantity if expiry >= service else 0
+--- v0.1.1/pyproject.toml
++++ v0.1.2/pyproject.toml
+@@ -4,7 +4,7 @@
+ 
+ [project]
+ name = "lastplate-integrated"
+-version = "0.1.1"
++version = "0.1.2"
+ requires-python = ">=3.11"
+ dependencies = ["pydantic>=2.10,<3", "langgraph>=1,<2", "numpy>=1.26,<3", "pandas>=2.2,<4", "scikit-learn>=1.5,<2", "lightgbm>=4.5,<5", "xgboost>=2.1,<4", "joblib>=1.4,<2", "filelock>=3.16,<5", "openpyxl>=3.1,<4"]
+ 
+--- v0.1.1/tests/integration/test_p1_v012.py
++++ v0.1.2/tests/integration/test_p1_v012.py
+@@ -0,0 +1,141 @@
++"""P1 public-boundary regression; JSON evidence comes from actual executions."""
++import copy,json,sys
++from pathlib import Path
++import pytest
++ROOT=Path(__file__).resolve().parents[2]
++sys.path.insert(0,str(ROOT))
++from integration import run_lastplate_pipeline,PipelineConfig
++from integration.bridge import invoke
++from integration.adapters.operation_adapter import build_operation
++
++def save(name,value):
++    folder=ROOT/'reports/p1-v012';folder.mkdir(exist_ok=True)
++    (folder/(name+'.json')).write_text(json.dumps(value,ensure_ascii=False,indent=2),encoding='utf8')
++
++@pytest.fixture
++def payload():
++    return json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf8'))
++
++def test_native_limit_http_422_preserves_demand_and_decision(payload,tmp_path,monkeypatch):
++    from fastapi.testclient import TestClient
++    from app.main import app
++    monkeypatch.setenv('LASTPLATE_STORAGE',str(tmp_path));monkeypatch.setenv('LASTPLATE_MODE','demo')
++    payload['operation_policy']['maximum_input_servings']=100
++    res=TestClient(app).post('/api/plan',json=payload);r=res.json()
++    save('limit-after',dict(http_status=res.status_code,body=r))
++    assert res.status_code==422 and r['pipeline_status']=='PARTIAL'
++    assert r['demand']['predicted_diners']==883
++    assert r['operation']['status']=='invalid_input'
++    error=next(e for e in r['errors'] if e['stage']=='operation')
++    assert error['code']=='INPUT_DEMAND_OUT_OF_RANGE' and error['http_status']==422
++    assert error['evidence']=={'maximum_input_servings':100,'received_max':883}
++    assert error['alerts']==r['operation']['alerts']
++    assert r['decision']['decision_type']=='NEEDS_CONFIRMATION'
++    assert r['decision']['requires_human_approval'] is True
++    assert r['inventory_risk'] is None
++
++@pytest.mark.parametrize('alerts',[
++    [],[dict(type='FUTURE_INPUT_ALERT',severity='HIGH',message='future rejection',evidence={'limit':1})]])
++def test_all_invalid_input_statuses_are_errors(payload,tmp_path,monkeypatch,alerts):
++    import integration.orchestrator as orchestration
++    original=orchestration.invoke
++    def worker(stage,value,timeout):
++        result=original(stage,value,timeout)
++        if stage=='operation': result.update(status='invalid_input',alerts=copy.deepcopy(alerts))
++        return result
++    monkeypatch.setattr(orchestration,'invoke',worker)
++    r=run_lastplate_pipeline(payload,config=PipelineConfig(storage_dir=tmp_path))
++    save('unknown-alert' if alerts else 'absent-alert',r)
++    error=next(e for e in r['errors'] if e['stage']=='operation')
++    assert error['http_status']==422 and error['native_status']=='invalid_input'
++    assert error['code']==('FUTURE_INPUT_ALERT' if alerts else 'OPERATION_INVALID_INPUT')
++    assert error['alerts']==alerts
++    assert r['demand'] and r['decision'] and r['inventory_risk'] is None
++
++def test_usable_stock_native_policy_is_shared(payload,tmp_path):
++    from integration.native_stock import usable_stock
++    # Mixed lots, inclusive expiry, unchanged units. Native allocation is also exercised below.
++    r=run_lastplate_pipeline(payload,config=PipelineConfig(storage_dir=tmp_path))
++    payload['input_revision']=r['input_revision']
++    lot=payload['inventory'][0]
++    payload['inventory']=[{**lot,'current_stock':q,'unit':unit,'expiry_date':expiry} for q,unit,expiry in
++        [(1000,'g','2026-09-17'),(2,'kg','2026-09-18'),(3000,'g','2026-09-19')]]
++    rows=build_operation(payload,r['demand'])['inventory_data']
++    assert [x['stock'] for x in rows]==[0,2,3000]
++    assert [x['unit'] for x in rows]==['g','kg','g']
++    assert usable_stock(2,'2026-09-18','2026-09-18')==2
++    save('usable-stock',rows)
++
++def test_invalid_expiry_is_rejected_before_model(payload,tmp_path):
++    from app.main import result_status
++    payload['inventory'][0]['expiry_date']='not-a-date'
++    r=run_lastplate_pipeline(payload,config=PipelineConfig(storage_dir=tmp_path))
++    save('invalid-expiry',r)
++    assert result_status(r)==422 and r['demand'] is None
++    assert r['errors'][0]['kind']=='input'
++    assert not list(tmp_path.rglob('*.sqlite3'))
++
++def test_raw_candidate_has_explicit_pending_gate(payload,tmp_path):
++    payload['operation_policy']['trim_loss_pct']={'두부':50}
++    base=run_lastplate_pipeline(payload,config=PipelineConfig(storage_dir=tmp_path))
++    assert base['inventory_risk'],base['errors']
++    risk=copy.deepcopy(base['inventory_risk'])
++    # Upstream raw/cooking flag, independent of other demo/missing-proof holds.
++    risk['substitute_candidates']=[dict(candidate_id='raw-candidate',original_menu='두부조림',candidate_menu='계란찜',
++        date=payload['target_date'],meal_type='lunch',nutrition_check='PASS',inventory_available=True,
++        operation_quantity_recheck_required=True,quantity_basis='native edible estimate',cause_event_ids=[])]
++    payload['input_revision']=base['input_revision']
++    scope=base['decision']['adapter_provenance']['operation']['analysis_scope']
++    final=invoke('decision',dict(payload=payload,demand=base['demand'],operation=base['operation'],inventory_risk=risk,scope=scope))
++    save('candidate-gate',dict(input=risk,decision=final))
++    gate=next(g for g in final['confirmation_gates'] if g['candidate_id']=='raw-candidate')
++    assert gate['status']=='pending' and gate['automatic_execution'] is False
++    assert any(q['request_id']==gate['request_id'] and q['status']=='pending' and q['agent']=='operation' for q in final['recommended_rechecks'])
++    assert final['requires_human_approval'] is True
++    assert not any(a['selected'] for a in final['menu_actions'] if a.get('candidate_id')=='raw-candidate')
++    evaluations=[a for a in final['candidate_evaluations'] if a.get('candidate_id')=='raw-candidate']
++    assert evaluations and all(a['decision'] in ('NEEDS_CONFIRMATION','BLOCK') for a in evaluations)
++    # Isolate the gate from DEMO and missing constraints with native all-PASS test evidence.
++    import subprocess
++    request=next(q for q in final['recommended_rechecks'] if q['request_id']==gate['request_id'])
++    code='''
++import json,sys
++from examples.fixtures import baseline,PASS
++from lastplate_decision import make_final_recommendation as decide
++p=baseline()
++p['inventory_risk_result']['substitute_candidates']=[dict(candidate_id='raw-candidate',kind='menu_substitution',menu='두부조림',candidate_menu='계란찜',constraints=PASS)]
++before=decide(**p)
++q=json.load(sys.stdin);q['input_revision']=p['input_revision']
++p['inventory_risk_result']['recommended_rechecks']=[q]
++after=decide(**p)
++assert before['candidate_evaluations'][0]['decision']=='REVIEW'
++assert after['candidate_evaluations'][0]['decision']=='NEEDS_CONFIRMATION'
++assert after['candidate_evaluations'][0]['selected'] is False
++assert all('raw-candidate' not in a['candidates'] for a in after['menu_actions'])
++print(json.dumps(dict(before=before,after=after),ensure_ascii=False))
++'''
++    proc=subprocess.run([sys.executable,'-c',code],cwd=ROOT/'decision',input=json.dumps(request),capture_output=True,text=True,encoding='utf8',env={**__import__('os').environ,'PYTHONUTF8':'1'})
++    assert proc.returncode==0,proc.stderr
++    save('all-pass-candidate-gate',json.loads(proc.stdout))
++    # A cancelled candidate may remain in audit, but must not generate a pending gate.
++    risk['detected_events'].append(dict(event_id='cancelled-raw',event_type='supply_risk',superseded=True))
++    risk['substitute_candidates'][0]['cause_event_ids']=['cancelled-raw']
++    cancelled=invoke('decision',dict(payload=payload,demand=base['demand'],operation=base['operation'],inventory_risk=risk,scope=scope))
++    assert cancelled['confirmation_gates']==[]
++    assert not any('operation_quantity_recheck_required:' in q['reason'] for q in cancelled['recommended_rechecks'])
++    save('cancelled-candidate-gate',cancelled)
++
++def test_business_confirmation_remains_http_200(payload,tmp_path,monkeypatch):
++    from fastapi.testclient import TestClient
++    from app.main import app
++    monkeypatch.setenv('LASTPLATE_STORAGE',str(tmp_path));monkeypatch.setenv('LASTPLATE_MODE','demo')
++    payload['supply_events']=[]
++    for lot in payload['inventory']:
++        lot.update(current_stock=1000000,unit='g',expiry_date='2026-10-01',minimum_stock=0,planned_order=0,last_used_date='2026-09-17')
++    for row in payload['prices']:
++        for key in ('current_price','price_1w_ago','price_2w_ago','price_3w_ago','price_4w_ago'): row[key]=1000
++    for row in payload['monthly_prices']: row['average_price']=1000
++    res=TestClient(app).post('/api/plan',json=payload);r=res.json()
++    save('business-confirmation',dict(http_status=res.status_code,body=r))
++    assert res.status_code==200 and r['decision']['decision_type']=='NEEDS_CONFIRMATION'
++    assert r['decision']['requires_human_approval'] is True
+--- v0.1.1/tests/review/final_checks.py
++++ v0.1.2/tests/review/final_checks.py
+@@ -0,0 +1,16 @@
++import tempfile
++import sys,json,copy,statistics
++from pathlib import Path
++BASE=Path(tempfile.mkdtemp(prefix='lastplate-review012-'));ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'reports/p1-v012/previous-invariants'
++sys.path.insert(0,str(ROOT))
++from integration import run_lastplate_pipeline,PipelineConfig
++p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf-8'));p['supply_events']=[]
++for lot in p['inventory']:lot.update(current_stock=1000000,unit='g',expiry_date='2026-10-01',minimum_stock=0,planned_order=0,last_used_date='2026-09-17')
++for row in p['prices']:
++    for k in ('current_price','price_1w_ago','price_2w_ago','price_3w_ago','price_4w_ago'):row[k]=1000
++for row in p['monthly_prices']:row['average_price']=1000
++cfg=PipelineConfig(storage_dir=BASE/'final-check-store-011')
++q=copy.deepcopy(p);q['request_id']='public-superseded';q['event']={'event_type':'supply_risk','superseded':True,'ingredient':'두부','date':'2026-09-18','severity':'HIGH','description':'REVOKED_PUBLIC_SUPPLY'}
++r=run_lastplate_pipeline(q,config=cfg)
++(OUT/'public-superseded.json').write_text(json.dumps(r,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
++print(json.dumps({'pipeline':r['pipeline_status'],'superseded_events':r['inventory_risk']['detected_events'],'supply_risks':r['inventory_risk']['supply_risks'],'decision_inventory_actions':r['decision']['inventory_actions']},ensure_ascii=False),flush=True)
+--- v0.1.1/tests/review/followup_review.py
++++ v0.1.2/tests/review/followup_review.py
+@@ -0,0 +1,34 @@
++import tempfile
++import json,sys,copy
++from pathlib import Path
++BASE=Path(tempfile.mkdtemp(prefix='lastplate-review012-'));ROOT=Path(__file__).resolve().parents[2];OUT=ROOT/'reports/p1-v012/previous-invariants'
++sys.path.insert(0,str(ROOT))
++from integration import run_lastplate_pipeline,PipelineConfig
++cfg=PipelineConfig(storage_dir=BASE/'followup-store-011')
++original=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf-8'))
++clean=copy.deepcopy(original);clean['supply_events']=[]
++for lot in clean['inventory']:lot.update(current_stock=1000000,unit='g',expiry_date='2026-10-01',minimum_stock=0,planned_order=0,last_used_date='2026-09-17')
++for row in clean['prices']:
++    for key in ('current_price','price_1w_ago','price_2w_ago','price_3w_ago','price_4w_ago'):row[key]=1000
++for row in clean['monthly_prices']:row['average_price']=1000
++cases={}
++for pop in (3000,600,5000,520):
++    p=copy.deepcopy(clean);p['attendance'].update(registered_population=pop,vacation=30,business_trip=50,work_from_home=10,overtime=50)
++    if pop==520:p['meal_capacity']=550
++    cases['ood-valid-'+str(pop)]=p
++cases['original-lh-demo']=original
++cases['original-small-demo']=json.loads((ROOT/'examples/small_site.json').read_text(encoding='utf-8'))
++q=copy.deepcopy(clean);q['event']={'event_type':'attendance_event','needs_clarification':True,'date':'2026-09-18','description':'Unknown visitor count'};cases['decision-ambiguity']=q
++q=copy.deepcopy(clean);q['supply_events']=[{'event_type':'supply_risk','event_id':'revoked-supply','superseded':True,'ingredient':'두부','date':'2026-09-18','description':'revoked supply risk'}];cases['superseded-supply-audit']=q
++q=copy.deepcopy(clean);q['inventory']=[x for x in q['inventory'] if x['ingredient']!='두부']+[dict(clean['inventory'][0],current_stock=100000)];q['operation_policy']['trim_loss_pct']={'두부':50};cases['loss-gap-single-lot']=q
++q=copy.deepcopy(clean);q['recipes'][0]['ingredients'][0]['unit']='ml';q['inventory'][0]['unit']='ml';q['inventory'][1]['unit']='ml';cases['unsupported-risk-unit']=q
++q=copy.deepcopy(clean);q['nutrition']=[];q['prices'][0]['current_price']=10000;cases['nutrition-provider-missing']=q
++results={}
++for name,p in cases.items():
++    if name not in {'superseded-supply-audit','loss-gap-single-lot','nutrition-provider-missing'}:continue
++    p['request_id']='followup-'+name;r=run_lastplate_pipeline(p,config=cfg)
++    (OUT/(name+'.json')).write_text(json.dumps(r,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
++    d=r['demand'] or {};o=r['operation'] or {};dec=r['decision'] or {}
++    results[name]={'status':r['pipeline_status'],'errors':r['errors'],'prediction':d.get('predicted_diners'),'applicability':d.get('applicability'),'confidence':d.get('confidence'),'warnings':d.get('warnings'),'servings':o.get('recommended_servings'),'capacity_excess':o.get('capacity_excess'),'decision':dec.get('decision_type'),'decision_confidence':dec.get('confidence'),'notes':dec.get('data_quality_notes'),'timings':r['timings']}
++    (OUT/'followup.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')
++    print(name,json.dumps({k:v for k,v in results[name].items() if k not in ('notes','warnings')},ensure_ascii=False),flush=True)
+--- v0.1.1/tests/review/probe_review.py
++++ v0.1.2/tests/review/probe_review.py
+@@ -0,0 +1,95 @@
++import tempfile
++import sys,json,copy,tempfile,os,sqlite3,time
++from pathlib import Path
++BASE=Path(tempfile.mkdtemp(prefix='lastplate-review012-'))
++ROOT=Path(__file__).resolve().parents[2]
++OUT=ROOT/'reports/p1-v012/previous-invariants'
++OUT.mkdir(parents=True,exist_ok=True)
++sys.path.insert(0,str(ROOT))
++from integration import run_lastplate_pipeline,PipelineConfig
++from integration.bridge import invoke
++from integration.adapters.operation_adapter import build_operation
++p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf-8'))
++p['supply_events']=[]
++for lot in p['inventory']:
++    lot.update(current_stock=1000000,unit='g',expiry_date='2026-10-01',minimum_stock=0,planned_order=0,last_used_date='2026-09-17')
++for row in p['prices']:
++    for key in ('current_price','price_1w_ago','price_2w_ago','price_3w_ago','price_4w_ago'): row[key]=1000
++for row in p['monthly_prices']: row['average_price']=1000
++cfg=PipelineConfig(storage_dir=BASE/'probe-store-011')
++results={}
++def run(name,payload):
++    payload=copy.deepcopy(payload);payload['request_id']='review-'+name
++    r=run_lastplate_pipeline(payload,config=cfg)
++    json.dumps(r,allow_nan=False)
++    (OUT/(name+'.json')).write_text(json.dumps(r,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
++    results[name]={'status':r['pipeline_status'],'errors':r['errors'],'prediction':(r['demand'] or {}).get('predicted_diners'),'applicability':(r['demand'] or {}).get('applicability'),'servings':(r['operation'] or {}).get('recommended_servings'),'decision':(r['decision'] or {}).get('decision_type'),'timings':r['timings']}
++    (OUT/'probes.json').write_text(json.dumps(results,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
++    print(name,json.dumps(results[name],ensure_ascii=False),flush=True)
++    return r,payload
++normal,np=run('normal',p)
++for pop in (3000,600,5000,520):
++    q=copy.deepcopy(p);q['attendance'].update(registered_population=pop,vacation=30,business_trip=50,work_from_home=10,overtime=50)
++    if pop==520:q['meal_capacity']=550
++    run('ood-valid-'+str(pop),q)
++mutations={
++ 'invalid-ml':lambda q:q['attendance'].update(vacation=-10),
++ 'recipe-missing':lambda q:q.update(recipes=[]),
++ 'unsupported-unit':lambda q:q['recipes'][0]['ingredients'][0].update(unit='bucket'),
++ 'inventory-missing':lambda q:q.update(inventory=[]),
++ 'inventory-failure':lambda q:q['inventory'][0].update(unit_price=-1),
++ 'malformed-event':lambda q:q.update(event={'event_type':'banana'}),
++ 'ambiguity':lambda q:q.update(event='내일 두부 사용 금지인가?'),
++ 'nutrition-missing-no-candidate':lambda q:q.update(nutrition=[]),
++ 'nutrition-failure':lambda q:(q.update(nutrition=[]),q['prices'][0].update(current_price=10000)),
++ 'nutrition-hard-fail':lambda q:q['operation_policy']['nutrition_per_serving'].update(protein=1),
++ 'shortage':lambda q:[x.update(current_stock=0) for x in q['inventory']],
++ 'expiry':lambda q:[x.update(expiry_date='2026-09-18') for x in q['inventory']],
++ 'expired':lambda q:[x.update(expiry_date='2026-09-16') for x in q['inventory']],
++ 'price-rise':lambda q:q['prices'][0].update(current_price=10000),
++ 'superseded':lambda q:q.update(event='내일 두부 금지. 두부 금지 해제.'),
++ 'attendance-increase':lambda q:q.update(event='내일 손님 35명 추가'),
++ 'unknown-sources':lambda q:q.update(sources={k:'UNKNOWN' for k in q['sources']}),
++ 'real-labels':lambda q:q.update(sources={k:'USER_UPLOAD:review-fixture' for k in q['sources']}),
++ 'string-bool':lambda q:q.update(supply_events=[{'event_type':'supply_risk','ingredient':'두부','date':'2026-09-18','superseded':'false'}]),
++ 'nan':lambda q:q['attendance'].update(vacation=float('nan')),
++ 'order-convertible-unit':lambda q:q.update(planned_orders=[{'ingredient':'두부','planned_order':1,'unit':'kg'}]),
++ 'loss-mismatch':lambda q:(q['operation_policy'].update(trim_loss_pct={'두부':50}),[x.update(current_stock=100000 if x['ingredient']=='두부' else 1000000) for x in q['inventory']]),
++}
++for name,fn in mutations.items():
++    if name not in {'inventory-failure','nutrition-hard-fail','order-convertible-unit','superseded'}:continue
++    q=copy.deepcopy(p);fn(q)
++    run(name,q)
++# Idempotent replay, mutation, durable count, stable recommendation.
++before=copy.deepcopy(np)
++again=run_lastplate_pipeline(np,config=cfg)
++db=next((BASE/'probe-store-011').rglob('*.sqlite3'),None)
++if db:
++    with sqlite3.connect(db) as c: n=c.execute('select count(*) from predictions where request_key=?',(np['site_id']+':'+np['request_id'],)).fetchone()[0]
++else:n=None
++results['retry']={'input_unchanged':np==before,'prediction_id_same':normal['demand']['prediction_id']==again['demand']['prediction_id'],'recommendation_revision_same':normal['decision']['recommendation_revision']==again['decision']['recommendation_revision'],'prediction_rows':n}
++# Operation 523 identity test across the real Decision adapter.
++pp={**np,'input_revision':normal['input_revision']}
++oi=build_operation(pp,normal['demand']);oi['demand_result']['prediction']=487;oi['demand_result']['prediction_interval']={'lower':469,'upper':507}
++op=invoke('operation',oi)
++dd=copy.deepcopy(normal['demand']);dd['source_payload']['prediction']=487;dd['predicted_diners']=487
++scope={'target_date':pp['target_date'],'meal_type':'lunch','coverage':'full','menus_complete':True,'menus':[{'menu':'두부조림','ingredients':['두부','간장'],'ingredients_complete':True}]}
++decision_value={'payload':pp,'demand':dd,'operation':op,'inventory_risk':normal['inventory_risk'],'scope':scope}
++de=invoke('decision',decision_value)
++results['523-identity']={'operation':op['recommended_servings'],'decision_operation':de['operation_recommended_servings'],'decision_final':de['recommended_servings'],'operation_prediction':op['predicted_diners'],'operation_source':op['source']}
++# Superseded stale derived risk: adversarial adapter boundary.
++stale=copy.deepcopy(decision_value)
++stale['inventory_risk']['detected_events'].append({'event_type':'price_event','event_id':'old-price','ingredient':'두부','date':'2026-09-18','severity':'HIGH','superseded':True,'description':'revoked price event'})
++stale['inventory_risk']['price_risks'].append({'event_id':'old-price','ingredient':'두부','date':'2026-09-18','severity':'HIGH','superseded':True,'description':'revoked price event'})
++sd=invoke('decision',stale)
++(OUT/'superseded-stale-decision.json').write_text(json.dumps(sd,ensure_ascii=False,indent=2),encoding='utf-8')
++results['superseded-stale']={'base_revision':de['recommendation_revision'],'stale_revision':sd['recommendation_revision'],'base_rechecks':de['recommended_rechecks'],'stale_rechecks':sd['recommended_rechecks'],'base_inventory_actions':de['inventory_actions'],'stale_inventory_actions':sd['inventory_actions'],'stale_trace':[t for t in sd['decision_trace'] if 'revoked' in json.dumps(t)]}
++# FastAPI lifecycle and error status checks.
++from fastapi.testclient import TestClient
++from app.main import app
++os.environ['LASTPLATE_STORAGE']=str(BASE/'api-probe-store-011')
++with TestClient(app,raise_server_exceptions=False) as client:
++    for name,body in [('normal',np),('empty',{}),('invalid-ml',{**np,'request_id':'api-invalid','attendance':{**np['attendance'],'vacation':-1}}),('nested-invalid',{**np,'request_id':'api-nested','supply_events':[{'event_type':'banana'}]})]:
++        res=client.post('/api/plan',json=body)
++        results['api-'+name]={'http':res.status_code,'body':res.json()}
++(OUT/'probes.json').write_text(json.dumps(results,ensure_ascii=False,indent=2,allow_nan=False),encoding='utf-8')
+--- v0.1.1/tests/review/run.py
++++ v0.1.2/tests/review/run.py
+@@ -0,0 +1,12 @@
++import subprocess,sys,os
++from pathlib import Path
++ROOT=Path(__file__).resolve().parents[2]
++OUT=ROOT/'reports/p1-v012/previous-invariants'
++for name in ('probe_review','followup_review','final_checks'):
++    proc=subprocess.run([sys.executable,str(ROOT/'tests/review'/(name+'.py'))],capture_output=True,text=True,encoding='utf8',env={**os.environ,'PYTHONUTF8':'1'})
++    (OUT/(name+'.txt')).write_text(proc.stdout+'\n'+proc.stderr,encoding='utf8')
++    print(name,proc.returncode,flush=True)
++    if proc.returncode:sys.exit(proc.returncode)
++proc=subprocess.run([sys.executable,'-m','pytest','-q','tests/review/test_review_findings.py','--junitxml='+str(OUT/'review-invariants.xml')],cwd=ROOT,capture_output=True,text=True,encoding='utf8',env={**os.environ,'PYTHONUTF8':'1'})
++(OUT/'review-invariants.txt').write_text(proc.stdout+'\n'+proc.stderr,encoding='utf8')
++print(proc.stdout);sys.exit(proc.returncode)
+--- v0.1.1/tests/review/test_review_findings.py
++++ v0.1.2/tests/review/test_review_findings.py
+@@ -0,0 +1,53 @@
++"""System invariants checked against freshly executed, unmodified pipeline outputs."""
++import json
++from pathlib import Path
++OUT=Path(__file__).resolve().parents[2]/'reports/p1-v012/previous-invariants'
++def get(name):return json.loads((OUT/(name+'.json')).read_text(encoding='utf-8'))
++def test_superseded_supply_must_not_create_current_menu_action():
++    assert not any('REVOKED_PUBLIC_SUPPLY' in a['reason'] for a in get('public-superseded')['decision']['menu_actions'])
++def test_superseded_supply_must_not_be_current_critical_alert():
++    assert not any(a.get('superseded') for a in get('public-superseded')['decision']['critical_alerts'])
++def test_inventory_must_use_operation_raw_requirement_for_raw_stock():
++    r=get('loss-gap-single-lot')
++    o=next(x for x in r['operation']['ingredient_requirements'] if x['ingredient']=='두부')
++    i=next(x for x in r['inventory_risk']['inventory_status'] if x['ingredient']=='두부')
++    assert i['shortage_at_service_g']==max(0,o['cooking_required']-o['stock'])
++def test_invalid_ml_input_must_return_http_4xx():
++    assert 400<=get('probes')['api-invalid-ml']['http']<500
++def test_convertible_order_units_must_not_fail_inventory_stage():
++    r=get('order-convertible-unit')
++    assert r['inventory_risk'] is not None and r['pipeline_status']=='COMPLETE'
++def test_supply_superseded_history_must_be_retained():
++    r=get('superseded-supply-audit')
++    assert any(e.get('superseded') for e in r['inventory_risk']['detected_events'])
++def test_partial_failure_preserves_prior_results():
++    r=get('inventory-failure')
++    assert r['pipeline_status']=='PARTIAL' and r['demand'] and r['operation'] and r['decision'] and r['inventory_risk'] is None
++def test_operation_quantity_identity():
++    x=get('probes')['523-identity'];assert x['operation']==x['decision_operation']==523 and x['decision_final'] in (None,523)
++def test_ood_warning_reaches_decision():
++    for pop in (600,5000):
++        r=get('ood-valid-'+str(pop))
++        assert r['demand']['applicability']=='OUT_OF_DISTRIBUTION' and r['decision']['confidence']=='LOW'
++        assert any('outside training range' in x for x in r['decision']['data_quality_notes'])
++def test_raw_prediction_not_clipped():
++    r=get('ood-valid-520')
++    assert r['demand']['predicted_diners']==r['demand']['source_payload']['prediction']==r['operation']['predicted_diners']>550
++    assert r['operation']['capacity_excess']>0
++def test_human_approval_always_required():
++    for f in OUT.glob('*.json'):
++        r=json.loads(f.read_text(encoding='utf-8'))
++        if isinstance(r,dict) and r.get('pipeline_status') and isinstance(r.get('decision'),dict):assert r['decision']['requires_human_approval'] is True and r['decision']['approval_status']=='pending'
++def test_strict_json_output():
++    for f in OUT.glob('*.json'):
++        json.dumps(json.loads(f.read_text(encoding='utf-8')),allow_nan=False)
++def test_ban_release_superseded_does_not_block_restriction():
++    r=get('superseded');assert any(e['superseded'] for e in r['inventory_risk']['detected_events'])
++    assert 'restriction' not in r['decision']['serving_action']['failed_constraints']
++def test_idempotent_no_input_mutation():
++    r=get('probes')['retry'];assert all(r[k] is True for k in ('input_unchanged','prediction_id_same','recommendation_revision_same')) and r['prediction_rows']==1
++def test_hard_nutrition_failure_blocks():
++    r=get('nutrition-hard-fail');assert r['operation']['constraints']['status']=='FAIL' and r['decision']['decision_type']=='BLOCK'
++def test_nutrition_provider_missing_does_not_pass_candidates():
++    r=get('nutrition-provider-missing');assert r['inventory_risk']['nutrition_results']
++    assert all(n['status']=='UNKNOWN' for n in r['inventory_risk']['nutrition_results'])

@@ -1,0 +1,49 @@
+{
+  "baseline_zip_sha256": "00c797ca2fff7d72f21dffd6e67cec95904a6f1060fcda6e0c214a831e270435",
+  "original_28_test_file_unchanged": true,
+  "test_counts": {
+    "tests.test_data_quality_and_integration": 47,
+    "tests.test_inventory_risk_agent": 28,
+    "tests.test_review_regressions": 58
+  },
+  "modified": [
+    "adapters/inventory_adapter.py",
+    "adapters/local.py",
+    "adapters/monthly_price_adapter.py",
+    "adapters/nutrition_adapter.py",
+    "adapters/price_trend_adapter.py",
+    "adapters/recipe_adapter.py",
+    "adapters/supply_risk_adapter.py",
+    "agents/inventory_risk.py",
+    "config.py",
+    "examples/demo_report.html",
+    "examples/demo_report.json",
+    "graph/inventory_risk_workflow.py",
+    "pyproject.toml",
+    "README.md",
+    "requirements-tested.txt",
+    "schemas/event.py",
+    "schemas/risk_report.py",
+    "tools/events.py",
+    "tools/inventory.py",
+    "tools/pricing.py",
+    "VALIDATION.md"
+  ],
+  "added": [
+    "examples/__init__.py",
+    "examples/forecast_wrapper.py",
+    "examples/regression_cases.json",
+    "examples/revision_manifest.json",
+    "examples/streamlit_app.py",
+    "examples/test-results.xml",
+    "REVISION_REPORT.md",
+    "schemas/alert.py",
+    "schemas/errors.py",
+    "schemas/request.py",
+    "tests/test_data_quality_and_integration.py",
+    "tests/test_review_regressions.py",
+    "tools/alerts.py",
+    "tools/identity.py"
+  ],
+  "demo_files_unchanged": true
+}

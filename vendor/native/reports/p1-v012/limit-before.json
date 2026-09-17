@@ -1,0 +1,1881 @@
+{
+  "http_status": 200,
+  "body": {
+    "pipeline_status": "PARTIAL",
+    "demand": {
+      "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+      "target_date": "2026-09-18",
+      "predicted_diners": 883.0,
+      "lower_bound": null,
+      "upper_bound": null,
+      "predicted_rate": null,
+      "available_population": null,
+      "model_version": "v20260917T054002-4222a35a",
+      "model_type": "lightgbm",
+      "applicability": "IN_RANGE",
+      "confidence": "UNKNOWN",
+      "warnings": [],
+      "training_ranges": {
+        "features": {
+          "employees": {
+            "min": 2601.0,
+            "max": 3305.0
+          },
+          "vacation": {
+            "min": 23.0,
+            "max": 1224.0
+          },
+          "business_trip": {
+            "min": 41.0,
+            "max": 378.0
+          },
+          "work_from_home": {
+            "min": 0.0,
+            "max": 533.0
+          },
+          "overtime": {
+            "min": 0.0,
+            "max": 1044.0
+          }
+        },
+        "period": {
+          "start": "2016-02-01",
+          "end": "2021-01-26",
+          "rows": 1205
+        },
+        "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+        "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+        "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+      },
+      "source_type": "MODEL",
+      "source_payload": {
+        "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+        "prediction": 883,
+        "model_version": "v20260917T054002-4222a35a",
+        "created_at": "2026-09-17T15:12:24.773199+00:00",
+        "target_date": "2026-09-18",
+        "deadline_at": "2026-09-18T01:00:00+00:00",
+        "timezone": "Asia/Seoul",
+        "mode": "demo",
+        "input_data": {
+          "employees": 3000.0,
+          "vacation": 69.0,
+          "business_trip": 183.0,
+          "work_from_home": 362.0,
+          "overtime": 551.0,
+          "date": "2026-09-18",
+          "weekday": "금",
+          "menu": "두부조림"
+        },
+        "availability": {},
+        "weather": null,
+        "policy": {
+          "timezone": "Asia/Seoul",
+          "cutoff_time": "10:00",
+          "actual_ready_time": "14:00",
+          "deadline_days_before": 0,
+          "mode": "demo"
+        },
+        "operational_eligible": false,
+        "availability_status": "historical_unknown"
+      }
+    },
+    "operation": {
+      "schema_version": "2.0",
+      "status": "invalid_input",
+      "predicted_diners": null,
+      "base_demand": null,
+      "safety_margin_pct": null,
+      "recommended_servings": null,
+      "required_servings": null,
+      "capacity_servings": null,
+      "capacity_excess": null,
+      "provenance": {
+        "recipe": null,
+        "inventory": null,
+        "nutrition": null,
+        "policy": null
+      },
+      "ingredient_requirements": [],
+      "order_reviews": [],
+      "constraints": {
+        "status": "UNKNOWN",
+        "checks": []
+      },
+      "alerts": [
+        {
+          "severity": "HIGH",
+          "type": "INPUT_DEMAND_OUT_OF_RANGE",
+          "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+          "ingredient": null,
+          "field": null,
+          "evidence": {
+            "maximum_input_servings": 100,
+            "received_max": 883.0
+          },
+          "trace_refs": []
+        }
+      ],
+      "decision_trace": [
+        {
+          "trace_id": "trace-0001",
+          "step": "demand_source",
+          "formula": null,
+          "inputs": {
+            "prediction": 883.0,
+            "prediction_interval": null,
+            "model_version": "v20260917T054002-4222a35a",
+            "input_snapshot_id": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+            "applicability": {
+              "status": "IN_DOMAIN",
+              "reasons": []
+            },
+            "warnings": [],
+            "operational_eligible": false,
+            "availability_status": "historical_unknown",
+            "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+            "created_at": "2026-09-17T15:12:24.773199+00:00",
+            "target_date": "2026-09-18",
+            "deadline_at": "2026-09-18T01:00:00+00:00",
+            "timezone": "Asia/Seoul",
+            "mode": "demo",
+            "input_data": {
+              "employees": 3000.0,
+              "vacation": 69.0,
+              "business_trip": 183.0,
+              "work_from_home": 362.0,
+              "overtime": 551.0,
+              "date": "2026-09-18",
+              "weekday": "금",
+              "menu": "두부조림"
+            },
+            "availability": {},
+            "weather": null,
+            "policy": {
+              "timezone": "Asia/Seoul",
+              "cutoff_time": "10:00",
+              "actual_ready_time": "14:00",
+              "deadline_days_before": 0,
+              "mode": "demo"
+            }
+          },
+          "result": "preserved"
+        }
+      ],
+      "requires_human_approval": true,
+      "advisory_only": true,
+      "data_mode": "DEMO",
+      "source": {
+        "prediction": 883.0,
+        "prediction_interval": null,
+        "model_version": "v20260917T054002-4222a35a",
+        "input_snapshot_id": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+        "applicability": {
+          "status": "IN_DOMAIN",
+          "reasons": []
+        },
+        "warnings": [],
+        "operational_eligible": false,
+        "availability_status": "historical_unknown",
+        "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+        "created_at": "2026-09-17T15:12:24.773199+00:00",
+        "target_date": "2026-09-18",
+        "deadline_at": "2026-09-18T01:00:00+00:00",
+        "timezone": "Asia/Seoul",
+        "mode": "demo",
+        "input_data": {
+          "employees": 3000.0,
+          "vacation": 69.0,
+          "business_trip": 183.0,
+          "work_from_home": 362.0,
+          "overtime": 551.0,
+          "date": "2026-09-18",
+          "weekday": "금",
+          "menu": "두부조림"
+        },
+        "availability": {},
+        "weather": null,
+        "policy": {
+          "timezone": "Asia/Seoul",
+          "cutoff_time": "10:00",
+          "actual_ready_time": "14:00",
+          "deadline_days_before": 0,
+          "mode": "demo"
+        }
+      },
+      "policy": {
+        "execution_mode": "simulation",
+        "policy_acknowledged": false,
+        "capacity_servings": 2000,
+        "maximum_input_servings": 100,
+        "provenance": {
+          "recipe": null,
+          "inventory": null,
+          "nutrition": null,
+          "policy": null
+        },
+        "rounding_policy": "legacy_combined",
+        "cooking_quantum": null,
+        "purchase_quantum": null,
+        "fractional_ea_inventory": false,
+        "safety_margin_pct": 3.0,
+        "trim_loss_pct": {},
+        "minimum_servings": 0,
+        "shortage_policy": "conservative",
+        "order_tolerance_pct": 5.0,
+        "quantity_quantum": {
+          "g": 1.0,
+          "ml": 1.0,
+          "ea": 1.0
+        },
+        "planned_servings": null,
+        "required_menus": [
+          "두부조림"
+        ],
+        "constraints": {
+          "minimum_serving_amount": {},
+          "minimum_protein": 20.0,
+          "calorie_range": [
+            500.0,
+            900.0
+          ],
+          "sodium_max": 1500.0,
+          "allergy_restriction": [
+            "땅콩"
+          ]
+        },
+        "nutrition_per_serving": {
+          "protein": 30.0,
+          "calories": 700.0,
+          "sodium": 1000.0,
+          "allergens": [
+            "대두"
+          ]
+        },
+        "data_mode": "DEMO"
+      },
+      "demand_envelope": {
+        "confidence": "UNKNOWN",
+        "model_type": "lightgbm",
+        "training_ranges": {
+          "features": {
+            "employees": {
+              "min": 2601.0,
+              "max": 3305.0
+            },
+            "vacation": {
+              "min": 23.0,
+              "max": 1224.0
+            },
+            "business_trip": {
+              "min": 41.0,
+              "max": 378.0
+            },
+            "work_from_home": {
+              "min": 0.0,
+              "max": 533.0
+            },
+            "overtime": {
+              "min": 0.0,
+              "max": 1044.0
+            }
+          },
+          "period": {
+            "start": "2016-02-01",
+            "end": "2021-01-26",
+            "rows": 1205
+          },
+          "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+          "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+          "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+        },
+        "warnings": [],
+        "model_version": "v20260917T054002-4222a35a",
+        "predicted_diners": 883.0,
+        "applicability": "IN_RANGE"
+      }
+    },
+    "inventory_risk": null,
+    "decision": {
+      "schema_version": "0.1.3",
+      "run_id": "lh-like-001",
+      "recommendation_revision": "rec-48225ff4641576b640bb2cc5",
+      "selected_action_ids": [
+        "servings"
+      ],
+      "rejected_candidate_ids": [],
+      "recheck_history": [
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-59a54f4e964744dbd1165a15",
+          "agent": "inventory_risk",
+          "reason": "missing_target_date",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-569272ba09940644159b852b",
+          "agent": "inventory_risk",
+          "reason": "missing_prediction_id",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-f5dc1aa5c11b6cf5c507d204",
+          "agent": "inventory_risk",
+          "reason": "missing_input_revision",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-132a16a777b79b6c3ede6bcd",
+          "agent": "inventory_risk",
+          "reason": "missing_result_revision",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-7a7d78f39e9e1dbc380013da",
+          "agent": "inventory_risk",
+          "reason": "analysis_scope_mismatch",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": null,
+          "request_id": "rq-5628971ab18d166821b57856",
+          "agent": "demand_forecast",
+          "reason": "demand_ineligible",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44",
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": null,
+          "request_id": "rq-ea12f7a51af7c952c1e65260",
+          "agent": "operation",
+          "reason": "consumed_dependency:inventory_risk",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": "operation-d39ebb31c17ccd62d567ac88587022b295d5893a7ba6c093d92968ce28c1a027",
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {
+            "demand_forecast": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44"
+          },
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-d306a9bee092ade0dc3bd9de",
+          "agent": "inventory_risk",
+          "reason": "상위 결과 재검증",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": null,
+          "request_id": "rq-a159781242e872d26e7329a9",
+          "agent": "operation",
+          "reason": "상위 결과 재검증",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": "operation-d39ebb31c17ccd62d567ac88587022b295d5893a7ba6c093d92968ce28c1a027",
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {
+            "demand_forecast": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44"
+          },
+          "error": null
+        }
+      ],
+      "upstream_traces": {
+        "demand_forecast": [],
+        "operation": [
+          {
+            "trace_id": "trace-0001",
+            "step": "demand_source",
+            "formula": null,
+            "inputs": {
+              "prediction": 883.0,
+              "prediction_interval": null,
+              "model_version": "v20260917T054002-4222a35a",
+              "input_snapshot_id": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+              "applicability": {
+                "status": "IN_DOMAIN",
+                "reasons": []
+              },
+              "warnings": [],
+              "operational_eligible": false,
+              "availability_status": "historical_unknown",
+              "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+              "created_at": "2026-09-17T15:12:24.773199+00:00",
+              "target_date": "2026-09-18",
+              "deadline_at": "2026-09-18T01:00:00+00:00",
+              "timezone": "Asia/Seoul",
+              "mode": "demo",
+              "input_data": {
+                "employees": 3000.0,
+                "vacation": 69.0,
+                "business_trip": 183.0,
+                "work_from_home": 362.0,
+                "overtime": 551.0,
+                "date": "2026-09-18",
+                "weekday": "금",
+                "menu": "두부조림"
+              },
+              "availability": {},
+              "weather": null,
+              "policy": {
+                "timezone": "Asia/Seoul",
+                "cutoff_time": "10:00",
+                "actual_ready_time": "14:00",
+                "deadline_days_before": 0,
+                "mode": "demo"
+              }
+            },
+            "result": "preserved"
+          }
+        ],
+        "inventory_risk": []
+      },
+      "status": "needs_confirmation",
+      "critical_alerts": [],
+      "recommended_servings": null,
+      "serving_action": {
+        "action_id": "servings",
+        "ingredient": null,
+        "menu": null,
+        "candidate_id": null,
+        "decision": "NEEDS_CONFIRMATION",
+        "action": "[DEMO 검토용] 상위 Operation 조리량 유지 검토",
+        "reason": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply; 필수 예측·조리량 누락; 상위 결과 갱신/확인 필요",
+        "current_plan": null,
+        "recommended": null,
+        "unit": null,
+        "failed_constraints": [],
+        "unknown_constraints": [
+          "shortage",
+          "expiry",
+          "allergy",
+          "nutrition",
+          "restriction",
+          "supply"
+        ],
+        "selected": true,
+        "scope": {
+          "target_date": "2026-09-18",
+          "meal_type": "lunch",
+          "menu": null,
+          "ingredient": null
+        },
+        "candidates": []
+      },
+      "procurement_actions": [],
+      "inventory_actions": [],
+      "menu_actions": [],
+      "candidate_evaluations": [],
+      "confidence": "LOW",
+      "provenance_notes": [
+        "INFO 출처: MODEL",
+        "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown"
+      ],
+      "source_provenance": [
+        {
+          "kind": "INFO",
+          "message": "INFO 출처: MODEL",
+          "path": "input.demand_result.source_type",
+          "warning": false,
+          "affects_confidence": false
+        },
+        {
+          "kind": "DEMO",
+          "message": "Demand demo 모드: 운영 근거로 사용 불가",
+          "path": "input.demand_result.mode",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "INFO",
+          "message": "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+          "path": "input.demand_result.provenance_notes",
+          "warning": false,
+          "affects_confidence": false
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+          "path": "input.operation_result.data_sources.recipe",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+          "path": "input.operation_result.data_sources.nutrition",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+          "path": "input.operation_result.data_sources.price_trend",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+          "path": "input.operation_result.data_sources.monthly_price",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+          "path": "input.operation_result.data_sources.inventory",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+          "path": "input.operation_result.data_sources.supply_risk",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+          "path": "input.operation_result.data_sources.weekly_menu",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+          "path": "input.operation_result.data_sources.constraints",
+          "warning": true,
+          "affects_confidence": true
+        }
+      ],
+      "quality_records": [
+        {
+          "kind": "INFO",
+          "message": "INFO 출처: MODEL",
+          "path": "input.demand_result.source_type",
+          "warning": false,
+          "affects_confidence": false
+        },
+        {
+          "kind": "DEMO",
+          "message": "Demand demo 모드: 운영 근거로 사용 불가",
+          "path": "input.demand_result.mode",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "INFO",
+          "message": "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+          "path": "input.demand_result.provenance_notes",
+          "warning": false,
+          "affects_confidence": false
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+          "path": "input.operation_result.data_sources.recipe",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+          "path": "input.operation_result.data_sources.nutrition",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+          "path": "input.operation_result.data_sources.price_trend",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+          "path": "input.operation_result.data_sources.monthly_price",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+          "path": "input.operation_result.data_sources.inventory",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+          "path": "input.operation_result.data_sources.supply_risk",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+          "path": "input.operation_result.data_sources.weekly_menu",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+          "path": "input.operation_result.data_sources.constraints",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "WARNING",
+          "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+          "path": "input.operation_result.data_quality_notes",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "WARNING",
+          "message": "Operation requires confirmation: invalid_input",
+          "path": "input.operation_result.data_quality_notes",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: target_date 누락",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: prediction_id 누락",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: input_revision 누락",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: result_revision 누락",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: 분석 범위 누락/불일치 또는 부분 분석",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "operation: inventory_risk 소비 의존 근거 누락/불일치 (required=None, consumed=None)",
+          "path": "decision",
+          "warning": true,
+          "affects_confidence": true
+        }
+      ],
+      "confidence_evidence": [
+        {
+          "kind": "incomplete_evidence",
+          "message": "현재 계획 검증 미완료 또는 미해결 재실행 요청"
+        },
+        {
+          "kind": "DEMO",
+          "message": "Demand demo 모드: 운영 근거로 사용 불가",
+          "path": "input.demand_result.mode"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+          "path": "input.operation_result.data_sources.recipe"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_nutrition.csv",
+          "path": "input.operation_result.data_sources.nutrition"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_price_trend.csv",
+          "path": "input.operation_result.data_sources.price_trend"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:demo_monthly_price.csv",
+          "path": "input.operation_result.data_sources.monthly_price"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:food_inventory.xlsx",
+          "path": "input.operation_result.data_sources.inventory"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+          "path": "input.operation_result.data_sources.supply_risk"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:weekly_menu.xlsx",
+          "path": "input.operation_result.data_sources.weekly_menu"
+        },
+        {
+          "kind": "DEMO",
+          "message": "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+          "path": "input.operation_result.data_sources.constraints"
+        },
+        {
+          "kind": "WARNING",
+          "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+          "path": "input.operation_result.data_quality_notes"
+        },
+        {
+          "kind": "WARNING",
+          "message": "Operation requires confirmation: invalid_input",
+          "path": "input.operation_result.data_quality_notes"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: target_date 누락",
+          "path": "decision"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: prediction_id 누락",
+          "path": "decision"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: input_revision 누락",
+          "path": "decision"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: result_revision 누락",
+          "path": "decision"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "inventory_risk: 분석 범위 누락/불일치 또는 부분 분석",
+          "path": "decision"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+          "path": "decision"
+        },
+        {
+          "kind": "VALIDATION",
+          "message": "operation: inventory_risk 소비 의존 근거 누락/불일치 (required=None, consumed=None)",
+          "path": "decision"
+        }
+      ],
+      "confidence_reasons": [
+        "현재 계획 검증 미완료 또는 미해결 재실행 요청",
+        "Demand demo 모드: 운영 근거로 사용 불가",
+        "DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "DEMO 출처: DEMO:demo_nutrition.csv",
+        "DEMO 출처: DEMO:demo_price_trend.csv",
+        "DEMO 출처: DEMO:demo_monthly_price.csv",
+        "DEMO 출처: DEMO:food_inventory.xlsx",
+        "DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "DEMO 출처: DEMO:weekly_menu.xlsx",
+        "DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+        "Operation requires confirmation: invalid_input",
+        "inventory_risk: target_date 누락",
+        "inventory_risk: prediction_id 누락",
+        "inventory_risk: input_revision 누락",
+        "inventory_risk: result_revision 누락",
+        "inventory_risk: 분석 범위 누락/불일치 또는 부분 분석",
+        "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "operation: inventory_risk 소비 의존 근거 누락/불일치 (required=None, consumed=None)"
+      ],
+      "requires_human_approval": true,
+      "approval_status": "pending",
+      "recommended_rechecks": [
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-59a54f4e964744dbd1165a15",
+          "agent": "inventory_risk",
+          "reason": "missing_target_date",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-569272ba09940644159b852b",
+          "agent": "inventory_risk",
+          "reason": "missing_prediction_id",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-f5dc1aa5c11b6cf5c507d204",
+          "agent": "inventory_risk",
+          "reason": "missing_input_revision",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-132a16a777b79b6c3ede6bcd",
+          "agent": "inventory_risk",
+          "reason": "missing_result_revision",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-7a7d78f39e9e1dbc380013da",
+          "agent": "inventory_risk",
+          "reason": "analysis_scope_mismatch",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": null,
+          "request_id": "rq-5628971ab18d166821b57856",
+          "agent": "demand_forecast",
+          "reason": "demand_ineligible",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44",
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": null,
+          "request_id": "rq-ea12f7a51af7c952c1e65260",
+          "agent": "operation",
+          "reason": "consumed_dependency:inventory_risk",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": "operation-d39ebb31c17ccd62d567ac88587022b295d5893a7ba6c093d92968ce28c1a027",
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {
+            "demand_forecast": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44"
+          },
+          "error": null
+        },
+        {
+          "analysis_mode": "full",
+          "request_id": "rq-d306a9bee092ade0dc3bd9de",
+          "agent": "inventory_risk",
+          "reason": "상위 결과 재검증",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": null,
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {},
+          "error": null
+        },
+        {
+          "analysis_mode": null,
+          "request_id": "rq-a159781242e872d26e7329a9",
+          "agent": "operation",
+          "reason": "상위 결과 재검증",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "source_agent": "decision",
+          "source_result_revision": null,
+          "baseline_result_revision": "operation-d39ebb31c17ccd62d567ac88587022b295d5893a7ba6c093d92968ce28c1a027",
+          "result_revision": null,
+          "status": "pending",
+          "attempts": 0,
+          "required_dependencies": {
+            "demand_forecast": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44"
+          },
+          "error": null
+        }
+      ],
+      "decision_trace": [
+        {
+          "step": 1,
+          "source": "inventory_risk",
+          "rule": "provenance_gate",
+          "finding": "inventory_risk: target_date 누락",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 2,
+          "source": "inventory_risk",
+          "rule": "provenance_gate",
+          "finding": "inventory_risk: prediction_id 누락",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 3,
+          "source": "inventory_risk",
+          "rule": "provenance_gate",
+          "finding": "inventory_risk: input_revision 누락",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 4,
+          "source": "inventory_risk",
+          "rule": "provenance_gate",
+          "finding": "inventory_risk: result_revision 누락",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 5,
+          "source": "inventory_risk",
+          "rule": "provenance_gate",
+          "finding": "inventory_risk: 분석 범위 누락/불일치 또는 부분 분석",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 6,
+          "source": "demand_forecast",
+          "rule": "provenance_gate",
+          "finding": "Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 7,
+          "source": "operation",
+          "rule": "provenance_gate",
+          "finding": "operation: inventory_risk 소비 의존 근거 누락/불일치 (required=None, consumed=None)",
+          "evidence": {},
+          "decision": null
+        },
+        {
+          "step": 8,
+          "source": "Demand Forecast",
+          "rule": "upstream_prediction",
+          "finding": "상위 Agent 예측 보존",
+          "evidence": {
+            "provenance_notes": [
+              "ML v2: mode=demo, operational_eligible=False, availability_status=historical_unknown"
+            ],
+            "data_quality_notes": [],
+            "is_demo": false,
+            "data_sources": {},
+            "limitations": [],
+            "source_payload": {
+              "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+              "prediction": 883,
+              "model_version": "v20260917T054002-4222a35a",
+              "created_at": "2026-09-17T15:12:24.773199+00:00",
+              "target_date": "2026-09-18",
+              "deadline_at": "2026-09-18T01:00:00+00:00",
+              "timezone": "Asia/Seoul",
+              "mode": "demo",
+              "input_data": {
+                "employees": 3000.0,
+                "vacation": 69.0,
+                "business_trip": 183.0,
+                "work_from_home": 362.0,
+                "overtime": 551.0,
+                "date": "2026-09-18",
+                "weekday": "금",
+                "menu": "두부조림"
+              },
+              "availability": {},
+              "weather": null,
+              "policy": {
+                "timezone": "Asia/Seoul",
+                "cutoff_time": "10:00",
+                "actual_ready_time": "14:00",
+                "deadline_days_before": 0,
+                "mode": "demo"
+              },
+              "operational_eligible": false,
+              "availability_status": "historical_unknown"
+            },
+            "provenance": {
+              "dependency_basis": "independent",
+              "target_date": "2026-09-18",
+              "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+              "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+              "result_revision": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44",
+              "analysis_scope": {
+                "target_date": "2026-09-18",
+                "meal_type": "lunch",
+                "menus": [
+                  {
+                    "menu": "두부조림",
+                    "ingredients": [
+                      "두부",
+                      "간장"
+                    ],
+                    "ingredients_complete": true
+                  }
+                ],
+                "menus_complete": true,
+                "coverage": "full"
+              },
+              "consumed_results": {},
+              "metadata_source": "parent-service-execution-record"
+            },
+            "mode": "demo",
+            "operational_eligible": false,
+            "availability_status": "historical_unknown",
+            "prediction": 883.0,
+            "model_version": "v20260917T054002-4222a35a",
+            "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+            "validation_mae": null,
+            "input_summary": {
+              "employees": 3000.0,
+              "vacation": 69.0,
+              "business_trip": 183.0,
+              "work_from_home": 362.0,
+              "overtime": 551.0,
+              "date": "2026-09-18",
+              "weekday": "금",
+              "menu": "두부조림"
+            },
+            "applied_event_ids": [],
+            "applicability": "IN_RANGE",
+            "warnings": [],
+            "source_type": "MODEL",
+            "integration_envelope": {
+              "confidence": "UNKNOWN",
+              "model_type": "lightgbm",
+              "training_ranges": {
+                "features": {
+                  "employees": {
+                    "min": 2601.0,
+                    "max": 3305.0
+                  },
+                  "vacation": {
+                    "min": 23.0,
+                    "max": 1224.0
+                  },
+                  "business_trip": {
+                    "min": 41.0,
+                    "max": 378.0
+                  },
+                  "work_from_home": {
+                    "min": 0.0,
+                    "max": 533.0
+                  },
+                  "overtime": {
+                    "min": 0.0,
+                    "max": 1044.0
+                  }
+                },
+                "period": {
+                  "start": "2016-02-01",
+                  "end": "2021-01-26",
+                  "rows": 1205
+                },
+                "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+                "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+                "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+              },
+              "warnings": [],
+              "model_version": "v20260917T054002-4222a35a",
+              "predicted_diners": 883.0,
+              "applicability": "IN_RANGE"
+            }
+          },
+          "decision": null
+        },
+        {
+          "step": 9,
+          "source": "Operation Agent",
+          "rule": "upstream_servings",
+          "finding": "상위 Agent 조리량 보존",
+          "evidence": {
+            "provenance_notes": [],
+            "data_quality_notes": [
+              "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+              "Operation requires confirmation: invalid_input"
+            ],
+            "is_demo": false,
+            "data_sources": {
+              "recipe": "DEMO:demo_recipe_ingredients.csv",
+              "nutrition": "DEMO:demo_nutrition.csv",
+              "price_trend": "DEMO:demo_price_trend.csv",
+              "monthly_price": "DEMO:demo_monthly_price.csv",
+              "inventory": "DEMO:food_inventory.xlsx",
+              "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+              "weekly_menu": "DEMO:weekly_menu.xlsx",
+              "constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+            },
+            "limitations": [],
+            "source_payload": {
+              "schema_version": "2.0",
+              "status": "invalid_input",
+              "predicted_diners": null,
+              "base_demand": null,
+              "safety_margin_pct": null,
+              "recommended_servings": null,
+              "required_servings": null,
+              "capacity_servings": null,
+              "capacity_excess": null,
+              "provenance": {
+                "recipe": null,
+                "inventory": null,
+                "nutrition": null,
+                "policy": null
+              },
+              "ingredient_requirements": [],
+              "order_reviews": [],
+              "constraints": {
+                "status": "UNKNOWN",
+                "checks": []
+              },
+              "alerts": [
+                {
+                  "severity": "HIGH",
+                  "type": "INPUT_DEMAND_OUT_OF_RANGE",
+                  "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+                  "ingredient": null,
+                  "field": null,
+                  "evidence": {
+                    "maximum_input_servings": 100,
+                    "received_max": 883.0
+                  },
+                  "trace_refs": []
+                }
+              ],
+              "decision_trace": [
+                {
+                  "trace_id": "trace-0001",
+                  "step": "demand_source",
+                  "formula": null,
+                  "inputs": {
+                    "prediction": 883.0,
+                    "prediction_interval": null,
+                    "model_version": "v20260917T054002-4222a35a",
+                    "input_snapshot_id": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+                    "applicability": {
+                      "status": "IN_DOMAIN",
+                      "reasons": []
+                    },
+                    "warnings": [],
+                    "operational_eligible": false,
+                    "availability_status": "historical_unknown",
+                    "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+                    "created_at": "2026-09-17T15:12:24.773199+00:00",
+                    "target_date": "2026-09-18",
+                    "deadline_at": "2026-09-18T01:00:00+00:00",
+                    "timezone": "Asia/Seoul",
+                    "mode": "demo",
+                    "input_data": {
+                      "employees": 3000.0,
+                      "vacation": 69.0,
+                      "business_trip": 183.0,
+                      "work_from_home": 362.0,
+                      "overtime": 551.0,
+                      "date": "2026-09-18",
+                      "weekday": "금",
+                      "menu": "두부조림"
+                    },
+                    "availability": {},
+                    "weather": null,
+                    "policy": {
+                      "timezone": "Asia/Seoul",
+                      "cutoff_time": "10:00",
+                      "actual_ready_time": "14:00",
+                      "deadline_days_before": 0,
+                      "mode": "demo"
+                    }
+                  },
+                  "result": "preserved"
+                }
+              ],
+              "requires_human_approval": true,
+              "advisory_only": true,
+              "data_mode": "DEMO",
+              "source": {
+                "prediction": 883.0,
+                "prediction_interval": null,
+                "model_version": "v20260917T054002-4222a35a",
+                "input_snapshot_id": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+                "applicability": {
+                  "status": "IN_DOMAIN",
+                  "reasons": []
+                },
+                "warnings": [],
+                "operational_eligible": false,
+                "availability_status": "historical_unknown",
+                "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+                "created_at": "2026-09-17T15:12:24.773199+00:00",
+                "target_date": "2026-09-18",
+                "deadline_at": "2026-09-18T01:00:00+00:00",
+                "timezone": "Asia/Seoul",
+                "mode": "demo",
+                "input_data": {
+                  "employees": 3000.0,
+                  "vacation": 69.0,
+                  "business_trip": 183.0,
+                  "work_from_home": 362.0,
+                  "overtime": 551.0,
+                  "date": "2026-09-18",
+                  "weekday": "금",
+                  "menu": "두부조림"
+                },
+                "availability": {},
+                "weather": null,
+                "policy": {
+                  "timezone": "Asia/Seoul",
+                  "cutoff_time": "10:00",
+                  "actual_ready_time": "14:00",
+                  "deadline_days_before": 0,
+                  "mode": "demo"
+                }
+              },
+              "policy": {
+                "execution_mode": "simulation",
+                "policy_acknowledged": false,
+                "capacity_servings": 2000,
+                "maximum_input_servings": 100,
+                "provenance": {
+                  "recipe": null,
+                  "inventory": null,
+                  "nutrition": null,
+                  "policy": null
+                },
+                "rounding_policy": "legacy_combined",
+                "cooking_quantum": null,
+                "purchase_quantum": null,
+                "fractional_ea_inventory": false,
+                "safety_margin_pct": 3.0,
+                "trim_loss_pct": {},
+                "minimum_servings": 0,
+                "shortage_policy": "conservative",
+                "order_tolerance_pct": 5.0,
+                "quantity_quantum": {
+                  "g": 1.0,
+                  "ml": 1.0,
+                  "ea": 1.0
+                },
+                "planned_servings": null,
+                "required_menus": [
+                  "두부조림"
+                ],
+                "constraints": {
+                  "minimum_serving_amount": {},
+                  "minimum_protein": 20.0,
+                  "calorie_range": [
+                    500.0,
+                    900.0
+                  ],
+                  "sodium_max": 1500.0,
+                  "allergy_restriction": [
+                    "땅콩"
+                  ]
+                },
+                "nutrition_per_serving": {
+                  "protein": 30.0,
+                  "calories": 700.0,
+                  "sodium": 1000.0,
+                  "allergens": [
+                    "대두"
+                  ]
+                },
+                "data_mode": "DEMO"
+              },
+              "demand_envelope": {
+                "confidence": "UNKNOWN",
+                "model_type": "lightgbm",
+                "training_ranges": {
+                  "features": {
+                    "employees": {
+                      "min": 2601.0,
+                      "max": 3305.0
+                    },
+                    "vacation": {
+                      "min": 23.0,
+                      "max": 1224.0
+                    },
+                    "business_trip": {
+                      "min": 41.0,
+                      "max": 378.0
+                    },
+                    "work_from_home": {
+                      "min": 0.0,
+                      "max": 533.0
+                    },
+                    "overtime": {
+                      "min": 0.0,
+                      "max": 1044.0
+                    }
+                  },
+                  "period": {
+                    "start": "2016-02-01",
+                    "end": "2021-01-26",
+                    "rows": 1205
+                  },
+                  "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+                  "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+                  "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+                },
+                "warnings": [],
+                "model_version": "v20260917T054002-4222a35a",
+                "predicted_diners": 883.0,
+                "applicability": "IN_RANGE"
+              }
+            },
+            "current_plan": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menus": [
+                {
+                  "menu": "두부조림",
+                  "ingredients": [
+                    "두부",
+                    "간장"
+                  ],
+                  "ingredients_complete": true
+                }
+              ],
+              "menus_complete": true,
+              "coverage": "full"
+            },
+            "provenance": {
+              "dependency_basis": "independent",
+              "target_date": "2026-09-18",
+              "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+              "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+              "result_revision": "operation-d39ebb31c17ccd62d567ac88587022b295d5893a7ba6c093d92968ce28c1a027",
+              "analysis_scope": {
+                "target_date": "2026-09-18",
+                "meal_type": "lunch",
+                "menus": [
+                  {
+                    "menu": "두부조림",
+                    "ingredients": [
+                      "두부",
+                      "간장"
+                    ],
+                    "ingredients_complete": true
+                  }
+                ],
+                "menus_complete": true,
+                "coverage": "full"
+              },
+              "consumed_results": {
+                "demand_forecast": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44"
+              },
+              "metadata_source": "parent-service-execution-record"
+            },
+            "recommended_servings": null,
+            "safety_margin": null,
+            "shortage_probability": null,
+            "nutrition_constraints": {
+              "provenance_notes": [],
+              "data_quality_notes": [],
+              "is_demo": false,
+              "data_sources": {},
+              "limitations": [],
+              "source_payload": {},
+              "status": "UNKNOWN"
+            },
+            "constraints": {
+              "shortage": "UNKNOWN",
+              "expiry": "UNKNOWN",
+              "allergy": "UNKNOWN",
+              "nutrition": "UNKNOWN",
+              "restriction": "UNKNOWN",
+              "supply": "UNKNOWN"
+            },
+            "order_recommendations": [],
+            "applied_event_ids": [],
+            "decision_trace": [
+              {
+                "trace_id": "trace-0001",
+                "step": "demand_source",
+                "formula": null,
+                "inputs": {
+                  "prediction": 883.0,
+                  "prediction_interval": null,
+                  "model_version": "v20260917T054002-4222a35a",
+                  "input_snapshot_id": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+                  "applicability": {
+                    "status": "IN_DOMAIN",
+                    "reasons": []
+                  },
+                  "warnings": [],
+                  "operational_eligible": false,
+                  "availability_status": "historical_unknown",
+                  "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+                  "created_at": "2026-09-17T15:12:24.773199+00:00",
+                  "target_date": "2026-09-18",
+                  "deadline_at": "2026-09-18T01:00:00+00:00",
+                  "timezone": "Asia/Seoul",
+                  "mode": "demo",
+                  "input_data": {
+                    "employees": 3000.0,
+                    "vacation": 69.0,
+                    "business_trip": 183.0,
+                    "work_from_home": 362.0,
+                    "overtime": 551.0,
+                    "date": "2026-09-18",
+                    "weekday": "금",
+                    "menu": "두부조림"
+                  },
+                  "availability": {},
+                  "weather": null,
+                  "policy": {
+                    "timezone": "Asia/Seoul",
+                    "cutoff_time": "10:00",
+                    "actual_ready_time": "14:00",
+                    "deadline_days_before": 0,
+                    "mode": "demo"
+                  }
+                },
+                "result": "preserved"
+              }
+            ]
+          },
+          "decision": null
+        },
+        {
+          "step": 10,
+          "source": "Inventory & Risk",
+          "rule": "upstream_report",
+          "finding": "위험 보고서 및 원본 trace 보존",
+          "evidence": {
+            "provenance_notes": [],
+            "data_quality_notes": [],
+            "is_demo": false,
+            "data_sources": {},
+            "limitations": [],
+            "source_payload": {},
+            "provenance": {
+              "dependency_basis": "independent",
+              "target_date": null,
+              "prediction_id": null,
+              "input_revision": null,
+              "result_revision": null,
+              "analysis_scope": {
+                "target_date": null,
+                "meal_type": null,
+                "menus": [],
+                "menus_complete": false,
+                "coverage": "unknown"
+              },
+              "consumed_results": {},
+              "metadata_source": null
+            },
+            "detected_events": [],
+            "adapter_notes": [],
+            "status": "partial",
+            "alerts": [],
+            "price_risks": [],
+            "supply_risks": [],
+            "affected_menus": [],
+            "affected_ingredients": [],
+            "inventory_recommendations": [],
+            "substitute_candidates": [],
+            "nutrition_results": [],
+            "cost_impacts": [],
+            "recommended_rechecks": [],
+            "decision_trace": [],
+            "applied_event_ids": []
+          },
+          "decision": null
+        },
+        {
+          "step": 11,
+          "source": "Decision",
+          "rule": "hard_constraint_gate",
+          "finding": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply",
+          "evidence": {
+            "action_id": "servings",
+            "ingredient": null,
+            "menu": null,
+            "candidate_id": null,
+            "decision": "NEEDS_CONFIRMATION",
+            "action": "상위 Operation 조리량 유지 검토",
+            "reason": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply",
+            "current_plan": null,
+            "recommended": null,
+            "unit": null,
+            "failed_constraints": [],
+            "unknown_constraints": [
+              "shortage",
+              "expiry",
+              "allergy",
+              "nutrition",
+              "restriction",
+              "supply"
+            ],
+            "selected": false,
+            "scope": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menu": null,
+              "ingredient": null
+            },
+            "candidates": []
+          },
+          "decision": "NEEDS_CONFIRMATION"
+        },
+        {
+          "step": 12,
+          "source": "Decision",
+          "rule": "serving_resolution",
+          "finding": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply; 필수 예측·조리량 누락; 상위 결과 갱신/확인 필요",
+          "evidence": {
+            "action_id": "servings",
+            "ingredient": null,
+            "menu": null,
+            "candidate_id": null,
+            "decision": "NEEDS_CONFIRMATION",
+            "action": "상위 Operation 조리량 유지 검토",
+            "reason": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply; 필수 예측·조리량 누락; 상위 결과 갱신/확인 필요",
+            "current_plan": null,
+            "recommended": null,
+            "unit": null,
+            "failed_constraints": [],
+            "unknown_constraints": [
+              "shortage",
+              "expiry",
+              "allergy",
+              "nutrition",
+              "restriction",
+              "supply"
+            ],
+            "selected": false,
+            "scope": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menu": null,
+              "ingredient": null
+            },
+            "candidates": []
+          },
+          "decision": "NEEDS_CONFIRMATION"
+        },
+        {
+          "step": 13,
+          "source": "Decision",
+          "rule": "soft_objective_order",
+          "finding": "검증 통과 후보만 메뉴 검토에 포함; 제공 점수의 사전식 순위",
+          "evidence": {
+            "priorities": [
+              "shortage",
+              "safety",
+              "nutrition",
+              "supply",
+              "waste",
+              "cost",
+              "preference"
+            ],
+            "ranked": [],
+            "cost_impacts": []
+          },
+          "decision": null
+        },
+        {
+          "step": 14,
+          "source": "Decision",
+          "rule": "final_action",
+          "finding": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply; 필수 예측·조리량 누락; 상위 결과 갱신/확인 필요",
+          "evidence": {
+            "action_id": "servings",
+            "ingredient": null,
+            "menu": null,
+            "candidate_id": null,
+            "decision": "NEEDS_CONFIRMATION",
+            "action": "[DEMO 검토용] 상위 Operation 조리량 유지 검토",
+            "reason": "Demand·Operation 결과와 제약 검증; 검증 누락: shortage, expiry, allergy, nutrition, restriction, supply; 필수 예측·조리량 누락; 상위 결과 갱신/확인 필요",
+            "current_plan": null,
+            "recommended": null,
+            "unit": null,
+            "failed_constraints": [],
+            "unknown_constraints": [
+              "shortage",
+              "expiry",
+              "allergy",
+              "nutrition",
+              "restriction",
+              "supply"
+            ],
+            "selected": true,
+            "scope": {
+              "target_date": "2026-09-18",
+              "meal_type": "lunch",
+              "menu": null,
+              "ingredient": null
+            },
+            "candidates": []
+          },
+          "decision": "NEEDS_CONFIRMATION"
+        },
+        {
+          "step": 15,
+          "source": "Human Approval",
+          "rule": "approval_required",
+          "finding": "권고만 반환; 발주·메뉴·재고 실행 기능 없음",
+          "evidence": {},
+          "decision": null
+        }
+      ],
+      "data_quality_notes": [
+        "input.demand_result.mode: Demand demo 모드: 운영 근거로 사용 불가",
+        "input.operation_result.data_sources.recipe: DEMO 출처: DEMO:demo_recipe_ingredients.csv",
+        "input.operation_result.data_sources.nutrition: DEMO 출처: DEMO:demo_nutrition.csv",
+        "input.operation_result.data_sources.price_trend: DEMO 출처: DEMO:demo_price_trend.csv",
+        "input.operation_result.data_sources.monthly_price: DEMO 출처: DEMO:demo_monthly_price.csv",
+        "input.operation_result.data_sources.inventory: DEMO 출처: DEMO:food_inventory.xlsx",
+        "input.operation_result.data_sources.supply_risk: DEMO 출처: DEMO/SIMULATION:demo_risk_events.csv",
+        "input.operation_result.data_sources.weekly_menu: DEMO 출처: DEMO:weekly_menu.xlsx",
+        "input.operation_result.data_sources.constraints: DEMO 출처: DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks",
+        "input.operation_result.data_quality_notes: Demand가 설정된 입력 적용 범위를 초과했습니다.",
+        "input.operation_result.data_quality_notes: Operation requires confirmation: invalid_input",
+        "decision: inventory_risk: target_date 누락",
+        "decision: inventory_risk: prediction_id 누락",
+        "decision: inventory_risk: input_revision 누락",
+        "decision: inventory_risk: result_revision 누락",
+        "decision: inventory_risk: 분석 범위 누락/불일치 또는 부분 분석",
+        "decision: Demand 운영 부적격/미확인: mode=demo, operational_eligible=False, availability_status=historical_unknown",
+        "decision: operation: inventory_risk 소비 의존 근거 누락/불일치 (required=None, consumed=None)"
+      ],
+      "decision_type": "NEEDS_CONFIRMATION",
+      "operation_recommended_servings": null,
+      "adapter_provenance": {
+        "demand": {
+          "dependency_basis": "independent",
+          "target_date": "2026-09-18",
+          "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "result_revision": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44",
+          "analysis_scope": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "menus": [
+              {
+                "menu": "두부조림",
+                "ingredients": [
+                  "두부",
+                  "간장"
+                ],
+                "ingredients_complete": true
+              }
+            ],
+            "menus_complete": true,
+            "coverage": "full"
+          },
+          "consumed_results": {},
+          "metadata_source": "parent-service-execution-record"
+        },
+        "operation": {
+          "target_date": "2026-09-18",
+          "prediction_id": "65ea5f094b3649c4917b1520f6a2d16e",
+          "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+          "result_revision": "operation-d39ebb31c17ccd62d567ac88587022b295d5893a7ba6c093d92968ce28c1a027",
+          "analysis_scope": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "coverage": "full",
+            "menus_complete": true,
+            "menus": [
+              {
+                "menu": "두부조림",
+                "ingredients": [
+                  "두부",
+                  "간장"
+                ],
+                "ingredients_complete": true
+              }
+            ]
+          },
+          "consumed_results": {
+            "demand_forecast": "demand-fd847665565c9dd4a9c43124e5654ac5bf7780fc85697c4ec9aa7f4bec8e4b44"
+          },
+          "metadata_source": "parent-service-execution-record"
+        },
+        "inventory_risk": null
+      },
+      "source_payload": {
+        "inventory_risk": null
+      },
+      "active_evidence_summary": {
+        "current_plan_checks": {},
+        "recommended_rechecks": [],
+        "projection": null
+      },
+      "demand_envelope": {
+        "confidence": "UNKNOWN",
+        "model_type": "lightgbm",
+        "training_ranges": {
+          "features": {
+            "employees": {
+              "min": 2601.0,
+              "max": 3305.0
+            },
+            "vacation": {
+              "min": 23.0,
+              "max": 1224.0
+            },
+            "business_trip": {
+              "min": 41.0,
+              "max": 378.0
+            },
+            "work_from_home": {
+              "min": 0.0,
+              "max": 533.0
+            },
+            "overtime": {
+              "min": 0.0,
+              "max": 1044.0
+            }
+          },
+          "period": {
+            "start": "2016-02-01",
+            "end": "2021-01-26",
+            "rows": 1205
+          },
+          "csv_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+          "model_data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+          "limitation": "Marginal range check only; IN_RANGE does not establish site generalization or calibrated confidence."
+        },
+        "warnings": [],
+        "model_version": "v20260917T054002-4222a35a",
+        "predicted_diners": 883.0,
+        "applicability": "IN_RANGE"
+      }
+    },
+    "errors": [],
+    "warnings": [],
+    "timings": {
+      "demand": 3.2259,
+      "operation": 0.555,
+      "decision": 0.5936,
+      "total": 4.3773
+    },
+    "input_revision": "d8215da3afc285550fd890c4b3dacd68dd2d0df836a9aa03108df51e240163b5",
+    "advisory_only": true
+  }
+}

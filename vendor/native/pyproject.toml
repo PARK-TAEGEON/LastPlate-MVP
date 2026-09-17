@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lastplate-integrated"
+version = "0.1.2"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.10,<3", "langgraph>=1,<2", "numpy>=1.26,<3", "pandas>=2.2,<4", "scikit-learn>=1.5,<2", "lightgbm>=4.5,<5", "xgboost>=2.1,<4", "joblib>=1.4,<2", "filelock>=3.16,<5", "openpyxl>=3.1,<4"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10", "streamlit>=1.40,<2", "jsonschema>=4,<5", "httpx>=0.28"]
+api = ["fastapi", "uvicorn"]
+
+[tool.setuptools.packages.find]
+include = ["integration*", "app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests/integration"]
+pythonpath = ["."]

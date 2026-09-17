@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lastplate-operation"
+version = "0.2.1"
+description = "Deterministic advisory Operation Agent for LastPlate"
+requires-python = ">=3.11"
+dependencies = ["pydantic>=2.7,<3", "langgraph>=1.0,<2"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10", "streamlit>=1.40,<2", "jsonschema>=4,<5"]
+ui = ["streamlit>=1.40,<2"]
+
+[tool.setuptools.packages.find]
+include = ["lastplate_operation*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

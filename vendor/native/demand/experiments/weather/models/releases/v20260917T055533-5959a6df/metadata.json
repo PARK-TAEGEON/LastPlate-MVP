@@ -1,0 +1,107 @@
+{
+  "model_type": "lightgbm",
+  "train_period": {
+    "start": "2016-02-03",
+    "end": "2021-01-26",
+    "rows": 1196
+  },
+  "trained_through": "2021-01-26",
+  "selection_train_period": {
+    "start": "2016-02-03",
+    "end": "2019-07-16",
+    "rows": 834
+  },
+  "validation_period": {
+    "start": "2019-07-17",
+    "end": "2020-04-08",
+    "rows": 181
+  },
+  "test_period": {
+    "start": "2020-04-09",
+    "end": "2021-01-26",
+    "rows": 181
+  },
+  "validation_metrics": {
+    "mae": 85.77348066298343,
+    "rmse": 112.07631082219744,
+    "mape_pct": 11.09830011588321,
+    "mape_excluded_zeros": 0,
+    "n": 181
+  },
+  "test_metrics": {
+    "mae": 83.99447513812154,
+    "rmse": 104.42065903425994,
+    "mape_pct": 10.253369131949993,
+    "mape_excluded_zeros": 0,
+    "n": 181
+  },
+  "mae": 83.99447513812154,
+  "evaluation_note": "Test scored on train+validation fit. Deployment then refit on all dates; no independent score for that exact refit.",
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.9.1",
+    "lightgbm": "4.7.0",
+    "xgboost": "3.4.1",
+    "joblib": "1.6.0",
+    "filelock": "4.0.0"
+  },
+  "model_parameters": {
+    "boosting_type": "gbdt",
+    "class_weight": null,
+    "colsample_bytree": 1.0,
+    "importance_type": "gain",
+    "learning_rate": 0.035,
+    "max_depth": -1,
+    "min_child_samples": 25,
+    "min_child_weight": 0.001,
+    "min_split_gain": 0.0,
+    "n_estimators": 350,
+    "n_jobs": 2,
+    "num_leaves": 15,
+    "objective": null,
+    "random_state": 42,
+    "reg_alpha": 0.0,
+    "reg_lambda": 2,
+    "subsample": 1.0,
+    "subsample_for_bin": 200000,
+    "subsample_freq": 0,
+    "verbosity": -1,
+    "deterministic": true,
+    "force_col_wise": true
+  },
+  "data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+  "weather_features": [],
+  "weather_source_sha256": "d5ea1a01bc2ff6d16a587d6bffcf067fe8b407663b47c1884da0085a120bf154",
+  "excluded_dates": [
+    "2016-02-01",
+    "2016-02-02",
+    "2016-06-28",
+    "2018-02-20",
+    "2018-02-21",
+    "2018-02-27",
+    "2018-03-12",
+    "2018-07-03",
+    "2018-11-02"
+  ],
+  "weather_policy": "not_used",
+  "model_version": "v20260917T055533-5959a6df",
+  "schema_version": 1,
+  "trained_at": "2026-09-17T05:55:33.368621+00:00",
+  "features": [
+    "employees",
+    "vacation",
+    "business_trip",
+    "work_from_home",
+    "overtime",
+    "weekday_0",
+    "weekday_1",
+    "weekday_2",
+    "weekday_3",
+    "weekday_4",
+    "weekday_5",
+    "weekday_6"
+  ],
+  "feature_group": "B",
+  "model_sha256": "706d4675c18dc7a98b8dcea2b5aee90c8bcc894a0556c6d0850def0f29d41197"
+}

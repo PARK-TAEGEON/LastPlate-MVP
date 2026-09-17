@@ -1,0 +1,55 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "recommendation_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommendation Revision"
+    },
+    "choice": {
+      "enum": [
+        "approve",
+        "modify",
+        "reject"
+      ],
+      "title": "Choice",
+      "type": "string"
+    },
+    "operator_id": {
+      "minLength": 1,
+      "title": "Operator Id",
+      "type": "string"
+    },
+    "comment": {
+      "default": "",
+      "title": "Comment",
+      "type": "string"
+    },
+    "revised_input": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Revised Input"
+    }
+  },
+  "required": [
+    "choice",
+    "operator_id"
+  ],
+  "title": "ApprovalResponse",
+  "type": "object"
+}

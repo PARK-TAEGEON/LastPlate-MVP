@@ -1,0 +1,11 @@
+Parsed from the baseline pytest JUnit XML, before edits.
+{
+  "name": "pytest",
+  "errors": "0",
+  "failures": "0",
+  "skipped": "0",
+  "tests": "85",
+  "time": "3.221",
+  "timestamp": "2026-09-17T21:54:49.060847+09:00",
+  "hostname": "DESKTOP-UI4LKAS"
+}

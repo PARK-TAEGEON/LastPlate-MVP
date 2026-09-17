@@ -1,0 +1,18 @@
+{
+  "demand": {
+    "original_files": 267,
+    "changed_or_missing": []
+  },
+  "operation": {
+    "original_files": 49,
+    "changed_or_missing": []
+  },
+  "inventory_risk": {
+    "original_files": 74,
+    "changed_or_missing": []
+  },
+  "decision": {
+    "original_files": 104,
+    "changed_or_missing": []
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "sources": [
+    {
+      "file": "data/raw/weather_extension/OBS_ASOS_TIM_20260917145120.csv",
+      "rows": 8804,
+      "start": "2020-01-27 01:00",
+      "end": "2021-01-27 20:00",
+      "missing": {
+        "지점": 0,
+        "지점명": 0,
+        "일시": 0,
+        "기온(°C)": 0,
+        "강수량(mm)": 7927,
+        "습도(%)": 0
+      },
+      "bytes": 314267,
+      "sha256": "09e32c6ea097674d7df4775ecd1fe4e6a8d6a06c5778694887c196a1c1113ca5"
+    },
+    {
+      "file": "data/raw/weather_extension/OBS_ASOS_TIM_20260917145015.csv",
+      "rows": 8779,
+      "start": "2019-01-27 01:00",
+      "end": "2020-01-27 20:00",
+      "missing": {
+        "지점": 0,
+        "지점명": 0,
+        "일시": 0,
+        "기온(°C)": 0,
+        "강수량(mm)": 7998,
+        "습도(%)": 0
+      },
+      "bytes": 313138,
+      "sha256": "b998ab3697e24079f7fa5722b576345d17686489f05bb8d3a3725b308b9b1f99"
+    },
+    {
+      "file": "data/raw/weather_extension/OBS_ASOS_TIM_20260917144300.csv",
+      "rows": 8770,
+      "start": "2018-01-27 01:00",
+      "end": "2019-01-27 20:00",
+      "missing": {
+        "지점": 0,
+        "지점명": 0,
+        "일시": 0,
+        "기온(°C)": 11,
+        "강수량(mm)": 7935,
+        "습도(%)": 0
+      },
+      "bytes": 313053,
+      "sha256": "52269220596c8b4f00907d9fd81713d28a2a6dea2c77828ec0123778e37bed9f"
+    },
+    {
+      "file": "data/raw/weather_extension/OBS_ASOS_TIM_20260917143912.csv",
+      "rows": 8774,
+      "start": "2017-01-27 01:00",
+      "end": "2018-01-27 20:00",
+      "missing": {
+        "지점": 0,
+        "지점명": 0,
+        "일시": 0,
+        "기온(°C)": 0,
+        "강수량(mm)": 8143,
+        "습도(%)": 0
+      },
+      "bytes": 312748,
+      "sha256": "14d23bb41db5a1cabc1d536f06c55d7cd54a78a4dac3f1f8aa7e17eb3e384a12"
+    },
+    {
+      "file": "data/raw/weather_extension/OBS_ASOS_TIM_20160201~20170127.csv",
+      "rows": 8681,
+      "start": "2016-02-01 01:00",
+      "end": "2017-01-27 20:00",
+      "missing": {
+        "지점": 0,
+        "지점명": 0,
+        "일시": 0,
+        "기온(°C)": 0,
+        "강수량(mm)": 7843,
+        "습도(%)": 0
+      },
+      "bytes": 310131,
+      "sha256": "ee11b5e974e7bc33255bbd50a2c39e26ddbd236feff98f11f2c3099f4930f030"
+    }
+  ],
+  "source_rows": 43808,
+  "duplicate_extra": 80,
+  "conflicting_station_hours": 0,
+  "unique_hours": 43728,
+  "daily_dates": 1823,
+  "complete_24_hour_days": 1815,
+  "missing": {
+    "지점": 0,
+    "지점명": 0,
+    "일시": 0,
+    "기온(°C)": 11,
+    "강수량(mm)": 39772,
+    "습도(%)": 0
+  },
+  "selected_features": [
+    "temp_mean",
+    "temp_max",
+    "temp_min",
+    "humidity"
+  ],
+  "complete_lunch_rows": 1196,
+  "excluded_lunch_dates": [
+    "2016-02-01",
+    "2016-02-02",
+    "2016-06-28",
+    "2018-02-20",
+    "2018-02-21",
+    "2018-02-27",
+    "2018-03-12",
+    "2018-07-03",
+    "2018-11-02"
+  ],
+  "policy": "Previous calendar day, complete 24-hour temperature/humidity; no imputation; precipitation/rain excluded because blank semantics unverified"
+}
