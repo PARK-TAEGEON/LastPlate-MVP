@@ -22,6 +22,11 @@ python -m venv .venv
 Windows 실행 파일은 프로젝트의 .venv, 명시한 LASTPLATE_PYTHON 또는 현재 PC에 준비한 공용 환경을 사용합니다.
 macOS/Linux는 .venv/bin/python을 사용하세요.
 
+## Railway 배포
+
+FastAPI가 정적 frontend까지 제공하는 단일 Python 서비스입니다. 루트의 `railpack.json`이 Python 3.12와 시작 명령을 지정합니다. `package.json`은 브라우저 테스트 전용입니다.
+[Railway 설정·검증·SQLite 영속 저장 안내](docs/RAILWAY.md)를 따라 저장소 루트에서 배포하세요.
+
 ## 사용 순서
 
 1. 사업장과 운영 월을 선택합니다. 끼니는 점심으로 고정됩니다.
