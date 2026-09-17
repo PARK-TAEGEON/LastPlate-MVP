@@ -1,0 +1,515 @@
+{
+  "$defs": {
+    "Action": {
+      "properties": {
+        "action_id": {
+          "title": "Action Id",
+          "type": "string"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "decision": {
+          "enum": [
+            "KEEP",
+            "ADJUST",
+            "REVIEW",
+            "BLOCK",
+            "NEEDS_CONFIRMATION"
+          ],
+          "title": "Decision",
+          "type": "string"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "current_plan": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Current Plan"
+        },
+        "recommended": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "failed_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Failed Constraints",
+          "type": "array"
+        },
+        "unknown_constraints": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown Constraints",
+          "type": "array"
+        },
+        "selected": {
+          "default": false,
+          "title": "Selected",
+          "type": "boolean"
+        },
+        "scope": {
+          "additionalProperties": true,
+          "title": "Scope",
+          "type": "object"
+        },
+        "candidates": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Candidates",
+          "type": "array"
+        }
+      },
+      "required": [
+        "action_id",
+        "decision",
+        "action",
+        "reason"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "RecheckRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_mode": {
+          "anyOf": [
+            {
+              "const": "full",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Analysis Mode"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "agent": {
+          "title": "Agent",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "input_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Revision"
+        },
+        "source_agent": {
+          "default": "decision",
+          "title": "Source Agent",
+          "type": "string"
+        },
+        "source_result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Result Revision"
+        },
+        "baseline_result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Result Revision"
+        },
+        "result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Revision"
+        },
+        "status": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "completed",
+            "failed",
+            "stale"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "attempts": {
+          "default": 0,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "required_dependencies": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Required Dependencies",
+          "type": "object"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "request_id",
+        "agent",
+        "reason"
+      ],
+      "title": "RecheckRequest",
+      "type": "object"
+    },
+    "TraceStep": {
+      "properties": {
+        "step": {
+          "title": "Step",
+          "type": "integer"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "rule": {
+          "title": "Rule",
+          "type": "string"
+        },
+        "finding": {
+          "title": "Finding",
+          "type": "string"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "title": "Evidence",
+          "type": "object"
+        },
+        "decision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision"
+        }
+      },
+      "required": [
+        "step",
+        "source",
+        "rule",
+        "finding"
+      ],
+      "title": "TraceStep",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "schema_version": {
+      "const": "0.1.3",
+      "default": "0.1.3",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "run_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Run Id"
+    },
+    "recommendation_revision": {
+      "title": "Recommendation Revision",
+      "type": "string"
+    },
+    "selected_action_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Selected Action Ids",
+      "type": "array"
+    },
+    "rejected_candidate_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Rejected Candidate Ids",
+      "type": "array"
+    },
+    "recheck_history": {
+      "items": {
+        "$ref": "#/$defs/RecheckRequest"
+      },
+      "title": "Recheck History",
+      "type": "array"
+    },
+    "upstream_traces": {
+      "additionalProperties": {
+        "items": {},
+        "type": "array"
+      },
+      "title": "Upstream Traces",
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "ok",
+        "needs_confirmation",
+        "blocked"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "critical_alerts": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Critical Alerts",
+      "type": "array"
+    },
+    "recommended_servings": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Recommended Servings"
+    },
+    "serving_action": {
+      "$ref": "#/$defs/Action"
+    },
+    "procurement_actions": {
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "title": "Procurement Actions",
+      "type": "array"
+    },
+    "inventory_actions": {
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "title": "Inventory Actions",
+      "type": "array"
+    },
+    "menu_actions": {
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "title": "Menu Actions",
+      "type": "array"
+    },
+    "candidate_evaluations": {
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "title": "Candidate Evaluations",
+      "type": "array"
+    },
+    "confidence": {
+      "enum": [
+        "HIGH",
+        "MEDIUM",
+        "LOW"
+      ],
+      "title": "Confidence",
+      "type": "string"
+    },
+    "provenance_notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Provenance Notes",
+      "type": "array"
+    },
+    "source_provenance": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Source Provenance",
+      "type": "array"
+    },
+    "quality_records": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Quality Records",
+      "type": "array"
+    },
+    "confidence_evidence": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Confidence Evidence",
+      "type": "array"
+    },
+    "confidence_reasons": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Confidence Reasons",
+      "type": "array"
+    },
+    "requires_human_approval": {
+      "const": true,
+      "default": true,
+      "title": "Requires Human Approval",
+      "type": "boolean"
+    },
+    "approval_status": {
+      "const": "pending",
+      "default": "pending",
+      "title": "Approval Status",
+      "type": "string"
+    },
+    "recommended_rechecks": {
+      "items": {
+        "$ref": "#/$defs/RecheckRequest"
+      },
+      "title": "Recommended Rechecks",
+      "type": "array"
+    },
+    "decision_trace": {
+      "items": {
+        "$ref": "#/$defs/TraceStep"
+      },
+      "title": "Decision Trace",
+      "type": "array"
+    },
+    "data_quality_notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Data Quality Notes",
+      "type": "array"
+    }
+  },
+  "required": [
+    "recommendation_revision",
+    "status",
+    "serving_action",
+    "confidence",
+    "confidence_reasons"
+  ],
+  "title": "DecisionOutput",
+  "type": "object"
+}

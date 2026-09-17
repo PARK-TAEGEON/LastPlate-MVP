@@ -1,0 +1,12 @@
+{
+  "version": "0.1.3",
+  "tests_run": 163,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "v012_preserved": 144,
+  "v012_test_sources": "byte-for-byte unchanged",
+  "new_tests": 19,
+  "actual_upstream_calls": "Not rerun for this narrow schema patch; v0.1.2 captured contract fixtures tested",
+  "actual_operation_e2e": "Not run; Operation not provided"
+}

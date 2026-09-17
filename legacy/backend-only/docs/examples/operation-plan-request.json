@@ -1,0 +1,88 @@
+{
+  "site_id": "demo-school",
+  "meal_date": "2026-09-18",
+  "meal_type": "lunch",
+  "current_time": "2026-09-18T09:00:00+09:00",
+  "forecast": {
+    "site_id": "demo-school",
+    "meal_date": "2026-09-18",
+    "meal_type": "lunch",
+    "lower": 190,
+    "mid": 210,
+    "upper": 225,
+    "included_event_ids": [],
+    "model_version": "xgboost-2026-09-17",
+    "generated_at": "2026-09-17T18:00:00+09:00"
+  },
+  "events": [
+    {
+      "id": "field-trip-2026-09-18",
+      "status": "confirmed",
+      "delta": 35,
+      "event_type": "현장체험학습",
+      "note": "외부 학생 35명 추가"
+    }
+  ],
+  "menus": [
+    {
+      "name": "쌀밥",
+      "recipe_g": { "쌀": 90 },
+      "batches": [
+        {
+          "name": "1차 취사",
+          "start": "2026-09-18T10:30:00+09:00",
+          "planned": 220,
+          "capacity": 300
+        }
+      ],
+      "nutrition_per_portion": { "kcal": 320 }
+    },
+    {
+      "name": "두부조림",
+      "recipe_g": { "두부": 110, "양념": 20 },
+      "batches": [
+        {
+          "name": "1차 조리",
+          "start": "2026-09-18T10:45:00+09:00",
+          "planned": 220,
+          "capacity": 300
+        }
+      ],
+      "minimum_servings": 260,
+      "nutrition_per_portion": { "kcal": 150, "protein_g": 12 }
+    }
+  ],
+  "inventory": [
+    {
+      "ingredient": "쌀",
+      "available_kg": 30,
+      "order_unit_kg": 10,
+      "unit_price_per_kg": 2800
+    },
+    {
+      "ingredient": "두부",
+      "available_kg": 20,
+      "order_unit_kg": 1,
+      "unit_price_per_kg": 3200
+    },
+    {
+      "ingredient": "양념",
+      "available_kg": 8,
+      "order_unit_kg": 1
+    }
+  ],
+  "policy": {
+    "demand_basis": "upper",
+    "safety_buffer_people": 5,
+    "safety_buffer_rate": 0
+  },
+  "constraints": {
+    "minimum_servings_by_menu": {
+      "두부조림": 260
+    },
+    "minimum_nutrition_per_guest": {
+      "kcal": 450,
+      "protein_g": 10
+    }
+  }
+}

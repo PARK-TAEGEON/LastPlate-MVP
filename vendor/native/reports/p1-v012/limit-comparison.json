@@ -1,0 +1,44 @@
+{
+  "before": {
+    "http_status": 200,
+    "errors": [],
+    "raw_forecast": 883,
+    "operation_status": "invalid_input"
+  },
+  "after": {
+    "http_status": 422,
+    "errors": [
+      {
+        "stage": "operation",
+        "code": "INPUT_DEMAND_OUT_OF_RANGE",
+        "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+        "kind": "input",
+        "http_status": 422,
+        "native_status": "invalid_input",
+        "evidence": {
+          "maximum_input_servings": 100,
+          "received_max": 883.0
+        },
+        "alerts": [
+          {
+            "severity": "HIGH",
+            "type": "INPUT_DEMAND_OUT_OF_RANGE",
+            "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+            "ingredient": null,
+            "field": null,
+            "evidence": {
+              "maximum_input_servings": 100,
+              "received_max": 883.0
+            },
+            "trace_refs": []
+          }
+        ]
+      }
+    ],
+    "raw_forecast": 883,
+    "operation_status": "invalid_input",
+    "decision": "NEEDS_CONFIRMATION",
+    "demand_preserved": true,
+    "decision_preserved": true
+  }
+}

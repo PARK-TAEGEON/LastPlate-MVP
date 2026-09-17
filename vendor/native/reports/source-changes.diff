@@ -1,0 +1,811 @@
+--- v0.1.0/app/main.py
++++ v0.1.1/app/main.py
+@@ -1,12 +1,24 @@
+ import os
+ from pathlib import Path
+ from fastapi import FastAPI
++from fastapi.exceptions import RequestValidationError
++from fastapi.responses import JSONResponse
+ from integration import run_lastplate_pipeline,PipelineConfig
+-from integration.contracts import PipelineInput
++from integration.contracts import PipelineInput,PipelineResult
+ 
+-app=FastAPI(title='LastPlate advisory pipeline',version='0.1.0')
++app=FastAPI(title='LastPlate advisory pipeline',version='0.1.1')
++
++@app.exception_handler(RequestValidationError)
++async def invalid_request(request,exc):
++    result=PipelineResult(pipeline_status='FAILED',errors=[dict(stage='input',code='INPUT_VALIDATION_ERROR',http_status=422,kind='input',message=e['msg'],field=list(e['loc'])) for e in exc.errors()])
++    return JSONResponse(status_code=422,content=result.model_dump(mode='json'))
++
++def result_status(result):
++    statuses=[e.get('http_status',500) for e in result['errors']]
++    return 500 if any(s>=500 for s in statuses) else 409 if 409 in statuses else 422 if 422 in statuses else 200
+ @app.post('/api/plan')
+ def plan(payload:PipelineInput):
+-    cfg=PipelineConfig(storage_dir=Path(os.environ.get('LASTPLATE_STORAGE','runtime')).resolve(),
++    cfg=dict(storage_dir=Path(os.environ.get('LASTPLATE_STORAGE','runtime')).resolve(),
+         mode=os.environ.get('LASTPLATE_MODE','demo'))
+-    return run_lastplate_pipeline(payload.model_dump(mode='json'),config=cfg)
++    result=run_lastplate_pipeline(payload.model_dump(mode='json'),config=cfg)
++    return JSONResponse(status_code=result_status(result),content=result)
+--- v0.1.0/integration/adapters/decision_adapter.py
++++ v0.1.1/integration/adapters/decision_adapter.py
+@@ -1,6 +1,7 @@
+ """Map evidence to Decision's native contract; Decision alone chooses actions."""
+ from copy import deepcopy
+ import hashlib,json
++from ..risk_evidence import project_active
+ 
+ def fingerprint(value):
+     return hashlib.sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+@@ -19,16 +20,11 @@
+         dd=adapt_ml_v2(d['source_payload'],provenance=provenance('demand',d))
+         dd.update(applicability=d['applicability'],warnings=d['warnings'],source_type='MODEL',
+             data_quality_notes=[w['message'] for w in d['warnings']])
++        dd['integration_envelope']={k:deepcopy(d[k]) for k in ('confidence','model_type','training_ranges','warnings','model_version','predicted_diners','applicability') if k in d}
+         if d['applicability']!='IN_RANGE': dd['operational_eligible']=False
+     rr={}; events=[]
+     if r:
+-        active=deepcopy(r)
+-        # Superseded records remain in the public audit report, never in current evidence.
+-        inactive={e.get('event_id') for e in r.get('detected_events',[]) if e.get('superseded')}
+-        active['detected_events']=[e for e in active.get('detected_events',[]) if not e.get('superseded')]
+-        for key in ('alerts','affected_menus','substitute_candidates','nutrition_results','cost_impacts'):
+-            active[key]=[x for x in active.get(key,[]) if not x.get('superseded') and
+-                x.get('cause_event_id') not in inactive and not (x.get('cause_event_ids') and set(x['cause_event_ids'])<=inactive)]
++        active=project_active(r)
+         pr=provenance('inventory',active,{'demand_forecast':dd['provenance']['result_revision']} if dd else {})
+         pr['dependency_basis']='demand_scaled'
+         rr=adapt_inventory_v020(active,provenance=pr)
+@@ -41,26 +37,12 @@
+         checks['nutrition']='FAIL' if 'FAIL' in nutrition else 'UNKNOWN' if not nutrition or 'UNKNOWN' in nutrition else 'PASS'
+         allergy=[x['status'] for x in o['constraints']['checks'] if x.get('constraint')=='allergy_restriction']
+         if allergy: checks['allergy']=allergy[0]
+-        # Map explicit native inventory calculations; never infer from an empty report.
+-        if r and r['status']=='ok':
+-            required={i for m in scope['menus'] for i in m['ingredients']}
+-            stocks={x['ingredient']:x for x in r.get('inventory_status',[])}
+-            if required and required<=stocks.keys():
+-                checks['shortage']='FAIL' if any(stocks[x]['shortage_at_service_g']>0 for x in required) else 'PASS'
+-                # Native FEFO allocates only nonexpired stock. Zero shortage proves coverage.
+-                if checks['shortage']=='PASS': checks['expiry']='PASS'
+-            parsed=r.get('parsing_result') or {}
+-            if parsed.get('status')=='ok' and not any(e.get('needs_clarification') for e in events):
+-                checks['restriction']='FAIL' if any(a['type']=='menu_conflict' for a in r.get('alerts',[])) else 'PASS'
+-            # Empty full supply observations mean no declared risk, not supplier certification.
+-            if not r.get('supply_risks') and p['sources']['supply_risk'].startswith(('DEMO','USER_UPLOAD','PUBLIC_API','REAL')):
+-                checks['supply']='PASS'
+-        if any(a['type']=='STOCK_SHORTAGE' for a in o.get('alerts',[])):
+-            checks['shortage']='FAIL'
++        # Native Risk owns FEFO/expiry/supply/restriction gates. No parallel Decision rules.
++        if r: checks.update(active['current_plan_checks'])
+         deps={'demand_forecast':dd['provenance']['result_revision']} if dd else {}
+         if rr: deps['inventory_risk']=rr['provenance']['result_revision']
+         oo=dict(recommended_servings=o['recommended_servings'],current_plan=scope,
+-            provenance=provenance('operation',{'operation':o,'inventory_evidence':r},deps),
++            provenance=provenance('operation',{'operation':o,'inventory_evidence':active if r else None},deps),
+             constraints=checks,nutrition_constraints={'status':checks['nutrition']},
+             order_recommendations=[{**q,'constraints':checks} for q in o['order_reviews']],
+             source_payload=o,data_sources=p['sources'],
+@@ -81,4 +63,9 @@
+     final['decision_type']=decision
+     final['operation_recommended_servings']=o.get('recommended_servings') if o else None
+     final['adapter_provenance']={k:v.get('provenance') for k,v in [('demand',dd),('operation',oo),('inventory_risk',rr)]}
++    final['source_payload']={'inventory_risk':deepcopy(r)} # audit only, never fed back into Decision
++    final['active_evidence_summary']={'current_plan_checks':active['current_plan_checks'] if r else {},
++        'recommended_rechecks':active['recommended_rechecks'] if r else [],
++        'projection':active.get('evidence_projection') if r else None}
++    if d: final['demand_envelope']={k:deepcopy(d[k]) for k in ('confidence','model_type','training_ranges','warnings','model_version','predicted_diners','applicability') if k in d}
+     return final
+--- v0.1.0/integration/adapters/inventory_risk_adapter.py
++++ v0.1.1/integration/adapters/inventory_risk_adapter.py
+@@ -1,11 +1,13 @@
+ """In-memory providers implementing the original module's public protocols."""
+ from copy import deepcopy
++from ..errors import StageError
+ 
+ def analyze(value):
+     from schemas.models import InventoryLot,Menu,Recipe,Nutrition,PriceTrend,MonthlyPrice
+     from schemas.event import Event
+     from adapters.bundle import AdapterBundle
+     from agents.inventory_risk import analyze_inventory_and_risk
++    from tools.units import grams
+     p=value['payload']; count=value['recommended_servings']
+     class Provider:
+         def __init__(self,kind,rows,model):
+@@ -22,10 +24,13 @@
+         def get_monthly_history(self,name,as_of):
+             return [r for r in self.rows if r.ingredient==name and r.year_month<as_of.strftime('%Y-%m')]
+         def get_events(self,as_of,horizon_end):
+-            return [r for r in self.rows if r.date and r.date<=horizon_end and (r.end_date or r.date)>=as_of and not r.superseded]
++            return [r for r in self.rows if r.date is None or r.date<=horizon_end and (r.end_date or r.date)>=as_of]
+     class Stock(Provider):
+         def get_inventory(self): return deepcopy(self.rows)
+         def get_weekly_menu(self): return deepcopy(self.menus)
++        def get_requirement_totals(self):
++            requirements=value.get('ingredient_requirements')
++            return None if requirements is None else {x['ingredient']:grams(x['cooking_required'],x['unit']) for x in requirements}
+     stock=Stock('inventory',p['inventory'],InventoryLot)
+     stock.menu_source=p['sources']['weekly_menu']
+     recipes={r['menu_name']:r for r in p['recipes']}
+@@ -36,13 +41,17 @@
+     bundle=AdapterBundle(Provider('recipe',p['recipes'],Recipe),Provider('nutrition',p['nutrition'],Nutrition),
+         Provider('price_trend',p['prices'],PriceTrend),Provider('monthly_price',p['monthly_prices'],MonthlyPrice),
+         stock,Provider('supply_risk',p['supply_events'],Event))
+-    # Both engines see the same planned orders; map onto one existing lot per ingredient.
+-    # Order units must match the lot unit to avoid introducing another conversion engine.
++    # Canonical g mapping uses the native mass converter; quantities and prices retain their bases.
++    for lot in stock.rows:
++        old_unit=lot.unit
++        for field in ('current_stock','minimum_stock','planned_order'): setattr(lot,field,grams(getattr(lot,field),old_unit))
++        lot.unit_price=lot.unit_price/grams(1,old_unit)
++        lot.unit='g'
+     for r in stock.rows: r.planned_order=0
+     for order in p['planned_orders']:
+-        matches=[r for r in stock.rows if r.ingredient==order['ingredient'] and r.unit==order['unit']]
+-        if not matches: raise ValueError('Inventory planned order requires an existing lot with matching unit')
+-        matches[0].planned_order+=order['planned_order']
++        matches=[r for r in stock.rows if r.ingredient==order['ingredient']]
++        if not matches: raise StageError('inventory_risk','INVENTORY_DATA_MISSING','Inventory planned order requires an existing lot for the ingredient',422)
++        matches[0].planned_order+=grams(order['planned_order'],order['unit'])
+     raw=analyze_inventory_and_risk(dict(as_of=p['as_of'],horizon_start=p['target_date'],horizon_end=p['target_date'],
+         mode='full',input_snapshot_id=p['input_revision'],forecast_version=value['operation_revision'],
+         prohibited_allergens=p['operation_policy'].get('constraints',{}).get('allergy_restriction') or [],adapters=bundle),p.get('event'))
+@@ -50,5 +59,15 @@
+     raw['data_sources']['risk_constraints']='DEMO:original RiskConfig dish-level thresholds'
+     raw['data_sources']['operation_constraints']=p['sources']['constraints']
+     raw['risk_events']=deepcopy(raw.get('detected_events',[]))
++    raw['audit']={'supply_events':deepcopy(p['supply_events']),'event':deepcopy(p.get('event'))}
++    raw['quantity_basis']={'current_plan':'operation_cooking_raw_g' if value.get('ingredient_requirements') is not None else 'native_edible_g',
++        'operation_revision':value['operation_revision'],'requirements':deepcopy(value.get('ingredient_requirements')),
++        'nutrition':'original edible recipe; dish-level candidate checks',
++        'candidate_stock':'native independent edible-basis estimate; Operation raw/cooking recheck required before selection'}
++    if any(x['cooking_required']!=x['edible_required'] for x in value.get('ingredient_requirements') or []):
++        for candidate in raw.get('substitute_candidates',[]):
++            candidate['eligible_for_review']=False
++            candidate['operation_quantity_recheck_required']=True
++            candidate['quantity_basis']='native edible estimate; raw/cooking requirement not recalculated'
+     raw['requires_confirmation']=raw['status']!='ok'
+     return raw
+--- v0.1.0/integration/adapters/operation_adapter.py
++++ v0.1.1/integration/adapters/operation_adapter.py
+@@ -13,6 +13,6 @@
+     raw['applicability']={'status':{'IN_RANGE':'IN_DOMAIN','OUT_OF_DISTRIBUTION':'OOD','UNKNOWN':'UNKNOWN'}[demand['applicability']],
+         'reasons':[x['message'] for x in demand['warnings']]}
+     raw['warnings']=[{k:w[k] for k in ('code','category','severity','message')} for w in demand['warnings']]
+-    return dict(demand_result=raw,recipe_data=recipes,
++    return dict(demand_result=raw,_demand_envelope={k:deepcopy(demand[k]) for k in ('confidence','model_type','training_ranges','warnings','model_version','predicted_diners','applicability') if k in demand},recipe_data=recipes,
+         inventory_data=[dict(ingredient=x['ingredient'],stock=x['current_stock'] if x['expiry_date']>=p['target_date'] else 0,
+             unit=x['unit']) for x in p['inventory']],planned_orders=p['planned_orders'],config=cfg)
+--- v0.1.0/integration/bridge.py
++++ v0.1.1/integration/bridge.py
+@@ -19,6 +19,5 @@
+         raise StageError(stage,'INVALID_WORKER_RESPONSE',p.stdout[-500:]) from e
+     if response.get('error'):
+         e=response['error']
+-        raise StageError(stage,e['code'],e['message'])
++        raise StageError(stage,e['code'],e['message'],e.get('http_status',500))
+     return response['result']
+-
+--- v0.1.0/integration/errors.py
++++ v0.1.1/integration/errors.py
+@@ -1,7 +1,8 @@
+ class StageError(Exception):
+-    def __init__(self, stage, code, message):
++    def __init__(self, stage, code, message, http_status=500):
+         super().__init__(message)
+         self.stage,self.code,self.message=stage,code,message
++        self.http_status=http_status
+     def as_dict(self):
+-        return dict(stage=self.stage,code=self.code,message=self.message)
+-
++        return dict(stage=self.stage,code=self.code,message=self.message,http_status=self.http_status,
++                    kind='conflict' if self.http_status==409 else 'input' if self.http_status==422 else 'server')
+--- v0.1.0/integration/orchestrator.py
++++ v0.1.1/integration/orchestrator.py
+@@ -18,12 +18,28 @@
+     start=time.perf_counter()
+     try:
+         cfg=config if isinstance(config,PipelineConfig) else PipelineConfig.model_validate(config or {})
++    except Exception as e:
++        result.update(pipeline_status='FAILED',errors=[dict(stage='config',code='SERVER_CONFIG_INVALID',message=str(e),kind='server',http_status=500)])
++        return result
++    try:
+         p=PipelineInput.model_validate(deepcopy(input_data)).model_dump(mode='json')
+         json.dumps(p,allow_nan=False)
+         p['input_revision']=fingerprint(p)
+         result['input_revision']=p['input_revision']
+     except Exception as e:
+-        result.update(pipeline_status='FAILED',errors=[dict(stage='input',code='INPUT_VALIDATION_ERROR',message=str(e))])
++        result.update(pipeline_status='FAILED',errors=[dict(stage='input',code='INPUT_VALIDATION_ERROR',message=str(e),kind='input',http_status=422)])
++        return result
++    # The public end-to-end contract is mass-only even when an individual Agent supports ml/ea.
++    def mass_units(value,path):
++        if isinstance(value,dict):
++            if 'unit' in value: yield (path,value['unit'])
++            for key,item in value.items(): yield from mass_units(item,path+'.'+key)
++        elif isinstance(value,list):
++            for i,item in enumerate(value): yield from mass_units(item,f'{path}[{i}]')
++    units=[row for key in ('inventory','planned_orders','recipes','prices','monthly_prices','operation_policy') for row in mass_units(p[key],key)]
++    unsupported=[{'field':field,'unit':unit} for field,unit in units if unit not in ('g','kg')]
++    if unsupported:
++        result['errors']=[dict(stage='input',code='UNIT_ERROR',kind='input',http_status=422,message='Pipeline supports mass units g/kg only',details=unsupported)]
+         return result
+     def call(stage,value):
+         t=time.perf_counter()
+@@ -33,18 +49,18 @@
+             hook=(hooks or {}).get('on_'+stage+'_complete')
+             if hook:
+                 try: hook(deepcopy(raw),p['input_revision'])
+-                except Exception as e: result['errors'].append(dict(stage=stage,code='PERSIST_HOOK_FAILED',message=str(e)))
++                except Exception as e: result['errors'].append(dict(stage=stage,code='PERSIST_HOOK_FAILED',message=str(e),kind='server',http_status=500))
+             return raw
+         except StageError as e:
+             result['errors'].append(e.as_dict())
+         except Exception as e:
+-            result['errors'].append(dict(stage=stage,code=stage.upper()+'_FAILED',message=str(e)))
++            result['errors'].append(dict(stage=stage,code=stage.upper()+'_FAILED',message=str(e),kind='server',http_status=500))
+         finally: result['timings'][stage]=round(time.perf_counter()-t,4)
+     selected=[m['menu_name'] for m in p['weekly_menu'] if (m['date'],m['meal_type'])==(p['target_date'],p['meal_type'])]
+     attendance=deepcopy(p['attendance'])
+     if 'registered_population' in attendance:
+         if 'employees' in attendance and attendance['employees']!=attendance['registered_population']:
+-            result['errors'].append(dict(stage='demand',code='INPUT_VALIDATION_ERROR',message='Population aliases conflict'))
++            result['errors'].append(dict(stage='demand',code='INPUT_VALIDATION_ERROR',message='Population aliases conflict',kind='input',http_status=422))
+         attendance['employees']=attendance.pop('registered_population')
+     attendance.update(date=p['target_date'],menu=' '.join(selected))
+     d=None if result['errors'] else call('demand',dict(input=attendance,request_id=p['site_id']+':'+p['request_id'],
+@@ -61,13 +77,14 @@
+         for alert in o.get('alerts',[]):
+             kind=alert['type']
+             if kind in ('MISSING_RECIPE','MISSING_INVENTORY','UNIT_ERROR','UNIT_MISMATCH','UNSUPPORTED_UNIT','INVALID_INPUT','NUMERIC_ERROR'):
+-                result['errors'].append(dict(stage='operation',code='RECIPE_MISSING' if kind=='MISSING_RECIPE' else 'INVENTORY_DATA_MISSING' if kind=='MISSING_INVENTORY' else 'UNIT_ERROR' if 'UNIT' in kind else 'INPUT_VALIDATION_ERROR',message=alert['message']))
++                result['errors'].append(dict(stage='operation',code='RECIPE_MISSING' if kind=='MISSING_RECIPE' else 'INVENTORY_DATA_MISSING' if kind=='MISSING_INVENTORY' else 'UNIT_ERROR' if 'UNIT' in kind else 'INPUT_VALIDATION_ERROR',message=alert['message'],kind='input',http_status=422))
+         if (o.get('capacity_excess') or 0)>0:
+             result['warnings'].append(dict(code='CAPACITY_EXCEEDED',stage='operation',raw_prediction=d['predicted_diners'],capacity=p['meal_capacity'],message='Raw demand preserved; capacity review required'))
+         if o.get('recommended_servings') is not None and o['status']!='invalid_input':
+-            r=call('inventory_risk',dict(payload=p,recommended_servings=o['recommended_servings'],operation_revision=fingerprint(o)))
++            r=call('inventory_risk',dict(payload=p,recommended_servings=o['recommended_servings'],ingredient_requirements=o['ingredient_requirements'],operation_revision=fingerprint(o)))
+             if r and r['status'] in ('error','partial','needs_clarification'):
+-                result['errors'].append(dict(stage='inventory_risk',code='RISK_DATA_MISSING' if r['status']=='error' else 'DECISION_NEEDS_CONFIRMATION',message=r['status'],details=r.get('errors',[])))
++                result['errors'].append(dict(stage='inventory_risk',code='RISK_DATA_MISSING' if r['status']=='error' else 'DECISION_NEEDS_CONFIRMATION',message=r['status'],details=r.get('errors',[]),
++                    http_status=422 if any(e.get('code') in ('input_validation_error','data_quality_error') for e in r.get('errors',[])) else 200,kind='input' if r['status']=='error' else 'confirmation'))
+     scope=dict(target_date=p['target_date'],meal_type=p['meal_type'],coverage='full',menus_complete=True,
+         menus=[dict(menu=name,ingredients=[i['ingredient'] for recipe in p['recipes'] if recipe['menu_name']==name for i in recipe['ingredients']],
+             ingredients_complete=any(recipe['menu_name']==name for recipe in p['recipes'])) for name in selected])
+--- v0.1.0/integration/risk_evidence.py
++++ v0.1.1/integration/risk_evidence.py
+@@ -0,0 +1,7 @@
++"""Load the native pure projector without importing legacy tools/config packages."""
++import importlib.util
++from .contracts import ROOT
++spec=importlib.util.spec_from_file_location('_lastplate_native_active_evidence',ROOT/'inventory_risk/tools/active_evidence.py')
++native=importlib.util.module_from_spec(spec)
++spec.loader.exec_module(native)
++project_active=native.project_active
+--- v0.1.0/integration/worker.py
++++ v0.1.1/integration/worker.py
+@@ -5,6 +5,7 @@
+ stage=sys.argv[1]
+ sys.path.insert(0,str(ROOT))
+ sys.path.insert(0,str(ROOT/stage))
++from integration.errors import StageError
+ 
+ def execute(value):
+     if stage=='demand':
+@@ -14,12 +15,23 @@
+         from integration.adapters.demand_adapter import adapt_demand
+         c=value['config']
+         cfg=ServiceConfig(Path(c['storage_dir']).resolve(),ROOT/'demand/models',c['timezone'],c['cutoff_time'],c['actual_ready_time'],mode=c['mode'])
++        from ml.prepare_data import normalize
++        from tools.demand import cached_model
++        import pandas as pd
++        bundle,_=cached_model(cfg.model_dir)
++        try:
++            normalize(pd.DataFrame([value['input']]),require_target=False,require_overtime=bundle.get('include_overtime',True))
++        except (ValueError,TypeError,KeyError) as exc:
++            raise StageError(stage,'MODEL_INPUT_INVALID',str(exc),422) from exc
+         raw=predict_demand(value['input'],request_id=value['request_id'],config=cfg,availability=value.get('availability'))
+         _,metadata=ModelRegistry(cfg.model_dir).load(raw['model_version'])
+         return adapt_demand(raw,metadata,ROOT/'demand/data/processed/lunch.csv')
+     if stage=='operation':
+         from lastplate_operation import generate_operation_plan
+-        return generate_operation_plan(**value)
++        envelope=value.pop('_demand_envelope',None)
++        result=generate_operation_plan(**value)
++        if envelope is not None:result['demand_envelope']=envelope
++        return result
+     if stage=='inventory_risk':
+         from integration.adapters.inventory_risk_adapter import analyze
+         return analyze(value)
+@@ -34,6 +46,12 @@
+         result=execute(payload)
+     answer={'result':result}
+ except Exception as exc:
+-    answer={'error':{'code':getattr(exc,'code',type(exc).__name__),'message':str(exc)}}
++    from pydantic import ValidationError
++    code=getattr(exc,'code',type(exc).__name__)
++    http_status=getattr(exc,'http_status',500)
++    if code in ('idempotency_conflict','revision_conflict'):http_status=409
++    elif code in ('validation_error','time_contract_error','input_not_available','weather_contract_error'):
++        http_status=422
++    elif isinstance(exc,ValidationError) and stage=='inventory_risk':http_status=422
++    answer={'error':{'code':code,'message':str(exc),'http_status':http_status}}
+ print(json.dumps(answer,ensure_ascii=False,allow_nan=False))
+-
+--- v0.1.0/inventory_risk/agents/inventory_risk.py
++++ v0.1.1/inventory_risk/agents/inventory_risk.py
+@@ -9,7 +9,8 @@
+ from tools.identity import stable_id, deduplicate
+ from tools.alerts import make_alert
+ from tools.recipe import scheduled_recipe, menu_key
+-from tools.inventory import analyze_details
++from tools.inventory import analyze_details, allocate
++from tools.active_evidence import active_events, project_active
+ from tools.pricing import analyze_price
+ from tools.nutrition import check
+ from tools.substitute import candidates, inventory_feasibility, cost
+@@ -64,13 +65,15 @@
+         menus=[m for m in self.a.inventory.get_weekly_menu() if s["horizon_start"]<=m.date<=s["horizon_end"]]
+         recipes={menu_key(m):scheduled_recipe(m,self.a.recipe) for m in menus}
+         for event in s["events"]:
+-            if event.event_type=="expiry_event" and not event.needs_clarification:
++            if event.event_type=="expiry_event" and not event.needs_clarification and not event.superseded:
+                 inventory=[lot.model_copy(update={"expiry_date":min(lot.expiry_date,event.date)}) if lot.ingredient==event.ingredient else lot for lot in inventory]
+         restrictions=[e for e in s["events"] if e.event_type=="ingredient_restriction_event"]
+-        status,alerts,impacts,events,priority=analyze_details(inventory,menus,recipes,s["as_of"],self.c,restrictions)
++        totals=getattr(self.a.inventory,'get_requirement_totals',lambda:None)()
++        status,alerts,impacts,events,priority=analyze_details(inventory,menus,recipes,s["as_of"],self.c,restrictions,totals)
++        _,_,_,allocation_audit=allocate(inventory,menus,recipes,restrictions,with_audit=True,required_totals=totals)
+         warnings=[{**w,"severity":self.c.severity(w["type"])} for w in getattr(self.a.inventory,"get_validation_warnings",lambda:[])()]
+         alerts += [make_alert(self.c,w["type"],w["message"],[f"duplicate_count={w['duplicate_count']}",f"keys={w['keys']}",f"rows={w['rows']}"],**{k:v for k,v in w.items() if k not in {"type","message"}}) for w in warnings]
+-        return dict(inventory=inventory,menus=menus,recipes=recipes,inventory_status=status,
++        return dict(inventory=inventory,menus=menus,recipes=recipes,inventory_status=status,allocation_audit=allocation_audit,
+                     alerts=s["alerts"]+alerts,inventory_impacts=impacts,
+                     events=deduplicate(s["events"]+events),priority_use_candidates=priority,
+                     validation_warnings=s.get("validation_warnings",[])+[w for w in warnings if w not in s.get("validation_warnings",[])],
+@@ -104,7 +107,7 @@
+     def supply_risk_analyzer(self,s):
+         incoming=self.a.supply_risk.get_events(s["as_of"],s["horizon_end"])
+         events=deduplicate(s["events"]+incoming)
+-        supply=[e for e in events if e.event_type=="supply_risk" and not e.needs_clarification and e.date and e.date<=s["horizon_end"] and (e.end_date or e.date)>=s["horizon_start"]]
++        supply=[e for e in active_events(events) if e.event_type=="supply_risk" and not e.needs_clarification and e.date and e.date<=s["horizon_end"] and (e.end_date or e.date)>=s["horizon_start"]]
+         risks=[]
+         for e in supply:
+             status=next((x for x in s["inventory_status"] if x["ingredient"]==e.ingredient),{})
+@@ -118,7 +121,7 @@
+     def impact_analyzer(self,s):
+         affected=list(s["inventory_impacts"])
+         for event in s["events"]:
+-            if event.event_type not in {"price_event","supply_risk","ingredient_restriction_event","expiry_event"} or event.needs_clarification:
++            if event.event_type not in {"price_event","supply_risk","ingredient_restriction_event","expiry_event"} or event.needs_clarification or event.superseded:
+                 continue
+             for menu in s["menus"]:
+                 match=applies(event,menu.date) if event.event_type!="expiry_event" else True
+@@ -194,8 +197,8 @@
+             report["decision_trace"]=s.get("trace",[])+[f"SKIP {n}: upstream_error" for n in STAGES if n not in executed]+["Risk Report Builder: error; no operational action"]
+             return {"report":RiskReport.model_validate(report).model_dump(mode="json")}
+         events=s.get("events",[])
+-        pending=[e.event_id for e in events if e.needs_clarification]
+-        attendance=[e for e in events if e.event_type=="attendance_event"]
++        pending=[e.event_id for e in active_events(events) if e.needs_clarification]
++        attendance=[e for e in active_events(events) if e.event_type=="attendance_event"]
+         forecast_state=("blocked_error" if errors else "blocked_clarification" if attendance and pending
+                         else "requested" if attendance else "not_requested")
+         rechecks=[]
+@@ -225,7 +228,7 @@
+             recheck_status={"demand_forecast":{"status":forecast_state,"execute_allowed":forecast_state=="requested","executed":False},
+                             "operation_agent":{"status":"requested" if "operation_agent" in rechecks else "blocked" if errors or pending else "not_requested","executed":False}},
+             execution={"executed_nodes":executed,"skipped_nodes":skipped,"scope":"full" if request.get("mode","full")=="full" else "event_scoped","previous_report_reused":False},
+-            errors=errors,inventory_status=s.get("inventory_status",[]),
++            errors=errors,inventory_status=s.get("inventory_status",[]),allocation_audit=s.get('allocation_audit',[]),
+             detected_events=[e.model_dump(mode="json") for e in events],alerts=s.get("alerts",[]),
+             price_risks=s.get("price_risks",[]),supply_risks=s.get("supply_risks",[]),
+             affected_menus=s.get("affected",[]),
+@@ -242,7 +245,12 @@
+                 "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+                 "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID.",
+             ])
+-        return {"report":report.model_dump(mode="json")}
++        raw=report.model_dump(mode="json")
++        active=project_active(raw)
++        # Public event history remains complete; all derived current evidence is active-only.
++        active['detected_events']=raw['detected_events']
++        active['parsing_result']=raw['parsing_result']
++        return {"report":RiskReport.model_validate(active).model_dump(mode='json')}
+ 
+ def error_report(detail, request=None, sources=None):
+     request=request if isinstance(request,dict) else {}
+--- v0.1.0/inventory_risk/graph/inventory_risk_workflow.py
++++ v0.1.1/inventory_risk/graph/inventory_risk_workflow.py
+@@ -25,6 +25,7 @@
+     rechecks: list
+     trace: list
+     inventory_status: list
++    allocation_audit: list
+     price_risks: list
+     supply_risks: list
+     affected: list
+--- v0.1.0/inventory_risk/schemas/risk_report.py
++++ v0.1.1/inventory_risk/schemas/risk_report.py
+@@ -22,6 +22,9 @@
+     execution: dict[str, Any] = Field(default_factory=dict)
+     errors: list[ErrorDetail] = Field(default_factory=list)
+     inventory_status: list[dict[str, Any]] = Field(default_factory=list)
++    allocation_audit: list[dict[str, Any]] = Field(default_factory=list)
++    current_plan_checks: dict[str,str] = Field(default_factory=dict)
++    evidence_projection: dict[str,Any] = Field(default_factory=dict)
+     detected_events: list[dict[str, Any]] = Field(default_factory=list)
+     alerts: list[Alert] = Field(default_factory=list)
+     price_risks: list[dict[str, Any]] = Field(default_factory=list)
+--- v0.1.0/inventory_risk/tools/active_evidence.py
++++ v0.1.1/inventory_risk/tools/active_evidence.py
+@@ -0,0 +1,94 @@
++"""One native active-evidence projection shared by Risk and the integration boundary.
++
++Audit/history is deliberately not consumed as current evidence. No operational action.
++"""
++from copy import deepcopy
++
++COLLECTIONS=('detected_events','price_risks','supply_risks','alerts','affected_menus',
++             'priority_use_candidates','substitute_candidates','nutrition_results','cost_impacts')
++
++def active_events(events):
++    return [e for e in events if not (e.get('superseded',False) if isinstance(e,dict) else e.superseded)]
++
++def recheck_requests(report):
++    events=active_events(report.get('detected_events',[]))
++    pending=any(e.get('needs_clarification') for e in events)
++    result=[]
++    if any(e['event_type']=='attendance_event' for e in events) and not pending and not report.get('errors'):
++        result.append('demand_forecast')
++    if not pending and not report.get('errors') and any(report.get(k) for k in ('alerts','substitute_candidates','priority_use_candidates')):
++        result.append('operation_agent')
++    return result
++
++def plan_checks(report):
++    """Checks come from native FEFO allocation and actual executed observations."""
++    checks={k:'UNKNOWN' for k in ('shortage','expiry','restriction','supply')}
++    executed=set(report.get('execution',{}).get('executed_nodes',[]))
++    audit=report.get('allocation_audit',[])
++    if report.get('status')!='ok': return checks
++    if 'inventory_analyzer' in executed and audit:
++        checks['shortage']='FAIL' if any(x['shortage_g']>0 for x in audit) else 'PASS'
++        checks['restriction']='FAIL' if any(x['restricted'] for x in audit) else 'PASS'
++        # allocate() excludes expired lots at the service date; unresolved coverage is UNKNOWN.
++        if checks['shortage']=='PASS': checks['expiry']='PASS'
++    if 'supply_risk_analyzer' in executed and audit:
++        required={x['ingredient'] for x in audit}
++        risks=[r for r in report.get('supply_risks',[]) if r.get('ingredient') in required]
++        unresolved=[e for e in active_events(report.get('detected_events',[])) if e.get('event_type')=='supply_risk'
++                    and e.get('ingredient') in required and (not e.get('date') or e.get('needs_clarification'))]
++        checks['supply']='UNKNOWN' if risks or unresolved else 'PASS'
++    return checks
++
++def project_active(report):
++    """Drop superseded evidence and dependent records, including candidate-only edges.
++
++    Mixed-cause records survive with only their active cause IDs. Never drop an
++    unrelated risk or promote an incomplete/failed report to a successful one.
++    """
++    out=deepcopy(report)
++    records=[x for key in COLLECTIONS for x in out.get(key,[]) if isinstance(x,dict)]
++    history=out.get('audit',{}).get('supply_events',[])+(out.get('parsing_result') or {}).get('parsed_events',[])
++    dead={x['event_id'] for x in records+history if x.get('superseded') and x.get('event_id')}
++    dead_candidates=set()
++    def obsolete(x):
++        if not isinstance(x,dict): return False
++        refs=set(x.get('cause_event_ids') or [])
++        return bool(x.get('superseded') or x.get('event_id') in dead or x.get('cause_event_id') in dead
++                    or (refs and refs<=dead) or x.get('candidate_id') in dead_candidates)
++    for _ in range(len(records)+1):
++        old=(len(dead),len(dead_candidates))
++        for x in records:
++            if obsolete(x):
++                if x.get('event_id'): dead.add(x['event_id'])
++        # A candidate with a surviving mixed-cause definition must not be removed by a cancelled ancillary result.
++        for key in ('priority_use_candidates','substitute_candidates'):
++            for x in out.get(key,[]):
++                if obsolete(x) and x.get('candidate_id'): dead_candidates.add(x['candidate_id'])
++        if old==(len(dead),len(dead_candidates)):break
++    def clean(value):
++        if isinstance(value,list):return [clean(x) for x in value if not obsolete(x)]
++        if isinstance(value,dict):
++            result={k:clean(v) for k,v in value.items() if k not in ('source_payload','audit','history')}
++            if 'cause_event_ids' in result: result['cause_event_ids']=[x for x in result['cause_event_ids'] if x not in dead]
++            return result
++        return value
++    for key in COLLECTIONS: out[key]=clean(out.get(key,[]))
++    if 'risk_events' in out: out['risk_events']=clean(out['risk_events'])
++    for key in ('constraints','checks','rechecks'):
++        if key in out:out[key]=clean(out[key])
++    out['affected_ingredients']=sorted({x.get('ingredient') or x.get('affected_ingredient') for key in ('alerts','affected_menus') for x in out[key] if x.get('ingredient') or x.get('affected_ingredient')})
++    if out.get('parsing_result'):
++        out['parsing_result']=clean(out['parsing_result'])
++        out['parsing_result']['parsed_events']=active_events(out['parsing_result'].get('parsed_events',[]))
++    # Derived gates and native coarse rechecks are rebuilt from the same active view.
++    out['current_plan_checks']=plan_checks(out)
++    extra=[x for x in clean(out.get('recommended_rechecks',[])) if not isinstance(x,str) or x not in ('operation_agent','operation','demand_forecast')]
++    out['recommended_rechecks']=recheck_requests(out)+extra
++    for name in ('operation_agent','demand_forecast'):
++        previous=out.setdefault('recheck_status',{}).get(name,{})
++        # Keep native parser/error blocking semantics. Supersession only removes stale requests.
++        status=previous.get('status') if str(previous.get('status','')).startswith('blocked') and out.get('status')!='ok' else 'requested' if name in out['recommended_rechecks'] else 'not_requested'
++        out['recheck_status'][name]={**previous,'status':status,'executed':False}
++        if name=='demand_forecast':out['recheck_status'][name]['execute_allowed']=status=='requested'
++    out['evidence_projection']={'superseded_event_ids':sorted(dead),'removed_candidate_ids':sorted(dead_candidates),'audit_excluded':True}
++    return out
+--- v0.1.0/inventory_risk/tools/inventory.py
++++ v0.1.1/inventory_risk/tools/inventory.py
+@@ -6,14 +6,33 @@
+ from .identity import stable_id, deduplicate
+ from schemas.event import Event
+ 
+-def allocate(inventory, menus, recipes, restrictions=(), with_audit=False):
++def allocate(inventory, menus, recipes, restrictions=(), with_audit=False, required_totals=None):
+     """FEFO across chronological meals; expired lots never satisfy later demand."""
+     remaining = [grams(x.current_stock, x.unit) for x in inventory]
+     needed, missing = defaultdict(float), defaultdict(float)
+     audit=[]
++    weights={}; distributed=defaultdict(float); occurrences=defaultdict(int)
++    if required_totals is not None:
++        from schemas.errors import input_error
++        from math import isfinite
++        if len({(m.date,m.meal_type) for m in menus})!=1:
++            raise input_error('Operation totals require one service scope','required_totals')
++        # Reuse the existing native quantity calculation, without duplicating trim loss/rounding.
++        weights,_,_,original=allocate(inventory,menus,recipes,restrictions,with_audit=True)
++        if set(required_totals)!=set(weights) or any(not isfinite(v) or v<0 for v in required_totals.values()):
++            raise input_error('Operation requirement coverage/values mismatch','required_totals')
++        for row in original: occurrences[row['ingredient']]+=1
+     for menu in sorted(menus, key=lambda m:(m.date, m.meal_type, m.menu_name)):
+         for item in recipes[menu_key(menu)].ingredients:
+             amount = grams(item.amount_per_serving, item.unit) * menu.expected_max_diners
++            edible=amount
++            if required_totals is not None:
++                occurrences[item.ingredient]-=1
++                # Transport an aggregate Operation total across menus by original edible contribution.
++                # The last share keeps the aggregate exact; no procurement formula is reimplemented.
++                amount=(required_totals[item.ingredient]-distributed[item.ingredient] if occurrences[item.ingredient]==0 else
++                        required_totals[item.ingredient]*amount/weights[item.ingredient] if weights[item.ingredient] else 0)
++                distributed[item.ingredient]+=amount
+             needed[item.ingredient] += amount
+             required=amount
+             lots_used=[]
+@@ -29,11 +48,12 @@
+                     lots_used.append({"lot_index":index,"quantity_g":take})
+             missing[item.ingredient] += amount
+             audit.append(dict(date=menu.date.isoformat(),meal_type=menu.meal_type,menu_name=menu.menu_name,ingredient=item.ingredient,required_g=required,shortage_g=amount,allocations=lots_used,restricted=restricted))
++            if required_totals is not None: audit[-1].update(edible_required_g=edible,quantity_basis='operation_cooking_raw_g')
+     result=(dict(needed), dict(missing), remaining)
+     return (*result,audit) if with_audit else result
+ 
+-def analyze(inventory, menus, recipes, as_of, config, restrictions):
+-    needed, missing, _ = allocate(inventory, menus, recipes, restrictions)
++def analyze(inventory, menus, recipes, as_of, config, restrictions, required_totals=None):
++    needed, missing, _ = allocate(inventory, menus, recipes, restrictions,required_totals=required_totals)
+     names = sorted(set(needed) | {x.ingredient for x in inventory})
+     statuses, alerts = [], []
+     def alert(kind, ingredient, evidence, severity=None, action=None):
+@@ -66,9 +86,9 @@
+                 alert("long_unused_inventory",name,[f"last used {lot.last_used_date}"])
+     return statuses, alerts
+ 
+-def analyze_details(inventory,menus,recipes,as_of,config,restrictions):
+-    statuses,alerts=analyze(inventory,menus,recipes,as_of,config,restrictions)
+-    _,_,_,audit=allocate(inventory,menus,recipes,restrictions,with_audit=True)
++def analyze_details(inventory,menus,recipes,as_of,config,restrictions,required_totals=None):
++    statuses,alerts=analyze(inventory,menus,recipes,as_of,config,restrictions,required_totals)
++    _,_,_,audit=allocate(inventory,menus,recipes,restrictions,with_audit=True,required_totals=required_totals)
+     impacts,events,priority=[],[],[]
+     for record in audit:
+         base={k:record[k] for k in ("date","meal_type","menu_name")}
+--- v0.1.0/tests/integration/test_p0p1.py
++++ v0.1.1/tests/integration/test_p0p1.py
+@@ -0,0 +1,109 @@
++import copy,json,os,sys
++from pathlib import Path
++import pytest
++ARTIFACT_ROOT=Path(__file__).resolve().parents[2]
++ROOT=Path(os.environ.get('LASTPLATE_TEST_ROOT',str(ARTIFACT_ROOT))).resolve()
++sys.path.insert(0,str(ROOT))
++from integration import run_lastplate_pipeline,PipelineConfig
++from integration.bridge import invoke
++
++def save(name,value):
++    folder=ARTIFACT_ROOT/'reports/p0p1'/os.environ.get('EVIDENCE_PHASE','after')
++    folder.mkdir(parents=True,exist_ok=True)
++    (folder/(name+'.json')).write_text(json.dumps(value,ensure_ascii=False,indent=2),encoding='utf-8')
++
++@pytest.fixture
++def p():
++    p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf-8'))
++    p['request_id']='p0p1';p['supply_events']=[]
++    p['inventory']=[x for x in p['inventory'] if x['ingredient'] in ('두부','간장')]
++    p['inventory']=list({x['ingredient']:x for x in p['inventory']}.values())
++    for x in p['inventory']:
++        x.update(current_stock=100000 if x['ingredient']=='두부' else 3000,unit='g',expiry_date='2026-10-01',minimum_stock=0,planned_order=0,last_used_date='2026-09-17')
++    for row in p['prices']:
++        for k in ('current_price','price_1w_ago','price_2w_ago','price_3w_ago','price_4w_ago'):row[k]=1000
++    for row in p['monthly_prices']:row['average_price']=1000
++    return p
++
++@pytest.fixture
++def run(tmp_path):
++    return lambda p:run_lastplate_pipeline(p,config=PipelineConfig(storage_dir=tmp_path/'store'))
++
++def cancelled():
++    return dict(event_type='supply_risk',event_id='cancelled-supply',ingredient='두부',date='2026-09-18',end_date='2026-09-18',severity='HIGH',superseded=True,description='cancelled observation',source_type='DEMO')
++
++def test_01_cancelled_structured_supply_public(p,run):
++    p['event']=cancelled();r=run(p);save('01-cancelled-structured',r)
++    assert r['pipeline_status']=='COMPLETE',r['errors']
++    assert any(e.get('superseded') for e in r['inventory_risk']['detected_events'])
++    assert not r['inventory_risk']['supply_risks']
++    assert not any(a['type']=='supply_risk' for a in r['decision']['critical_alerts'])
++    assert not any(a['decision']=='REVIEW' and '공급' in a['reason'] for a in r['decision']['menu_actions'])
++
++def test_02_raw_cooking_basis(p,run):
++    p['operation_policy']['trim_loss_pct']={'두부':50}
++    r=run(p);save('02-raw-basis',r)
++    assert r['operation']['recommended_servings']==910
++    o=next(x for x in r['operation']['ingredient_requirements'] if x['ingredient']=='두부')
++    i=next(x for x in r['inventory_risk']['inventory_status'] if x['ingredient']=='두부')
++    assert o['cooking_required']==145600 and o['purchase_need']==45600
++    assert i['required_g']==o['cooking_required'] and i['shortage_at_service_g']==45600
++
++def test_03_units_public_boundary(p,run):
++    p['planned_orders']=[dict(ingredient='두부',planned_order=2,unit='kg')]
++    good=run(p)
++    bad=copy.deepcopy(p);bad['request_id']='bad-unit';bad['inventory'][0]['unit']='ml'
++    unsupported=run(bad)
++    save('03-units',dict(convertible=good,unsupported=unsupported))
++    assert good['pipeline_status']=='COMPLETE',good['errors']
++    assert next(x for x in good['inventory_risk']['inventory_status'] if x['ingredient']=='두부')['planned_order_g']==2000
++    assert unsupported['demand'] is None
++    assert any(e['code']=='UNIT_ERROR' and e.get('http_status')==422 for e in unsupported['errors'])
++
++def test_04_http_error_semantics(p,tmp_path,monkeypatch):
++    from fastapi.testclient import TestClient
++    from app.main import app
++    monkeypatch.setenv('LASTPLATE_STORAGE',str(tmp_path/'api'))
++    monkeypatch.setenv('LASTPLATE_MODE','demo')
++    cases={}
++    with TestClient(app) as c:
++        for name,body in [('ok',p),('ml',{**p,'request_id':'invalid-ml','attendance':{**p['attendance'],'vacation':-1}}),
++            ('nested',{**p,'request_id':'invalid-nested','nutrition':[{'ingredient':'두부'}]}),
++            ('conflict',{**p,'attendance':{**p['attendance'],'overtime':552}})]:
++            res=c.post('/api/plan',json=body);cases[name]={'status':res.status_code,'body':res.json()}
++    save('04-http',cases)
++    assert {k:v['status'] for k,v in cases.items()}=={'ok':200,'ml':422,'nested':422,'conflict':409}
++    assert cases['nested']['body']['demand'] and cases['nested']['body']['operation']
++
++def test_05_audit_and_demand_envelope(p,run):
++    p['supply_events']=[cancelled()]
++    p['attendance'].update(registered_population=600,vacation=30,business_trip=50,work_from_home=10,overtime=50)
++    r=run(p);save('05-audit-envelope',r)
++    assert any(e.get('superseded') for e in r['inventory_risk']['detected_events'])
++    assert not r['inventory_risk']['supply_risks']
++    for envelope in (r['operation'].get('demand_envelope'),r['decision'].get('demand_envelope')):
++        assert envelope and envelope['confidence']==r['demand']['confidence']
++        for k in ('model_type','training_ranges','warnings','model_version','predicted_diners'): assert envelope[k]==r['demand'][k]
++
++def test_06_last_adapter_defense_and_native_gates(p,run):
++    base=run(p);r=copy.deepcopy(base['inventory_risk'])
++    dead=cancelled();cid='cancelled-candidate'
++    r['detected_events'].append(dead)
++    linked=dict(ingredient='두부',date=p['target_date'],meal_type='lunch',cause_event_ids=[dead['event_id']],candidate_id=cid)
++    r['price_risks']=[{**linked,'severity':'HIGH','message':'cancelled-price'}]
++    r['supply_risks']=[{**dead,'inventory_context':{}}]
++    r['affected_menus']=[{**linked,'cause_event_id':dead['event_id'],'cause':'supply_risk','menu_name':'두부조림'}]
++    r['alerts']=[{**linked,'type':'supply_risk','severity':'HIGH','message':'cancelled alert','evidence':['cancelled']}]
++    r['priority_use_candidates']=[{**linked,'quantity_g':1,'expiry_date':p['target_date'],'menu_name':'두부조림'}]
++    r['substitute_candidates']=[{**linked,'original_menu':'두부조림','candidate_menu':'계란찜','nutrition_check':'FAIL'}]
++    r['nutrition_results']=[{**linked,'status':'FAIL'}];r['cost_impacts']=[{**linked,'delta_total':100}]
++    r['recommended_rechecks']=['operation_agent']
++    p['input_revision']=base['input_revision']
++    scope=base['decision']['adapter_provenance']['operation']['analysis_scope']
++    final=invoke('decision',dict(payload=p,demand=base['demand'],operation=base['operation'],inventory_risk=r,scope=scope))
++    save('06-adapter-defense',dict(input=r,decision=final))
++    assert not any(a['type']=='supply_risk' for a in final['critical_alerts'])
++    assert not any(a.get('candidate_id')==cid for a in final['candidate_evaluations'])
++    assert not any(q['reason']=='upstream_request:operation' for q in final['recommended_rechecks'])
++    assert final['active_evidence_summary']['current_plan_checks']==base['inventory_risk']['current_plan_checks']
++    assert final['source_payload']['inventory_risk']['supply_risks'] # audit only
+--- v0.1.0/tests/integration/test_p0p1_edges.py
++++ v0.1.1/tests/integration/test_p0p1_edges.py
+@@ -0,0 +1,76 @@
++import copy,json,sys
++from pathlib import Path
++import pytest
++ROOT=Path(__file__).resolve().parents[2]
++sys.path.insert(0,str(ROOT))
++from integration.risk_evidence import project_active
++from integration import run_lastplate_pipeline,PipelineConfig
++
++def test_projection_graph_mixed_and_candidate_only_edges():
++    r=dict(status='ok',detected_events=[dict(event_id='old',superseded=True,event_type='supply_risk'),dict(event_id='live',event_type='supply_risk')],
++        substitute_candidates=[dict(candidate_id='dead',cause_event_ids=['old']),dict(candidate_id='keep',cause_event_ids=['old','live'])],
++        alerts=[dict(candidate_id='dead',type='nutrition_violation'),dict(candidate_id='keep',cause_event_ids=['old','live'])],
++        nutrition_results=[dict(candidate_id='dead',status='FAIL')],cost_impacts=[dict(candidate_id='dead')],
++        constraints=[dict(candidate_id='dead',status='FAIL')],recommended_rechecks=[dict(agent='operation',cause_event_ids=['old'])])
++    before=copy.deepcopy(r);active=project_active(r)
++    assert r==before
++    assert [x['candidate_id'] for x in active['substitute_candidates']]==['keep']
++    assert active['substitute_candidates'][0]['cause_event_ids']==['live']
++    for key in ('nutrition_results','cost_impacts','constraints'): assert not active[key]
++    assert not any(isinstance(x,dict) for x in active['recommended_rechecks'])
++    assert active['current_plan_checks']==dict(shortage='UNKNOWN',expiry='UNKNOWN',restriction='UNKNOWN',supply='UNKNOWN')
++
++@pytest.mark.parametrize('unit',['ml','ea'])
++def test_unsupported_units_before_any_model_write(unit,tmp_path):
++    p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf8'))
++    p['planned_orders']=[dict(ingredient='두부',planned_order=1,unit=unit)]
++    r=run_lastplate_pipeline(p,config=PipelineConfig(storage_dir=tmp_path))
++    assert r['demand'] is None and r['errors'][0]['http_status']==422
++    assert not list(tmp_path.rglob('*.sqlite3'))
++
++def test_http_server_failure_retains_successful_stage(monkeypatch,tmp_path):
++    from fastapi.testclient import TestClient
++    from app.main import app
++    import integration.orchestrator as orchestrator
++    from integration.errors import StageError
++    original=orchestrator.invoke
++    def failing(stage,payload,timeout):
++        if stage=='inventory_risk':raise StageError(stage,'TEST_WORKER_FAILURE','injected server failure',500)
++        return original(stage,payload,timeout)
++    monkeypatch.setattr(orchestrator,'invoke',failing)
++    monkeypatch.setenv('LASTPLATE_STORAGE',str(tmp_path))
++    monkeypatch.setenv('LASTPLATE_MODE','demo')
++    p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf8'))
++    with TestClient(app) as client:response=client.post('/api/plan',json=p)
++    r=response.json()
++    assert response.status_code==500 and r['demand'] and r['operation'] and r['decision']
++    assert r['errors'][0]['kind']=='server'
++    evidence=ROOT/'reports/p0p1/after/server-failure.json'
++    evidence.write_text(json.dumps({'http_status':response.status_code,'body':r},ensure_ascii=False,indent=2),encoding='utf8')
++
++def test_invalid_server_config_is_not_input_error():
++    p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf8'))
++    r=run_lastplate_pipeline(p,config={'mode':'bad-server-mode'})
++    assert r['errors'][0]['http_status']==500 and r['errors'][0]['kind']=='server'
++
++def test_native_multi_menu_raw_total_and_expiry():
++    import subprocess
++    code='''
++import json
++from datetime import date
++from schemas.models import Menu,Recipe,InventoryLot
++from tools.inventory import allocate
++from tools.recipe import menu_key
++menus=[Menu(date='2026-09-18',meal_type='lunch',menu_name=n,expected_max_diners=10,ingredients=[dict(ingredient='tofu',amount_per_serving=a,unit='g')]) for n,a in [('A',80),('B',20)]]
++recipes={menu_key(m):Recipe(recipe_id=m.menu_name,menu_name=m.menu_name,category='test',ingredients=m.ingredients) for m in menus}
++lots=[InventoryLot(ingredient='tofu',current_stock=5000,unit='g',expiry_date='2026-09-17',unit_price=1,minimum_stock=0,planned_order=0,storage_type='cold'),InventoryLot(ingredient='tofu',current_stock=1500,unit='g',expiry_date='2026-09-19',unit_price=1,minimum_stock=0,planned_order=0,storage_type='cold')]
++needed,missing,remaining,audit=allocate(lots,menus,recipes,with_audit=True,required_totals={'tofu':2000})
++assert needed['tofu']==2000 and missing['tofu']==500
++assert [x['required_g'] for x in audit]==[1600,400]
++assert all(a['lot_index']==1 for x in audit for a in x['allocations'])
++assert [r.ingredients[0].amount_per_serving for r in recipes.values()]==[80,20]
++print(json.dumps({'needed':needed,'missing':missing,'audit':audit}))
++'''
++    proc=subprocess.run([sys.executable,'-c',code],cwd=ROOT/'inventory_risk',capture_output=True,text=True)
++    assert proc.returncode==0,proc.stderr
++    (ROOT/'reports/p0p1/after/multi-menu-allocation.json').write_text(proc.stdout,encoding='utf8')
+--- v0.1.0/tests/integration/test_supply_unknown.py
++++ v0.1.1/tests/integration/test_supply_unknown.py
+@@ -0,0 +1,14 @@
++import json,sys
++from pathlib import Path
++ROOT=Path(__file__).resolve().parents[2]
++sys.path.insert(0,str(ROOT))
++from integration import run_lastplate_pipeline,PipelineConfig
++
++def test_undated_supply_is_preserved_and_not_a_pass(tmp_path):
++    p=json.loads((ROOT/'examples/lh_like.json').read_text(encoding='utf8'))
++    p['supply_events']=[dict(event_type='supply_risk',ingredient='두부',severity='HIGH',description='date missing',source_type='DEMO')]
++    r=run_lastplate_pipeline(p,config=PipelineConfig(storage_dir=tmp_path))
++    assert r['pipeline_status']=='COMPLETE',r['errors']
++    assert any(e['event_type']=='supply_risk' and e['date'] is None for e in r['inventory_risk']['detected_events'])
++    assert r['inventory_risk']['current_plan_checks']['supply']=='UNKNOWN'
++    assert r['decision']['active_evidence_summary']['current_plan_checks']['supply']=='UNKNOWN'

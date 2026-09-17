@@ -1,0 +1,955 @@
+{
+  "A": {
+    "status": "ok",
+    "parsing_result": {
+      "status": "ok",
+      "parsed_events": [
+        {
+          "event_type": "attendance_event",
+          "event_id": "event-b718e363967197b23ca3",
+          "ingredient": null,
+          "date": "2026-09-18",
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": 35,
+          "severity": "MEDIUM",
+          "description": "내일 손님 35명 추가하고",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 손님 35명 추가하고",
+          "matched_sources": [],
+          "reason": "외부 손님"
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-c7426224e3c5a71db835",
+          "ingredient": "닭고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "닭고기 쓰지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "detected_events": [
+      {
+        "event_type": "attendance_event",
+        "event_id": "event-b718e363967197b23ca3",
+        "ingredient": null,
+        "date": "2026-09-18",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": 35,
+        "severity": "MEDIUM",
+        "description": "내일 손님 35명 추가하고",
+        "source_type": "user",
+        "needs_clarification": false,
+        "source_text": "내일 손님 35명 추가하고",
+        "matched_sources": [],
+        "reason": "외부 손님"
+      },
+      {
+        "event_type": "ingredient_restriction_event",
+        "event_id": "event-c7426224e3c5a71db835",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": "2026-09-18",
+        "restriction": "do_not_use",
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "닭고기 쓰지 말아주세요.",
+        "source_type": "user",
+        "needs_clarification": false,
+        "source_text": "닭고기 쓰지 말아주세요.",
+        "matched_sources": [
+          "inventory",
+          "recipe",
+          "weekly_menu"
+        ],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-e8a856f33586cd3d7376",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "dinner 닭갈비: shortage 5000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_expiry_event",
+        "event_id": "event-5c08996f9b70ea138c16",
+        "ingredient": "두부",
+        "date": "2026-09-17",
+        "end_date": "2026-09-18",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "lot-73839946edffbbbd08ba expiry=2026-09-18",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-1d283aad08c64ca6cd97",
+        "ingredient": "계란",
+        "date": "2026-09-21",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 계란찜: shortage 3000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-6641afce70ce71913ce5",
+        "ingredient": "계란",
+        "date": "2026-09-23",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 계란말이: shortage 8000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-0fba01ece74e01e1b4e6",
+        "ingredient": "닭고기",
+        "date": "2026-09-24",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 닭갈비: shortage 4000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "supply_risk",
+        "event_id": "event-c03f1bcb68ff2bcd2d9b",
+        "ingredient": "계란",
+        "date": "2026-09-18",
+        "end_date": "2026-09-24",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "조류인플루엔자 영향에 따른 공급 위험 DEMO",
+        "source_type": "simulation",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "supply_risk",
+        "event_id": "event-ded6a1cc926a534e56fd",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": "2026-09-24",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "조류인플루엔자 영향에 따른 공급 위험 DEMO",
+        "source_type": "simulation",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "inventory_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "price_risk_analyzer"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recommended_rechecks": [
+      "demand_forecast",
+      "operation_agent"
+    ],
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "requested",
+        "execute_allowed": true,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "requested",
+        "executed": false
+      }
+    }
+  },
+  "B": {
+    "status": "ok",
+    "parsing_result": {
+      "status": "ok",
+      "parsed_events": [
+        {
+          "event_type": "attendance_event",
+          "event_id": "event-84b0e597fb6ffd24648f",
+          "ingredient": null,
+          "date": "2026-09-18",
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": -40,
+          "severity": "MEDIUM",
+          "description": "내일 회식으로 40명 빠지고",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 회식으로 40명 빠지고",
+          "matched_sources": [],
+          "reason": "회식"
+        },
+        {
+          "event_type": "expiry_event",
+          "event_id": "event-0a657ffcd1cdb4f94a63",
+          "ingredient": "두부",
+          "date": "2026-09-18",
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "두부가 내일까지예요.",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "두부가 내일까지예요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "detected_events": [
+      {
+        "event_type": "attendance_event",
+        "event_id": "event-84b0e597fb6ffd24648f",
+        "ingredient": null,
+        "date": "2026-09-18",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": -40,
+        "severity": "MEDIUM",
+        "description": "내일 회식으로 40명 빠지고",
+        "source_type": "user",
+        "needs_clarification": false,
+        "source_text": "내일 회식으로 40명 빠지고",
+        "matched_sources": [],
+        "reason": "회식"
+      },
+      {
+        "event_type": "expiry_event",
+        "event_id": "event-0a657ffcd1cdb4f94a63",
+        "ingredient": "두부",
+        "date": "2026-09-18",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "두부가 내일까지예요.",
+        "source_type": "user",
+        "needs_clarification": false,
+        "source_text": "두부가 내일까지예요.",
+        "matched_sources": [
+          "inventory",
+          "recipe",
+          "weekly_menu"
+        ],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_expiry_event",
+        "event_id": "event-5c08996f9b70ea138c16",
+        "ingredient": "두부",
+        "date": "2026-09-17",
+        "end_date": "2026-09-18",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "lot-73839946edffbbbd08ba expiry=2026-09-18",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_expiry_event",
+        "event_id": "event-b05e89c8bf0a189466aa",
+        "ingredient": "두부",
+        "date": "2026-09-17",
+        "end_date": "2026-09-18",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "lot-92a0ce3880d74b152086 expiry=2026-09-18",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-1d283aad08c64ca6cd97",
+        "ingredient": "계란",
+        "date": "2026-09-21",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 계란찜: shortage 3000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-6641afce70ce71913ce5",
+        "ingredient": "계란",
+        "date": "2026-09-23",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 계란말이: shortage 8000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-9b29d19c53fe8171446c",
+        "ingredient": "닭고기",
+        "date": "2026-09-24",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 닭갈비: shortage 9000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "supply_risk",
+        "event_id": "event-c03f1bcb68ff2bcd2d9b",
+        "ingredient": "계란",
+        "date": "2026-09-18",
+        "end_date": "2026-09-24",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "조류인플루엔자 영향에 따른 공급 위험 DEMO",
+        "source_type": "simulation",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "supply_risk",
+        "event_id": "event-ded6a1cc926a534e56fd",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": "2026-09-24",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "조류인플루엔자 영향에 따른 공급 위험 DEMO",
+        "source_type": "simulation",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "inventory_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "price_risk_analyzer"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recommended_rechecks": [
+      "demand_forecast",
+      "operation_agent"
+    ],
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "requested",
+        "execute_allowed": true,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "requested",
+        "executed": false
+      }
+    }
+  },
+  "C": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "attendance_event",
+          "event_id": "event-c70c30cf1eaca6fa483f",
+          "ingredient": null,
+          "date": null,
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": 20,
+          "severity": "MEDIUM",
+          "description": "외부 인원 20명 추가되고",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "외부 인원 20명 추가되고",
+          "matched_sources": [],
+          "reason": "외부 손님"
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-1ac018d12908ca4c79dc",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란 쓰지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "detected_events": [
+      {
+        "event_type": "attendance_event",
+        "event_id": "event-c70c30cf1eaca6fa483f",
+        "ingredient": null,
+        "date": null,
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": 20,
+        "severity": "MEDIUM",
+        "description": "외부 인원 20명 추가되고",
+        "source_type": "user",
+        "needs_clarification": true,
+        "source_text": "외부 인원 20명 추가되고",
+        "matched_sources": [],
+        "reason": "외부 손님"
+      },
+      {
+        "event_type": "ingredient_restriction_event",
+        "event_id": "event-1ac018d12908ca4c79dc",
+        "ingredient": "계란",
+        "date": null,
+        "end_date": null,
+        "restriction": "do_not_use",
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "계란 쓰지 말아주세요.",
+        "source_type": "user",
+        "needs_clarification": true,
+        "source_text": "계란 쓰지 말아주세요.",
+        "matched_sources": [
+          "inventory",
+          "recipe",
+          "weekly_menu"
+        ],
+        "reason": null
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recommended_rechecks": [],
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "blocked_clarification",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "partial": {
+    "status": "partial",
+    "parsing_result": {
+      "status": "partial",
+      "parsed_events": [
+        {
+          "event_type": "attendance_event",
+          "event_id": "event-b718e363967197b23ca3",
+          "ingredient": null,
+          "date": "2026-09-18",
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": 35,
+          "severity": "MEDIUM",
+          "description": "내일 손님 35명 추가하고",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 손님 35명 추가하고",
+          "matched_sources": [],
+          "reason": "외부 손님"
+        }
+      ],
+      "unparsed_segments": [
+        "냉장고 청소도 해주세요."
+      ],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "detected_events": [
+      {
+        "event_type": "attendance_event",
+        "event_id": "event-b718e363967197b23ca3",
+        "ingredient": null,
+        "date": "2026-09-18",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": 35,
+        "severity": "MEDIUM",
+        "description": "내일 손님 35명 추가하고",
+        "source_type": "user",
+        "needs_clarification": false,
+        "source_text": "내일 손님 35명 추가하고",
+        "matched_sources": [],
+        "reason": "외부 손님"
+      },
+      {
+        "event_type": "unparsed_event",
+        "event_id": "event-093a4b894369de48f679",
+        "ingredient": null,
+        "date": null,
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "냉장고 청소도 해주세요.",
+        "source_type": "user",
+        "needs_clarification": true,
+        "source_text": "냉장고 청소도 해주세요.",
+        "matched_sources": [],
+        "reason": "unparsed_segment"
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recommended_rechecks": [],
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "blocked_clarification",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "normalized": {
+    "status": "ok",
+    "parsing_result": {
+      "status": "ok",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-c892588f1bfebe9065bf",
+          "ingredient": "닭고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "내일 닭 고기 사용하지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 닭 고기 사용하지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "detected_events": [
+      {
+        "event_type": "ingredient_restriction_event",
+        "event_id": "event-c892588f1bfebe9065bf",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": "2026-09-18",
+        "restriction": "do_not_use",
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "내일 닭 고기 사용하지 말아주세요.",
+        "source_type": "user",
+        "needs_clarification": false,
+        "source_text": "내일 닭 고기 사용하지 말아주세요.",
+        "matched_sources": [
+          "inventory",
+          "recipe",
+          "weekly_menu"
+        ],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-e8a856f33586cd3d7376",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "dinner 닭갈비: shortage 5000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_expiry_event",
+        "event_id": "event-5c08996f9b70ea138c16",
+        "ingredient": "두부",
+        "date": "2026-09-17",
+        "end_date": "2026-09-18",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "lot-73839946edffbbbd08ba expiry=2026-09-18",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-1d283aad08c64ca6cd97",
+        "ingredient": "계란",
+        "date": "2026-09-21",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 계란찜: shortage 3000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-6641afce70ce71913ce5",
+        "ingredient": "계란",
+        "date": "2026-09-23",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 계란말이: shortage 8000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "inventory_shortage_event",
+        "event_id": "event-0fba01ece74e01e1b4e6",
+        "ingredient": "닭고기",
+        "date": "2026-09-24",
+        "end_date": null,
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "lunch 닭갈비: shortage 4000.0g",
+        "source_type": "inventory_analysis",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "supply_risk",
+        "event_id": "event-c03f1bcb68ff2bcd2d9b",
+        "ingredient": "계란",
+        "date": "2026-09-18",
+        "end_date": "2026-09-24",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "조류인플루엔자 영향에 따른 공급 위험 DEMO",
+        "source_type": "simulation",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      },
+      {
+        "event_type": "supply_risk",
+        "event_id": "event-ded6a1cc926a534e56fd",
+        "ingredient": "닭고기",
+        "date": "2026-09-18",
+        "end_date": "2026-09-24",
+        "restriction": null,
+        "attendance_delta": null,
+        "severity": "HIGH",
+        "description": "조류인플루엔자 영향에 따른 공급 위험 DEMO",
+        "source_type": "simulation",
+        "needs_clarification": false,
+        "source_text": null,
+        "matched_sources": [],
+        "reason": null
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "inventory_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "price_risk_analyzer"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recommended_rechecks": [
+      "operation_agent"
+    ],
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "requested",
+        "executed": false
+      }
+    }
+  },
+  "unknown": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-495fec33a494bd073218",
+          "ingredient": "타조고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "내일 타조고기 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "내일 타조고기 쓰지 말아주세요.",
+          "matched_sources": [],
+          "reason": "unregistered_ingredient"
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [
+        {
+          "type": "unregistered_ingredient",
+          "ingredient": "타조고기",
+          "reason": "unregistered_ingredient",
+          "message": "등록된 식재료에서 해당 품목을 찾을 수 없습니다.",
+          "matched_sources": [],
+          "source_text": "내일 타조고기 쓰지 말아주세요."
+        }
+      ],
+      "errors": []
+    },
+    "validation_warnings": [
+      {
+        "type": "unregistered_ingredient",
+        "ingredient": "타조고기",
+        "reason": "unregistered_ingredient",
+        "message": "등록된 식재료에서 해당 품목을 찾을 수 없습니다.",
+        "matched_sources": [],
+        "source_text": "내일 타조고기 쓰지 말아주세요.",
+        "severity": "MEDIUM"
+      }
+    ],
+    "detected_events": [
+      {
+        "event_type": "ingredient_restriction_event",
+        "event_id": "event-495fec33a494bd073218",
+        "ingredient": "타조고기",
+        "date": "2026-09-18",
+        "end_date": "2026-09-18",
+        "restriction": "do_not_use",
+        "attendance_delta": null,
+        "severity": "MEDIUM",
+        "description": "내일 타조고기 쓰지 말아주세요.",
+        "source_type": "user",
+        "needs_clarification": true,
+        "source_text": "내일 타조고기 쓰지 말아주세요.",
+        "matched_sources": [],
+        "reason": "unregistered_ingredient"
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recommended_rechecks": [],
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  }
+}

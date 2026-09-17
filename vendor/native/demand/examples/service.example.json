@@ -1,0 +1,17 @@
+{
+  "storage_dir": "C:/LastPlate/runtime",
+  "model_dir": "C:/LastPlate/models",
+  "timezone": "Asia/Seoul",
+  "cutoff_time": "10:00",
+  "actual_ready_time": "14:00",
+  "mode": "operation",
+  "deadline_days_before": 0,
+  "trusted_weather_sources": ["KMA_ASOS"],
+  "gate_policy": {
+    "min_new": 60,
+    "evaluation_rows": 30,
+    "min_new_training_rows": 10,
+    "min_absolute_improvement": 5.0,
+    "min_relative_improvement": 0.02
+  }
+}

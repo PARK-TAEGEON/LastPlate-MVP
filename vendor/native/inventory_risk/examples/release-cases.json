@@ -1,0 +1,382 @@
+[
+  {
+    "input": "내일 닭고기 쓰지 말아주세요 계란도 빼 주세요.",
+    "result": {
+      "status": "ok",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-d8057a7c058a02dc10df",
+          "ingredient": "닭고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "내일 닭고기 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 닭고기 쓰지 말아주세요",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-b6cc4ec6cfd9f8d4c6d2",
+          "ingredient": "계란",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란도 빼 주세요",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "계란도 빼 주세요",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_event; 닭고기; 2026-09-18; source=내일 닭고기 쓰지 말아주세요",
+        "Restriction intent: ingredient_restriction_event; 계란; 2026-09-18; source=계란도 빼 주세요"
+      ]
+    }
+  },
+  {
+    "input": "닭고기 제외하고 계란도 제외해주세요.",
+    "result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-9c05d7c9760d23f222c4",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 제외하고",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 제외하고",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-bf1e825e97b48f5d16f1",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란도 제외해주세요",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란도 제외해주세요",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_event; 닭고기; None; source=닭고기 제외하고",
+        "Restriction intent: ingredient_restriction_event; 계란; None; source=계란도 제외해주세요"
+      ]
+    }
+  },
+  {
+    "input": "닭고기 쓰지 말아주세요 계란은 사용 금지 해제해주세요.",
+    "result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-0b63559c1033b4a0d5da",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 쓰지 말아주세요",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_release_event",
+          "action": "release_restriction",
+          "superseded": false,
+          "event_id": "event-9453c54366fa1eff8c69",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란은 사용 금지 해제해주세요",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란은 사용 금지 해제해주세요",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_event; 닭고기; None; source=닭고기 쓰지 말아주세요",
+        "Restriction intent: ingredient_restriction_release_event; 계란; None; source=계란은 사용 금지 해제해주세요"
+      ]
+    }
+  },
+  {
+    "input": "계란 금지 해제해주세요.",
+    "result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_release_event",
+          "action": "release_restriction",
+          "superseded": false,
+          "event_id": "event-c26b624dc6bc6c95f97e",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란 금지 해제해주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란 금지 해제해주세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_release_event; 계란; None; source=계란 금지 해제해주세요."
+      ]
+    }
+  },
+  {
+    "input": "계란 빼지 마세요.",
+    "result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_release_event",
+          "action": "release_restriction",
+          "superseded": false,
+          "event_id": "event-d703afc06b4f676ab3d1",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란 빼지 마세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란 빼지 마세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_release_event; 계란; None; source=계란 빼지 마세요."
+      ]
+    }
+  },
+  {
+    "input": "닭고기 쓰지 말아주세요. 그리고 계란도 빼 주세요.",
+    "result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-2fd4045e535d8af35b90",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 쓰지 말아주세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-72d45d7e7f8618df7f91",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란도 빼 주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란도 빼 주세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_event; 닭고기; None; source=닭고기 쓰지 말아주세요.",
+        "Restriction intent: ingredient_restriction_event; 계란; None; source=계란도 빼 주세요."
+      ]
+    }
+  },
+  {
+    "input": "닭고기 쓰지 말아주세요. 그리고 재고도 알아서 처리해 주세요.",
+    "result": {
+      "status": "partial",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": false,
+          "event_id": "event-2fd4045e535d8af35b90",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 쓰지 말아주세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [
+        "재고도 알아서 처리해 주세요."
+      ],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_event; 닭고기; None; source=닭고기 쓰지 말아주세요."
+      ]
+    }
+  },
+  {
+    "input": "계란 쓰지 마세요. 아니요 계란 금지는 해제해주세요.",
+    "result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "action": null,
+          "superseded": true,
+          "event_id": "event-a106a46a35b5d2cf1f6d",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란 쓰지 마세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란 쓰지 마세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_release_event",
+          "action": "release_restriction",
+          "superseded": false,
+          "event_id": "event-7d9e8c02d8fcb24c86e0",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "아니요 계란 금지는 해제해주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "아니요 계란 금지는 해제해주세요.",
+          "matched_sources": [
+            "provided"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": [],
+      "decision_trace": [
+        "Restriction intent: ingredient_restriction_event; 계란; None; source=계란 쓰지 마세요.",
+        "Restriction intent: ingredient_restriction_event -> ingredient_restriction_release_event; 계란; None; last explicit intent wins",
+        "Restriction intent: ingredient_restriction_release_event; 계란; None; source=아니요 계란 금지는 해제해주세요."
+      ]
+    }
+  }
+]

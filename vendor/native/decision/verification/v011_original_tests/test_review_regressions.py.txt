@@ -1,0 +1,50 @@
+import unittest
+from copy import deepcopy
+from lastplate_decision.agents.decision import make_final_recommendation
+from examples.fixtures import baseline, PASS, recheck_names
+
+
+class ReviewRegressionTests(unittest.TestCase):
+    def test_price_event_requires_operation_ack(self):
+        p = baseline()
+        p['user_events'] = [{'event_type': 'price_event', 'event_id': 'price-1', 'ingredient': '계란'}]
+        p['inventory_risk_result']['applied_event_ids'] = ['price-1']
+        r = make_final_recommendation(**p)
+        self.assertEqual(recheck_names(r), ['operation'])
+        self.assertIsNone(r['recommended_servings'])
+
+    def test_order_conflicting_status(self):
+        p = baseline()
+        p['operation_result']['order_recommendations'] = [{'ingredient': '돼지고기', 'planned_order': 105,
+            'recommended_min': 88, 'recommended_max': 94, 'unit': 'kg', 'status': 'OK', 'constraints': PASS}]
+        a = make_final_recommendation(**p)['procurement_actions'][0]
+        self.assertEqual(a['decision'], 'NEEDS_CONFIRMATION')
+        self.assertIsNone(a['recommended'])
+
+    def test_partial_report_recheck(self):
+        p = baseline()
+        p['inventory_risk_result']['status'] = 'partial'
+        self.assertIn('inventory_risk', recheck_names(make_final_recommendation(**p)))
+
+    def test_demo_label_on_actions(self):
+        p = baseline()
+        p['inventory_risk_result']['is_demo'] = True
+        r = make_final_recommendation(**p)
+        self.assertTrue(r['serving_action']['action'].startswith('[DEMO 검토용]'))
+
+    def test_unrelated_candidate_not_linked(self):
+        p = baseline()
+        p['inventory_risk_result']['price_risks'] = [{'ingredient': '계란', 'affected_menus': ['계란찜']}]
+        p['inventory_risk_result']['substitute_candidates'] = [dict(candidate_id='wrong-menu', ingredient='두부', replaces='계란', menu='다른메뉴', constraints=PASS)]
+        self.assertEqual(make_final_recommendation(**p)['menu_actions'][0]['candidates'], [])
+
+    def test_zero_servings_for_zero_demand_valid(self):
+        p = baseline()
+        p['demand_result']['prediction'] = 0
+        p['operation_result']['recommended_servings'] = 0
+        self.assertEqual(make_final_recommendation(**p)['recommended_servings'], 0)
+
+    def test_nested_demo_recognized(self):
+        p = baseline()
+        p['inventory_risk_result']['cost_impacts'] = [{'data_source': 'DEMO', 'delta': -1000}]
+        self.assertEqual(make_final_recommendation(**p)['confidence'], 'MEDIUM')

@@ -1,0 +1,20 @@
+{
+  "pipeline_status": "FAILED",
+  "demand": null,
+  "operation": null,
+  "inventory_risk": null,
+  "decision": null,
+  "errors": [
+    {
+      "stage": "input",
+      "code": "INPUT_VALIDATION_ERROR",
+      "message": "1 validation error for PipelineInput\n  Value error, Invalid isoformat string: 'not-a-date' [type=value_error, input_value={'request_id': 'lh-like-0...llergens': ['대두']}}}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error",
+      "kind": "input",
+      "http_status": 422
+    }
+  ],
+  "warnings": [],
+  "timings": {},
+  "input_revision": null,
+  "advisory_only": true
+}

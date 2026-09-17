@@ -1,0 +1,484 @@
+{
+  "version": "0.1.2",
+  "native_tests": {
+    "demand": 73,
+    "operation": 180,
+    "inventory_risk": 240,
+    "decision": 163
+  },
+  "decision_subtests": 51,
+  "existing_integration": 33,
+  "new_p1": 7,
+  "previous_review_invariants": 16,
+  "original_review_assertions_unchanged": true,
+  "native_preservation": {
+    "demand": {
+      "original_files": 267,
+      "changed": [],
+      "added": []
+    },
+    "operation": {
+      "original_files": 49,
+      "changed": [],
+      "added": []
+    },
+    "inventory_risk": {
+      "original_files": 75,
+      "changed": [
+        "tools/inventory.py"
+      ],
+      "added": [
+        "tools/usable_stock.py"
+      ]
+    },
+    "decision": {
+      "original_files": 104,
+      "changed": [],
+      "added": []
+    }
+  },
+  "source_changes": [
+    {
+      "path": "README.md",
+      "change": "modified",
+      "before_sha256": "012940619b60dbc60a32bc85a5083c5c50fd10e7953df3d21d277f1a9673d0da",
+      "after_sha256": "e1516f329e1524576dfd5fdec3e19f03c02162b2f3c277bd184138f76ee88a9f"
+    },
+    {
+      "path": "app/main.py",
+      "change": "modified",
+      "before_sha256": "de5feb6ffce95ff5d6538f798cff30d76b1b26e8026fc6fd6d94f655acec183a",
+      "after_sha256": "d4f1258acfc147f8c38e518191de7469f210635dfea5e4f9fe7ec9cb60fca1de"
+    },
+    {
+      "path": "integration/adapters/decision_adapter.py",
+      "change": "modified",
+      "before_sha256": "f5bbe62ac50eef38908626feee709aca28a8a791e5f6a36fff4d072ded465776",
+      "after_sha256": "bf75158af9f63e702257a732ff58f9cfba2463d9407329c64dd6abc07037b5f0"
+    },
+    {
+      "path": "integration/adapters/operation_adapter.py",
+      "change": "modified",
+      "before_sha256": "c11309c6c79a984ea507d9ca37715be29ffb33d1c44da6673137b722356e9e74",
+      "after_sha256": "8cde5db14cfdaf0feba8f0a126288355e7d605bab11e63dabf0000354c2dcdff"
+    },
+    {
+      "path": "integration/native_stock.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "721e6efb265518ff6353df2284ff62679935ffc6b8ce6e7f762e343037869fae"
+    },
+    {
+      "path": "integration/orchestrator.py",
+      "change": "modified",
+      "before_sha256": "8b2ef04c4af6307a25956d2381ba716489a430b6f0985b04d7268fc2249ae06b",
+      "after_sha256": "dc94939052b3831811ddd3ce181481a6fca124a71e8731dbc9191fe7448aa8a7"
+    },
+    {
+      "path": "inventory_risk/tools/inventory.py",
+      "change": "modified",
+      "before_sha256": "cd4759d0395ee76c2a904ca5fabced74f605aaf1d3d6c57fb0dd551dd3150052",
+      "after_sha256": "b5ab66f68d329b9bd9c509cd15f687cdea08cc3dece4466b53f23e1de80f232a"
+    },
+    {
+      "path": "inventory_risk/tools/usable_stock.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "3a41d1bfa359c47c62ea2fc69846d0451f1ef7248f23a61e4fe5c80ea37bc370"
+    },
+    {
+      "path": "pyproject.toml",
+      "change": "modified",
+      "before_sha256": "1ae646539f382a3c3eefc281eaf9c27b22c770f44a931d14a0074a6fca18e727",
+      "after_sha256": "8c32d11f0a57cc554a1aad5e83c294bb875e5c455e16ac1eaa441812820c6f42"
+    },
+    {
+      "path": "tests/integration/test_p1_v012.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "03e97383bbd2e14c24d2cf5e39f12bb7b0185b9171688aae432d49d20473c6dc"
+    },
+    {
+      "path": "tests/review/final_checks.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "2c7afa76b81edd517cbd849bdaedf81ea8aa1463b9734ef1fd6f84853a3dd269"
+    },
+    {
+      "path": "tests/review/followup_review.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "c7b7acd5f92797fe09530fc593f9a9a56ebde100373b5d84fa7848ab52528731"
+    },
+    {
+      "path": "tests/review/probe_review.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "10233ac58171050ad93467789f40e59d71f0d4e14415c01acfa892bfffcda61b"
+    },
+    {
+      "path": "tests/review/run.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "5692ffa649933cd2915a2c064c2e7c32c8d44ad4fbee2e934029c26a627749ce"
+    },
+    {
+      "path": "tests/review/test_review_findings.py",
+      "change": "added",
+      "before_sha256": null,
+      "after_sha256": "33fca73041a55d8733d23c2071ffeb924662bbec52d3dd104c4694f45271bcb3"
+    }
+  ],
+  "regression_runs": [
+    {
+      "module": "demand",
+      "exit_code": 0,
+      "seconds": 22.124
+    },
+    {
+      "module": "operation",
+      "exit_code": 0,
+      "seconds": 5.86
+    },
+    {
+      "module": "inventory_risk",
+      "exit_code": 0,
+      "seconds": 11.583
+    },
+    {
+      "module": "decision",
+      "exit_code": 0,
+      "seconds": 7.225
+    }
+  ],
+  "existing_test_nodes": [
+    {
+      "classname": "tests.integration.test_p0p1",
+      "name": "test_01_cancelled_structured_supply_public",
+      "time": "10.266"
+    },
+    {
+      "classname": "tests.integration.test_p0p1",
+      "name": "test_02_raw_cooking_basis",
+      "time": "9.792"
+    },
+    {
+      "classname": "tests.integration.test_p0p1",
+      "name": "test_03_units_public_boundary",
+      "time": "8.250"
+    },
+    {
+      "classname": "tests.integration.test_p0p1",
+      "name": "test_04_http_error_semantics",
+      "time": "17.869"
+    },
+    {
+      "classname": "tests.integration.test_p0p1",
+      "name": "test_05_audit_and_demand_envelope",
+      "time": "5.551"
+    },
+    {
+      "classname": "tests.integration.test_p0p1",
+      "name": "test_06_last_adapter_defense_and_native_gates",
+      "time": "7.371"
+    },
+    {
+      "classname": "tests.integration.test_p0p1_edges",
+      "name": "test_projection_graph_mixed_and_candidate_only_edges",
+      "time": "0.001"
+    },
+    {
+      "classname": "tests.integration.test_p0p1_edges",
+      "name": "test_unsupported_units_before_any_model_write[ml]",
+      "time": "0.010"
+    },
+    {
+      "classname": "tests.integration.test_p0p1_edges",
+      "name": "test_unsupported_units_before_any_model_write[ea]",
+      "time": "0.010"
+    },
+    {
+      "classname": "tests.integration.test_p0p1_edges",
+      "name": "test_http_server_failure_retains_successful_stage",
+      "time": "4.673"
+    },
+    {
+      "classname": "tests.integration.test_p0p1_edges",
+      "name": "test_invalid_server_config_is_not_input_error",
+      "time": "0.001"
+    },
+    {
+      "classname": "tests.integration.test_p0p1_edges",
+      "name": "test_native_multi_menu_raw_total_and_expiry",
+      "time": "0.416"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case01_normal_demo_is_calculated_but_not_operationally_approved",
+      "time": "7.434"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case02_serving_increase_and_procurement_from_original_operation",
+      "time": "7.631"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case03_shortage",
+      "time": "9.869"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case04_expiry",
+      "time": "9.211"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case05_price_and_nutrition_candidate",
+      "time": "8.804"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case06_nutrition_fail",
+      "time": "6.821"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_cases07_13_14_15_ood[3000-IN_RANGE]",
+      "time": "5.772"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_cases07_13_14_15_ood[600-OUT_OF_DISTRIBUTION]",
+      "time": "5.988"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_cases07_13_14_15_ood[5000-OUT_OF_DISTRIBUTION]",
+      "time": "5.389"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case08_recipe_missing",
+      "time": "3.622"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case09_unsupported_unit",
+      "time": "0.006"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case10_superseded_is_audit_only",
+      "time": "6.229"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_case11_retry_no_duplicate_or_input_mutation",
+      "time": "12.007"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_cases12_16_capacity_json_raw_preserved",
+      "time": "5.604"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_invalid_input_structured",
+      "time": "0.004"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_demand_failure_preserves_decision",
+      "time": "3.142"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_sources_no_default_fallback",
+      "time": "0.022"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_attendance_event_is_not_silently_applied",
+      "time": "6.028"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_hooks_are_advisory_and_failure_is_partial",
+      "time": "6.648"
+    },
+    {
+      "classname": "tests.integration.test_pipeline",
+      "name": "test_api_validation",
+      "time": "6.664"
+    },
+    {
+      "classname": "tests.integration.test_supply_unknown",
+      "name": "test_undated_supply_is_preserved_and_not_a_pass",
+      "time": "6.580"
+    }
+  ],
+  "new_test_nodes": [
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_native_limit_http_422_preserves_demand_and_decision",
+      "time": "3.962"
+    },
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_all_invalid_input_statuses_are_errors[alerts0]",
+      "time": "3.486"
+    },
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_all_invalid_input_statuses_are_errors[alerts1]",
+      "time": "3.542"
+    },
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_usable_stock_native_policy_is_shared",
+      "time": "5.417"
+    },
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_invalid_expiry_is_rejected_before_model",
+      "time": "0.007"
+    },
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_raw_candidate_has_explicit_pending_gate",
+      "time": "7.216"
+    },
+    {
+      "classname": "tests.integration.test_p1_v012",
+      "name": "test_business_confirmation_remains_http_200",
+      "time": "7.621"
+    }
+  ],
+  "previous_test_nodes": [
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_superseded_supply_must_not_create_current_menu_action",
+      "time": "0.018"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_superseded_supply_must_not_be_current_critical_alert",
+      "time": "0.004"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_inventory_must_use_operation_raw_requirement_for_raw_stock",
+      "time": "0.018"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_invalid_ml_input_must_return_http_4xx",
+      "time": "0.019"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_convertible_order_units_must_not_fail_inventory_stage",
+      "time": "0.018"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_supply_superseded_history_must_be_retained",
+      "time": "0.017"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_partial_failure_preserves_prior_results",
+      "time": "0.013"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_operation_quantity_identity",
+      "time": "0.006"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_ood_warning_reaches_decision",
+      "time": "0.040"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_raw_prediction_not_clipped",
+      "time": "0.017"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_human_approval_always_required",
+      "time": "0.134"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_strict_json_output",
+      "time": "0.070"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_ban_release_superseded_does_not_block_restriction",
+      "time": "0.004"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_idempotent_no_input_mutation",
+      "time": "0.006"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_hard_nutrition_failure_blocks",
+      "time": "0.003"
+    },
+    {
+      "classname": "tests.review.test_review_findings",
+      "name": "test_nutrition_provider_missing_does_not_pass_candidates",
+      "time": "0.006"
+    }
+  ],
+  "limit": {
+    "before": {
+      "http_status": 200,
+      "errors": [],
+      "raw_forecast": 883,
+      "operation_status": "invalid_input"
+    },
+    "after": {
+      "http_status": 422,
+      "errors": [
+        {
+          "stage": "operation",
+          "code": "INPUT_DEMAND_OUT_OF_RANGE",
+          "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+          "kind": "input",
+          "http_status": 422,
+          "native_status": "invalid_input",
+          "evidence": {
+            "maximum_input_servings": 100,
+            "received_max": 883.0
+          },
+          "alerts": [
+            {
+              "severity": "HIGH",
+              "type": "INPUT_DEMAND_OUT_OF_RANGE",
+              "message": "Demand가 설정된 입력 적용 범위를 초과했습니다.",
+              "ingredient": null,
+              "field": null,
+              "evidence": {
+                "maximum_input_servings": 100,
+                "received_max": 883.0
+              },
+              "trace_refs": []
+            }
+          ]
+        }
+      ],
+      "raw_forecast": 883,
+      "operation_status": "invalid_input",
+      "decision": "NEEDS_CONFIRMATION",
+      "demand_preserved": true,
+      "decision_preserved": true
+    }
+  }
+}

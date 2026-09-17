@@ -1,0 +1,1848 @@
+{
+  "$defs": {
+    "Alert": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "cause_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cause Event Ids",
+          "type": "array"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        }
+      },
+      "required": [
+        "type",
+        "severity",
+        "message"
+      ],
+      "title": "Alert",
+      "type": "object"
+    },
+    "AnalysisScope": {
+      "additionalProperties": false,
+      "properties": {
+        "target_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Date"
+        },
+        "meal_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Meal Type"
+        },
+        "menus": {
+          "items": {
+            "$ref": "#/$defs/MenuScope"
+          },
+          "title": "Menus",
+          "type": "array"
+        },
+        "menus_complete": {
+          "default": false,
+          "title": "Menus Complete",
+          "type": "boolean"
+        },
+        "coverage": {
+          "default": "unknown",
+          "enum": [
+            "full",
+            "event",
+            "unknown"
+          ],
+          "title": "Coverage",
+          "type": "string"
+        }
+      },
+      "title": "AnalysisScope",
+      "type": "object"
+    },
+    "Candidate": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "kind": {
+          "default": "ingredient_substitution",
+          "enum": [
+            "ingredient_substitution",
+            "menu_substitution",
+            "priority_inventory_use"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "candidate_menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Menu"
+        },
+        "ingredients": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ingredients",
+          "type": "array"
+        },
+        "cause_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cause Event Ids",
+          "type": "array"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        },
+        "replaces": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replaces"
+        },
+        "reason": {
+          "default": "대체 후보 검토",
+          "title": "Reason",
+          "type": "string"
+        },
+        "constraints": {
+          "$ref": "#/$defs/Checks"
+        },
+        "soft_scores": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Soft Scores",
+          "type": "object"
+        }
+      },
+      "required": [
+        "candidate_id"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "Checks": {
+      "additionalProperties": false,
+      "properties": {
+        "shortage": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Shortage",
+          "type": "string"
+        },
+        "expiry": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Expiry",
+          "type": "string"
+        },
+        "allergy": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Allergy",
+          "type": "string"
+        },
+        "nutrition": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Nutrition",
+          "type": "string"
+        },
+        "restriction": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Restriction",
+          "type": "string"
+        },
+        "supply": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Supply",
+          "type": "string"
+        }
+      },
+      "title": "Checks",
+      "type": "object"
+    },
+    "DemandResult": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        },
+        "operational_eligible": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operational Eligible"
+        },
+        "availability_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Availability Status"
+        },
+        "prediction": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prediction"
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "prediction_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prediction Id"
+        },
+        "validation_mae": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Validation Mae"
+        },
+        "input_summary": {
+          "additionalProperties": true,
+          "title": "Input Summary",
+          "type": "object"
+        },
+        "applied_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Applied Event Ids",
+          "type": "array"
+        }
+      },
+      "title": "DemandResult",
+      "type": "object"
+    },
+    "InventoryRiskResult": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "detected_events": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Detected Events",
+          "type": "array"
+        },
+        "adapter_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Adapter Notes",
+          "type": "array"
+        },
+        "status": {
+          "default": "partial",
+          "enum": [
+            "ok",
+            "partial",
+            "error",
+            "needs_clarification",
+            "invalid_input"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "alerts": {
+          "items": {
+            "$ref": "#/$defs/Alert"
+          },
+          "title": "Alerts",
+          "type": "array"
+        },
+        "price_risks": {
+          "items": {
+            "$ref": "#/$defs/Risk"
+          },
+          "title": "Price Risks",
+          "type": "array"
+        },
+        "supply_risks": {
+          "items": {
+            "$ref": "#/$defs/Risk"
+          },
+          "title": "Supply Risks",
+          "type": "array"
+        },
+        "affected_menus": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            ]
+          },
+          "title": "Affected Menus",
+          "type": "array"
+        },
+        "affected_ingredients": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Affected Ingredients",
+          "type": "array"
+        },
+        "inventory_recommendations": {
+          "items": {
+            "$ref": "#/$defs/InventoryUse"
+          },
+          "title": "Inventory Recommendations",
+          "type": "array"
+        },
+        "substitute_candidates": {
+          "items": {
+            "$ref": "#/$defs/Candidate"
+          },
+          "title": "Substitute Candidates",
+          "type": "array"
+        },
+        "nutrition_results": {
+          "items": {
+            "$ref": "#/$defs/NutritionResult"
+          },
+          "title": "Nutrition Results",
+          "type": "array"
+        },
+        "cost_impacts": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Cost Impacts",
+          "type": "array"
+        },
+        "recommended_rechecks": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/RecheckRequest"
+              }
+            ]
+          },
+          "title": "Recommended Rechecks",
+          "type": "array"
+        },
+        "decision_trace": {
+          "items": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "title": "Decision Trace",
+          "type": "array"
+        },
+        "applied_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Applied Event Ids",
+          "type": "array"
+        }
+      },
+      "title": "InventoryRiskResult",
+      "type": "object"
+    },
+    "InventoryUse": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "candidate_id": {
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "kind": {
+          "default": "ingredient_substitution",
+          "enum": [
+            "ingredient_substitution",
+            "menu_substitution",
+            "priority_inventory_use"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "ingredient": {
+          "minLength": 1,
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "candidate_menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Menu"
+        },
+        "ingredients": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ingredients",
+          "type": "array"
+        },
+        "cause_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cause Event Ids",
+          "type": "array"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        },
+        "replaces": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replaces"
+        },
+        "reason": {
+          "default": "대체 후보 검토",
+          "title": "Reason",
+          "type": "string"
+        },
+        "constraints": {
+          "$ref": "#/$defs/Checks"
+        },
+        "soft_scores": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Soft Scores",
+          "type": "object"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Quantity"
+        },
+        "unit": {
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        },
+        "days_to_expiry": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Days To Expiry"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "ingredient",
+        "unit"
+      ],
+      "title": "InventoryUse",
+      "type": "object"
+    },
+    "MenuScope": {
+      "additionalProperties": false,
+      "properties": {
+        "menu": {
+          "minLength": 1,
+          "title": "Menu",
+          "type": "string"
+        },
+        "ingredients": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ingredients",
+          "type": "array"
+        },
+        "ingredients_complete": {
+          "default": false,
+          "title": "Ingredients Complete",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "menu"
+      ],
+      "title": "MenuScope",
+      "type": "object"
+    },
+    "Nutrition": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "status": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "title": "Nutrition",
+      "type": "object"
+    },
+    "NutritionResult": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "status": {
+          "default": "UNKNOWN",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        }
+      },
+      "title": "NutritionResult",
+      "type": "object"
+    },
+    "OperationResult": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "current_plan": {
+          "$ref": "#/$defs/AnalysisScope"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "recommended_servings": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended Servings"
+        },
+        "safety_margin": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Safety Margin"
+        },
+        "shortage_probability": {
+          "anyOf": [
+            {
+              "maximum": 1,
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shortage Probability"
+        },
+        "nutrition_constraints": {
+          "$ref": "#/$defs/Nutrition"
+        },
+        "constraints": {
+          "$ref": "#/$defs/Checks"
+        },
+        "order_recommendations": {
+          "items": {
+            "$ref": "#/$defs/Order"
+          },
+          "title": "Order Recommendations",
+          "type": "array"
+        },
+        "applied_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Applied Event Ids",
+          "type": "array"
+        }
+      },
+      "title": "OperationResult",
+      "type": "object"
+    },
+    "Order": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        },
+        "ingredient": {
+          "minLength": 1,
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "planned_order": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Planned Order"
+        },
+        "recommended_min": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended Min"
+        },
+        "recommended_max": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended Max"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "status": {
+          "default": "UNKNOWN",
+          "enum": [
+            "OVER",
+            "UNDER",
+            "OK",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "constraints": {
+          "$ref": "#/$defs/Checks"
+        }
+      },
+      "required": [
+        "ingredient"
+      ],
+      "title": "Order",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "dependency_basis": {
+          "default": "independent",
+          "enum": [
+            "independent",
+            "demand_scaled"
+          ],
+          "title": "Dependency Basis",
+          "type": "string"
+        },
+        "target_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Date"
+        },
+        "prediction_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prediction Id"
+        },
+        "input_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Revision"
+        },
+        "result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Revision"
+        },
+        "analysis_scope": {
+          "$ref": "#/$defs/AnalysisScope"
+        },
+        "consumed_results": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Consumed Results",
+          "type": "object"
+        },
+        "metadata_source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Metadata Source"
+        }
+      },
+      "title": "Provenance",
+      "type": "object"
+    },
+    "RecheckRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "analysis_mode": {
+          "anyOf": [
+            {
+              "const": "full",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Analysis Mode"
+        },
+        "request_id": {
+          "title": "Request Id",
+          "type": "string"
+        },
+        "agent": {
+          "title": "Agent",
+          "type": "string"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "input_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Revision"
+        },
+        "source_agent": {
+          "default": "decision",
+          "title": "Source Agent",
+          "type": "string"
+        },
+        "source_result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Result Revision"
+        },
+        "baseline_result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Baseline Result Revision"
+        },
+        "result_revision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Result Revision"
+        },
+        "status": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "completed",
+            "failed",
+            "stale"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "attempts": {
+          "default": 0,
+          "title": "Attempts",
+          "type": "integer"
+        },
+        "required_dependencies": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Required Dependencies",
+          "type": "object"
+        },
+        "error": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Error"
+        }
+      },
+      "required": [
+        "request_id",
+        "agent",
+        "reason"
+      ],
+      "title": "RecheckRequest",
+      "type": "object"
+    },
+    "Risk": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "cause_event_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Cause Event Ids",
+          "type": "array"
+        },
+        "ingredient": {
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "severity": {
+          "default": "MEDIUM",
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH",
+            "CRITICAL"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "message": {
+          "default": "위험 검토 필요",
+          "title": "Message",
+          "type": "string"
+        },
+        "unavailable": {
+          "default": false,
+          "title": "Unavailable",
+          "type": "boolean"
+        },
+        "inventory_sufficient": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inventory Sufficient"
+        },
+        "affected_menus": {
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "additionalProperties": true,
+                "type": "object"
+              }
+            ]
+          },
+          "title": "Affected Menus",
+          "type": "array"
+        }
+      },
+      "required": [
+        "ingredient"
+      ],
+      "title": "Risk",
+      "type": "object"
+    },
+    "ScopeSelector": {
+      "additionalProperties": false,
+      "properties": {
+        "target_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Date"
+        },
+        "end_date": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Date"
+        },
+        "meal_type": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Meal Type"
+        },
+        "menu": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Menu"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Candidate Id"
+        },
+        "applies_to_all": {
+          "default": false,
+          "title": "Applies To All",
+          "type": "boolean"
+        }
+      },
+      "title": "ScopeSelector",
+      "type": "object"
+    },
+    "UserEvent": {
+      "additionalProperties": true,
+      "properties": {
+        "provenance_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Provenance Notes",
+          "type": "array"
+        },
+        "data_quality_notes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Data Quality Notes",
+          "type": "array"
+        },
+        "is_demo": {
+          "default": false,
+          "title": "Is Demo",
+          "type": "boolean"
+        },
+        "data_sources": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Data Sources",
+          "type": "object"
+        },
+        "limitations": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Limitations",
+          "type": "array"
+        },
+        "source_payload": {
+          "additionalProperties": true,
+          "title": "Source Payload",
+          "type": "object"
+        },
+        "scope": {
+          "$ref": "#/$defs/ScopeSelector"
+        },
+        "needs_clarification": {
+          "default": false,
+          "title": "Needs Clarification",
+          "type": "boolean"
+        },
+        "event_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Event Id"
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "attendance_delta": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Attendance Delta"
+        },
+        "ingredient": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ingredient"
+        },
+        "restriction": {
+          "anyOf": [
+            {
+              "const": "do_not_use",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Restriction"
+        },
+        "reason": {
+          "default": "사용자 이벤트",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_type"
+      ],
+      "title": "UserEvent",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "input_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Revision"
+    },
+    "demand_result": {
+      "$ref": "#/$defs/DemandResult"
+    },
+    "operation_result": {
+      "$ref": "#/$defs/OperationResult"
+    },
+    "inventory_risk_result": {
+      "$ref": "#/$defs/InventoryRiskResult"
+    },
+    "user_events": {
+      "items": {
+        "$ref": "#/$defs/UserEvent"
+      },
+      "title": "User Events",
+      "type": "array"
+    }
+  },
+  "title": "DecisionInput",
+  "type": "object"
+}

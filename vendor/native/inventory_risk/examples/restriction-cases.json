@@ -1,0 +1,685 @@
+{
+  "A": {
+    "status": "ok",
+    "parsing_result": {
+      "status": "ok",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-d8057a7c058a02dc10df",
+          "ingredient": "닭고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "내일 닭고기 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 닭고기 쓰지 말아주세요",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-b171db484c0a7ca2111f",
+          "ingredient": "계란",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "계란 쓰지 말아주세요",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "inventory_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "price_risk_analyzer"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "requested",
+        "executed": false
+      }
+    }
+  },
+  "B": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-dcdfa7e141bb05c8090e",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말고",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 쓰지 말고",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-530648402711f44c9a03",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란도 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란도 쓰지 말아주세요",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "C": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-ea48d564cfd94b9e415a",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기, 계란, 두부 사용하지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기, 계란, 두부 사용하지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-6cf69b4ef4f59aa1e1c2",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기, 계란, 두부 사용하지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기, 계란, 두부 사용하지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-884f7ec7268ebb42ff2a",
+          "ingredient": "두부",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기, 계란, 두부 사용하지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기, 계란, 두부 사용하지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "D": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-935be75dcbb8c8a03cce",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 금지",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 금지",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-0b912d69b4d65290730b",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란 금지",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계란 금지",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-e5e1e6546da36ed163be",
+          "ingredient": "두부",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "두부 금지",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "두부 금지",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "E": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-2de267d2af2a2e738e49",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭 고기 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭 고기 쓰지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-c499e4ee59f1b1d424b8",
+          "ingredient": "계란",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계 란도 쓰지 말아주세요.",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "계 란도 쓰지 말아주세요.",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "attendance": {
+    "status": "ok",
+    "parsing_result": {
+      "status": "ok",
+      "parsed_events": [
+        {
+          "event_type": "attendance_event",
+          "event_id": "event-b718e363967197b23ca3",
+          "ingredient": null,
+          "date": "2026-09-18",
+          "end_date": null,
+          "restriction": null,
+          "attendance_delta": 35,
+          "severity": "MEDIUM",
+          "description": "내일 손님 35명 추가하고",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 손님 35명 추가하고",
+          "matched_sources": [],
+          "reason": "외부 손님"
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-b10e13fe67b9d92e6e57",
+          "ingredient": "닭고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말고",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "닭고기 쓰지 말고",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-3f88e45c93131c45e4a2",
+          "ingredient": "계란",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "계란도 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "계란도 쓰지 말아주세요",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "inventory_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "price_risk_analyzer"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "requested",
+        "execute_allowed": true,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "requested",
+        "executed": false
+      }
+    }
+  },
+  "unknown": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-1411cb81a623998d8fc4",
+          "ingredient": "닭고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "내일 닭고기 쓰지 말고",
+          "source_type": "user",
+          "needs_clarification": false,
+          "source_text": "내일 닭고기 쓰지 말고",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        },
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-cacb6dce0ae40b6050f3",
+          "ingredient": "타조고기",
+          "date": "2026-09-18",
+          "end_date": "2026-09-18",
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "타조고기도 쓰지 말아주세요",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "타조고기도 쓰지 말아주세요",
+          "matched_sources": [],
+          "reason": "unregistered_ingredient"
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [
+        {
+          "type": "unregistered_ingredient",
+          "ingredient": "타조고기",
+          "reason": "unregistered_ingredient",
+          "message": "등록된 식재료에서 해당 품목을 찾을 수 없습니다.",
+          "matched_sources": [],
+          "source_text": "타조고기도 쓰지 말아주세요"
+        }
+      ],
+      "errors": []
+    },
+    "validation_warnings": [
+      {
+        "type": "unregistered_ingredient",
+        "ingredient": "타조고기",
+        "reason": "unregistered_ingredient",
+        "message": "등록된 식재료에서 해당 품목을 찾을 수 없습니다.",
+        "matched_sources": [],
+        "source_text": "타조고기도 쓰지 말아주세요",
+        "severity": "MEDIUM"
+      }
+    ],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  },
+  "duplicate": {
+    "status": "needs_clarification",
+    "parsing_result": {
+      "status": "needs_clarification",
+      "parsed_events": [
+        {
+          "event_type": "ingredient_restriction_event",
+          "event_id": "event-c5ca7e8f2436f99c5ae4",
+          "ingredient": "닭고기",
+          "date": null,
+          "end_date": null,
+          "restriction": "do_not_use",
+          "attendance_delta": null,
+          "severity": "MEDIUM",
+          "description": "닭고기 쓰지 말고\n닭고기는 꼭 빼주세요",
+          "source_type": "user",
+          "needs_clarification": true,
+          "source_text": "닭고기 쓰지 말고\n닭고기는 꼭 빼주세요",
+          "matched_sources": [
+            "inventory",
+            "recipe",
+            "weekly_menu"
+          ],
+          "reason": null
+        }
+      ],
+      "unparsed_segments": [],
+      "validation_warnings": [],
+      "errors": []
+    },
+    "validation_warnings": [],
+    "execution": {
+      "executed_nodes": [
+        "event_parser",
+        "risk_report_builder"
+      ],
+      "skipped_nodes": [
+        "inventory_analyzer",
+        "price_risk_analyzer",
+        "supply_risk_analyzer",
+        "impact_analyzer",
+        "substitute_candidate_generator",
+        "nutrition_constraint_checker"
+      ],
+      "scope": "event_scoped",
+      "previous_report_reused": false
+    },
+    "recheck_status": {
+      "demand_forecast": {
+        "status": "not_requested",
+        "execute_allowed": false,
+        "executed": false
+      },
+      "operation_agent": {
+        "status": "blocked",
+        "executed": false
+      }
+    }
+  }
+}

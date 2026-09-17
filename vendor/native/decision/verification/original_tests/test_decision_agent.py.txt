@@ -1,0 +1,191 @@
+import unittest
+from copy import deepcopy
+from pydantic import ValidationError
+from agents.decision import make_final_recommendation as decide
+from config.decision_policy import DecisionPolicy
+from examples.fixtures import baseline, PASS
+from schemas.decision_output import DecisionOutput
+
+
+class DecisionTests(unittest.TestCase):
+    def setUp(self):
+        self.p = baseline()
+
+    def run_decision(self):
+        return decide(**self.p)
+
+    def candidate(self, **kwargs):
+        value = dict(candidate_id="swap", ingredient="두부", replaces="계란", menu="계란찜", constraints=deepcopy(PASS))
+        value.update(kwargs)
+        self.p["inventory_risk_result"]["substitute_candidates"] = [value]
+        return value
+
+    def test_case1_keep_and_inventory(self):
+        r = self.run_decision()
+        self.assertEqual(r["recommended_servings"], 523)
+        self.assertEqual(r["inventory_actions"][0]["decision"], "ADJUST")
+        self.assertTrue(r["requires_human_approval"])
+        DecisionOutput.model_validate(r)
+
+    def test_case2_attendance_requests_rerun(self):
+        self.p["user_events"] = [{"event_type": "attendance_event", "event_id": "guest-1", "attendance_delta": 35}]
+        r = self.run_decision()
+        self.assertEqual(r["recommended_rechecks"], ["demand_forecast", "operation"])
+        self.assertIsNone(r["recommended_servings"])
+        self.assertEqual(r["inventory_actions"][0]["decision"], "NEEDS_CONFIRMATION")
+
+    def test_event_acknowledged_by_both(self):
+        self.p["user_events"] = [{"event_type": "attendance_event", "event_id": "guest-1", "attendance_delta": 35}]
+        for key in ("demand_result", "operation_result"):
+            self.p[key]["applied_event_ids"] = ["guest-1"]
+        self.assertEqual(self.run_decision()["recommended_servings"], 523)
+
+    def test_case3_price_supply_review(self):
+        self.candidate()
+        self.p["inventory_risk_result"].update(price_risks=[{"ingredient": "계란", "message": "가격 +22%"}],
+            supply_risks=[{"ingredient": "계란", "severity": "HIGH"}], affected_menus=["계란찜"])
+        r = self.run_decision()
+        self.assertTrue(all(a["decision"] == "REVIEW" for a in r["menu_actions"]))
+        self.assertEqual(r["menu_actions"][0]["candidates"], ["swap"])
+        self.assertTrue(r["critical_alerts"])
+
+    def test_case4_cheap_failed_nutrition_blocked(self):
+        c = self.candidate(soft_scores={"cost": 1.0})
+        c["constraints"]["nutrition"] = "FAIL"
+        self.p["inventory_risk_result"]["price_risks"] = [{"ingredient": "계란", "affected_menus": ["계란찜"]}]
+        r = self.run_decision()
+        self.assertEqual(r["candidate_evaluations"][0]["decision"], "BLOCK")
+        self.assertEqual(r["menu_actions"][0]["candidates"], [])
+
+    def test_case5_demo(self):
+        self.p["inventory_risk_result"]["data_quality_notes"] = ["가격 정보: DEMO"]
+        r = self.run_decision()
+        self.assertEqual(r["confidence"], "MEDIUM")
+        self.assertIn("DEMO", str(r["data_quality_notes"]))
+
+    def test_case6_inventory_nutrition_conflict(self):
+        self.p["inventory_risk_result"]["nutrition_results"] = [{"candidate_id": "tofu-use", "status": "FAIL"}]
+        r = self.run_decision()
+        self.assertEqual(r["inventory_actions"][0]["decision"], "BLOCK")
+        self.assertIsNone(r["inventory_actions"][0]["recommended"])
+
+    def test_global_nutrition_failure_blocks_inventory(self):
+        self.p["operation_result"]["nutrition_constraints"]["status"] = "FAIL"
+        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
+
+    def test_missing_inputs(self):
+        r = decide({}, {}, {})
+        self.assertEqual(r["confidence"], "LOW")
+        self.assertIsNone(r["recommended_servings"])
+
+    def test_unknown_constraints_not_passed(self):
+        self.p["operation_result"]["constraints"] = {}
+        self.assertIsNone(self.run_decision()["recommended_servings"])
+
+    def test_expired_inventory(self):
+        self.p["inventory_risk_result"]["inventory_recommendations"][0]["days_to_expiry"] = -1
+        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
+
+    def test_restriction_normalized(self):
+        self.p["user_events"] = [{"event_type": "ingredient_restriction_event", "ingredient": "두 부", "restriction": "do_not_use"}]
+        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
+
+    def test_alias_restriction(self):
+        self.candidate(ingredient="계란")
+        self.p["user_events"] = [{"event_type": "ingredient_restriction_event", "ingredient": "달걀", "restriction": "do_not_use"}]
+        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+
+    def test_each_hard_constraint(self):
+        for key in PASS:
+            with self.subTest(constraint=key):
+                c = self.candidate()
+                c["constraints"][key] = "FAIL"
+                self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+
+    def test_supply_unavailable_overrides_pass(self):
+        self.candidate()
+        self.p["inventory_risk_result"]["supply_risks"] = [{"ingredient": "두부", "unavailable": True}]
+        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+
+    def test_shortage_probability(self):
+        self.p["operation_result"]["shortage_probability"] = .2
+        self.assertEqual(self.run_decision()["serving_action"]["decision"], "BLOCK")
+
+    def test_insufficient_servings(self):
+        self.p["operation_result"]["recommended_servings"] = 400
+        self.assertEqual(self.run_decision()["status"], "blocked")
+
+    def test_text_alert_does_not_invent_quantity(self):
+        self.p["inventory_risk_result"].update(inventory_recommendations=[], alerts=[{
+            "type": "expiry_risk", "severity": "HIGH", "message": "두부 8kg D-1"}])
+        action = self.run_decision()["inventory_actions"][0]
+        self.assertEqual(action["decision"], "NEEDS_CONFIRMATION")
+        self.assertIsNone(action["recommended"])
+
+    def test_scoped_allergy_blocks_candidate(self):
+        self.candidate()
+        self.p["inventory_risk_result"]["alerts"] = [{"type": "allergy", "severity": "HIGH", "ingredient": "두부", "message": "알레르기"}]
+        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+
+    def test_nutrition_fail_wins_over_pass(self):
+        self.candidate()
+        self.p["inventory_risk_result"]["nutrition_results"] = [
+            {"candidate_id": "swap", "status": "FAIL"}, {"candidate_id": "swap", "status": "PASS"}]
+        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+
+    def test_bad_numbers_rejected(self):
+        for value in (-1, float("nan"), float("inf"), True, "487"):
+            with self.subTest(value=value), self.assertRaises(ValidationError):
+                decide({"prediction": value}, {}, {})
+
+    def test_missing_event_fields_rejected(self):
+        with self.assertRaises(ValidationError):
+            decide({}, {}, {}, [{"event_type": "attendance_event"}])
+
+    def test_duplicate_candidate_id(self):
+        self.candidate(candidate_id="tofu-use")
+        with self.assertRaises(ValidationError):
+            self.run_decision()
+
+    def test_immutable_deterministic(self):
+        original = deepcopy(self.p)
+        self.assertEqual(self.run_decision(), self.run_decision())
+        self.assertEqual(original, self.p)
+
+    def test_soft_priority_config(self):
+        a = self.candidate(soft_scores={"waste": 1.0, "cost": 0.0})
+        b = deepcopy(a)
+        b.update(candidate_id="cheap", soft_scores={"waste": 0.0, "cost": 1.0})
+        self.p["inventory_risk_result"]["substitute_candidates"].append(b)
+        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["candidate_id"], "swap")
+        policy = DecisionPolicy(priorities=("cost", "shortage", "safety", "nutrition", "supply", "waste", "preference"))
+        self.assertEqual(decide(**self.p, policy=policy)["candidate_evaluations"][0]["candidate_id"], "cheap")
+
+    def test_partial_report_suppresses_actions(self):
+        self.p["inventory_risk_result"]["status"] = "partial"
+        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "NEEDS_CONFIRMATION")
+
+    def test_order_units_not_inferred(self):
+        self.p["operation_result"]["order_recommendations"] = [{"ingredient": "돼지고기", "planned_order": 105,
+            "recommended_min": 88, "recommended_max": 94, "status": "OVER", "constraints": PASS}]
+        a = self.run_decision()["procurement_actions"][0]
+        self.assertEqual(a["decision"], "NEEDS_CONFIRMATION")
+        self.assertIsNone(a["unit"])
+
+    def test_order_range_preserved(self):
+        self.p["operation_result"]["order_recommendations"] = [{"ingredient": "돼지고기", "planned_order": 105,
+            "recommended_min": 88, "recommended_max": 94, "status": "OVER", "unit": "kg", "constraints": PASS}]
+        self.assertEqual(self.run_decision()["procurement_actions"][0]["recommended"], {"min": 88, "max": 94})
+
+    def test_unknown_recheck_preserved(self):
+        self.p["inventory_risk_result"]["recommended_rechecks"] = ["external_unknown"]
+        self.assertIn("external_unknown", self.run_decision()["recommended_rechecks"])
+
+    def test_trace_complete(self):
+        r = self.run_decision()
+        self.assertEqual([t["step"] for t in r["decision_trace"]], list(range(1, len(r["decision_trace"])+1)))
+        self.assertTrue(all(t["rule"] for t in r["decision_trace"]))
+
+
+if __name__ == "__main__":
+    unittest.main()

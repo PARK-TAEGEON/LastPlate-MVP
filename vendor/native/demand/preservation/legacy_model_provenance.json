@@ -1,0 +1,40 @@
+[
+  {
+    "model_version": "v20260917T054002-4222a35a",
+    "feature_rules_version": "v1 (legacy fallback verified)",
+    "original_metadata": "models\\releases\\v20260917T054002-4222a35a\\metadata.json",
+    "model_sha256": "cbd6e0014dcbd2c12694a438463093a298c6b6a0863ba5210c2dbbce578f36e6",
+    "recorded_data_source_hash": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+    "dependencies": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scikit-learn": "1.9.1",
+      "lightgbm": "4.7.0",
+      "xgboost": "3.4.1",
+      "joblib": "1.6.0",
+      "filelock": "4.0.0"
+    },
+    "original_zip_hash": "3e4ee4052bda5a69c0c1daa1c381e3f1def2dad83880aca5b9dbbb26138ecbef",
+    "training_code_commit": "not recorded in original; not fabricated",
+    "original_delivery_code": "preservation/LastPlate-ML-original.zip"
+  },
+  {
+    "model_version": "v20260917T055533-5959a6df",
+    "feature_rules_version": "v1 (legacy fallback verified)",
+    "original_metadata": "experiments\\weather\\models\\releases\\v20260917T055533-5959a6df\\metadata.json",
+    "model_sha256": "706d4675c18dc7a98b8dcea2b5aee90c8bcc894a0556c6d0850def0f29d41197",
+    "recorded_data_source_hash": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+    "dependencies": {
+      "numpy": "2.3.5",
+      "pandas": "3.0.1",
+      "scikit-learn": "1.9.1",
+      "lightgbm": "4.7.0",
+      "xgboost": "3.4.1",
+      "joblib": "1.6.0",
+      "filelock": "4.0.0"
+    },
+    "original_zip_hash": "3e4ee4052bda5a69c0c1daa1c381e3f1def2dad83880aca5b9dbbb26138ecbef",
+    "training_code_commit": "not recorded in original; not fabricated",
+    "original_delivery_code": "preservation/LastPlate-ML-original.zip"
+  }
+]

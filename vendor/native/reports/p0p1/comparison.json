@@ -1,0 +1,235 @@
+{
+  "01_cancelled_structured": {
+    "before": {
+      "current_supply_risks": 1,
+      "critical_supply_alerts": 1,
+      "menu_actions": [
+        {
+          "action_id": "menu-f115bf31b94e2ea20a884cbc",
+          "ingredient": null,
+          "menu": "두부조림",
+          "candidate_id": null,
+          "decision": "REVIEW",
+          "action": "[DEMO 검토용] 영향 메뉴·대체 후보 검토",
+          "reason": "cancelled observation; 영양·안전 검증 후 운영자 판단",
+          "current_plan": null,
+          "recommended": null,
+          "unit": null,
+          "failed_constraints": [],
+          "unknown_constraints": [],
+          "selected": false,
+          "scope": {
+            "target_date": "2026-09-18",
+            "meal_type": "lunch",
+            "menu": "두부조림"
+          },
+          "candidates": []
+        }
+      ],
+      "selected_action_ids": [
+        "servings"
+      ],
+      "superseded_audit_events": 1
+    },
+    "after": {
+      "current_supply_risks": 0,
+      "critical_supply_alerts": 0,
+      "menu_actions": [],
+      "selected_action_ids": [
+        "servings"
+      ],
+      "superseded_audit_events": 1
+    }
+  },
+  "02_raw_basis": {
+    "before": {
+      "servings": 910,
+      "operation": {
+        "ingredient": "두부",
+        "edible_required": 72800.0,
+        "raw_required": 145600.0,
+        "raw_required_exact": {
+          "numerator": "145600",
+          "denominator": "1"
+        },
+        "cooking_required": 145600.0,
+        "cooking_extra": 0.0,
+        "rounding_policy": "legacy_combined",
+        "gross_required": 72800.0,
+        "trim_loss_pct": 50.0,
+        "adjusted_required": 145600.0,
+        "stock": 100000.0,
+        "purchase_need": 45600.0,
+        "unit": "g",
+        "recommended_min": 45600.0,
+        "recommended_max": 47880.0
+      },
+      "risk": {
+        "ingredient": "두부",
+        "current_stock_g": 100000.0,
+        "usable_today_g": 100000.0,
+        "required_g": 72800.0,
+        "shortage_at_service_g": 0.0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 0,
+        "order_arrival_verified": false
+      }
+    },
+    "after": {
+      "servings": 910,
+      "operation": {
+        "ingredient": "두부",
+        "edible_required": 72800.0,
+        "raw_required": 145600.0,
+        "raw_required_exact": {
+          "numerator": "145600",
+          "denominator": "1"
+        },
+        "cooking_required": 145600.0,
+        "cooking_extra": 0.0,
+        "rounding_policy": "legacy_combined",
+        "gross_required": 72800.0,
+        "trim_loss_pct": 50.0,
+        "adjusted_required": 145600.0,
+        "stock": 100000.0,
+        "purchase_need": 45600.0,
+        "unit": "g",
+        "recommended_min": 45600.0,
+        "recommended_max": 47880.0
+      },
+      "risk": {
+        "ingredient": "두부",
+        "current_stock_g": 100000.0,
+        "usable_today_g": 100000.0,
+        "required_g": 145600.0,
+        "shortage_at_service_g": 45600.0,
+        "planned_order_g": 0,
+        "uncovered_order_g": 45600.0,
+        "order_arrival_verified": false
+      }
+    }
+  },
+  "03_units": {
+    "before": {
+      "convertible_status": "PARTIAL",
+      "unsupported_created_demand": true,
+      "errors": [
+        {
+          "stage": "operation",
+          "code": "UNIT_ERROR",
+          "message": "두부: incompatible dimensions g / ml"
+        }
+      ]
+    },
+    "after": {
+      "convertible_status": "COMPLETE",
+      "unsupported_created_demand": false,
+      "errors": [
+        {
+          "stage": "input",
+          "code": "UNIT_ERROR",
+          "kind": "input",
+          "http_status": 422,
+          "message": "Pipeline supports mass units g/kg only",
+          "details": [
+            {
+              "field": "inventory[0]",
+              "unit": "ml"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "04_http": {
+    "before": {
+      "ok": {
+        "status": 200,
+        "demand_preserved": true,
+        "operation_preserved": true
+      },
+      "ml": {
+        "status": 200,
+        "demand_preserved": false,
+        "operation_preserved": false
+      },
+      "nested": {
+        "status": 200,
+        "demand_preserved": true,
+        "operation_preserved": true
+      },
+      "conflict": {
+        "status": 200,
+        "demand_preserved": false,
+        "operation_preserved": false
+      }
+    },
+    "after": {
+      "ok": {
+        "status": 200,
+        "demand_preserved": true,
+        "operation_preserved": true
+      },
+      "ml": {
+        "status": 422,
+        "demand_preserved": false,
+        "operation_preserved": false
+      },
+      "nested": {
+        "status": 422,
+        "demand_preserved": true,
+        "operation_preserved": true
+      },
+      "conflict": {
+        "status": 409,
+        "demand_preserved": false,
+        "operation_preserved": false
+      }
+    }
+  },
+  "05_audit_envelope": {
+    "before": {
+      "superseded_history": 0,
+      "operation_envelope": false,
+      "decision_envelope": false,
+      "model_version": "v20260917T054002-4222a35a",
+      "raw_prediction": 888.0
+    },
+    "after": {
+      "superseded_history": 1,
+      "operation_envelope": true,
+      "decision_envelope": true,
+      "model_version": "v20260917T054002-4222a35a",
+      "raw_prediction": 888.0
+    }
+  },
+  "06_final_defense": {
+    "before": {
+      "supply_critical": 1,
+      "native_gate_summary": null,
+      "audit_retained": false
+    },
+    "after": {
+      "supply_critical": 0,
+      "native_gate_summary": {
+        "current_plan_checks": {
+          "shortage": "PASS",
+          "expiry": "PASS",
+          "restriction": "PASS",
+          "supply": "PASS"
+        },
+        "recommended_rechecks": [],
+        "projection": {
+          "superseded_event_ids": [
+            "cancelled-supply"
+          ],
+          "removed_candidate_ids": [
+            "cancelled-candidate"
+          ],
+          "audit_excluded": true
+        }
+      },
+      "audit_retained": true
+    }
+  }
+}

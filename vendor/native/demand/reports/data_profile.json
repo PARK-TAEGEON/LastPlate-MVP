@@ -1,0 +1,78 @@
+{
+  "rows": 1205,
+  "columns": [
+    "일자",
+    "요일",
+    "본사정원수",
+    "본사휴가자수",
+    "본사출장자수",
+    "본사시간외근무명령서승인건수",
+    "현본사소속재택근무자수",
+    "조식메뉴",
+    "중식메뉴",
+    "석식메뉴",
+    "중식계",
+    "석식계"
+  ],
+  "dtypes": {
+    "일자": "str",
+    "요일": "str",
+    "본사정원수": "int64",
+    "본사휴가자수": "int64",
+    "본사출장자수": "int64",
+    "본사시간외근무명령서승인건수": "int64",
+    "현본사소속재택근무자수": "float64",
+    "조식메뉴": "str",
+    "중식메뉴": "str",
+    "석식메뉴": "str",
+    "중식계": "float64",
+    "석식계": "float64"
+  },
+  "missing": {
+    "일자": 0,
+    "요일": 0,
+    "본사정원수": 0,
+    "본사휴가자수": 0,
+    "본사출장자수": 0,
+    "본사시간외근무명령서승인건수": 0,
+    "현본사소속재택근무자수": 0,
+    "조식메뉴": 0,
+    "중식메뉴": 0,
+    "석식메뉴": 0,
+    "중식계": 0,
+    "석식계": 0
+  },
+  "empty_strings": {
+    "일자": 0,
+    "요일": 0,
+    "본사정원수": 0,
+    "본사휴가자수": 0,
+    "본사출장자수": 0,
+    "본사시간외근무명령서승인건수": 0,
+    "현본사소속재택근무자수": 0,
+    "조식메뉴": 0,
+    "중식메뉴": 0,
+    "석식메뉴": 4,
+    "중식계": 0,
+    "석식계": 0
+  },
+  "date_min": "2016-02-01",
+  "date_max": "2021-01-26",
+  "duplicate_dates": 0,
+  "target": "중식계",
+  "has_lunch": true,
+  "has_dinner": true,
+  "estimated_available_min": 1372.0,
+  "estimated_available_max": 2921.0,
+  "participation_above_one": 0,
+  "zero_targets": 0,
+  "weekday_corrections": [
+    {
+      "date": "2018-06-01",
+      "supplied": "월",
+      "corrected": "금"
+    }
+  ],
+  "population_caveat": "Absence categories may overlap. No person-level identifiers or definitions supplied; denominator is an estimate, not verified attendance.",
+  "source_sha256": "7d26cdae989cd0568012a384c62f2df19bae0137a73d4928ceb061842bcb54cf"
+}

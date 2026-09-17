@@ -1,0 +1,108 @@
+{
+  "model_type": "lightgbm",
+  "train_period": {
+    "start": "2016-02-01",
+    "end": "2021-01-26",
+    "rows": 1205
+  },
+  "trained_through": "2021-01-26",
+  "selection_train_period": {
+    "start": "2016-02-01",
+    "end": "2019-07-16",
+    "rows": 843
+  },
+  "validation_period": {
+    "start": "2019-07-17",
+    "end": "2020-04-08",
+    "rows": 181
+  },
+  "test_period": {
+    "start": "2020-04-09",
+    "end": "2021-01-26",
+    "rows": 181
+  },
+  "validation_metrics": {
+    "mae": 84.69060773480663,
+    "rmse": 110.615130892299,
+    "mape_pct": 11.01232525967789,
+    "mape_excluded_zeros": 0,
+    "n": 181
+  },
+  "test_metrics": {
+    "mae": 89.7513812154696,
+    "rmse": 109.53681991516402,
+    "mape_pct": 11.11611189596598,
+    "mape_excluded_zeros": 0,
+    "n": 181
+  },
+  "mae": 89.7513812154696,
+  "evaluation_note": "Test scored on train+validation fit. Deployment then refit on all dates; no independent score for that exact refit.",
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "3.0.1",
+    "scikit-learn": "1.9.1",
+    "lightgbm": "4.7.0",
+    "xgboost": "3.4.1",
+    "joblib": "1.6.0",
+    "filelock": "4.0.0"
+  },
+  "model_parameters": {
+    "boosting_type": "gbdt",
+    "class_weight": null,
+    "colsample_bytree": 1.0,
+    "importance_type": "gain",
+    "learning_rate": 0.035,
+    "max_depth": -1,
+    "min_child_samples": 25,
+    "min_child_weight": 0.001,
+    "min_split_gain": 0.0,
+    "n_estimators": 350,
+    "n_jobs": 2,
+    "num_leaves": 15,
+    "objective": null,
+    "random_state": 42,
+    "reg_alpha": 0.0,
+    "reg_lambda": 2,
+    "subsample": 1.0,
+    "subsample_for_bin": 200000,
+    "subsample_freq": 0,
+    "verbosity": -1,
+    "deterministic": true,
+    "force_col_wise": true
+  },
+  "data_sha256": "4d099f56a264d44c125110f2bc2413a57da2db648d8ad7ef6eca10582069bf63",
+  "weather_policy": "not_used",
+  "model_version": "v20260917T054002-4222a35a",
+  "schema_version": 1,
+  "trained_at": "2026-09-17T05:40:02.994452+00:00",
+  "features": [
+    "employees",
+    "vacation",
+    "business_trip",
+    "work_from_home",
+    "overtime",
+    "weekday_0",
+    "weekday_1",
+    "weekday_2",
+    "weekday_3",
+    "weekday_4",
+    "weekday_5",
+    "weekday_6",
+    "menu_meat",
+    "menu_fish",
+    "menu_noodles",
+    "menu_special",
+    "menu_rice_bowl",
+    "menu_soup"
+  ],
+  "feature_group": "C",
+  "model_sha256": "cbd6e0014dcbd2c12694a438463093a298c6b6a0863ba5210c2dbbce578f36e6",
+  "native_sha256": "ae8911ae0eeb36a7bd5e2a6a09736897bc7f738763e2afcb86b9477e6cfc2e68",
+  "feature_rules_version": "v1",
+  "interval_method": "point_only",
+  "import_method": "pickletools string extraction; no unpickling; no retraining",
+  "estimated_available_training_range": [
+    1372.0,
+    2921.0
+  ]
+}

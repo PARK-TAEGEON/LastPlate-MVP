@@ -1,0 +1,32 @@
+{
+  "rows": 1728,
+  "columns": [
+    "지점",
+    "지점명",
+    "일시",
+    "기온(°C)",
+    "강수량(mm)",
+    "습도(%)"
+  ],
+  "missing": {
+    "지점": 0,
+    "지점명": 0,
+    "일시": 0,
+    "기온(°C)": 10,
+    "강수량(mm)": 1648,
+    "습도(%)": 0
+  },
+  "station_records": [
+    {
+      "지점": 192,
+      "지점명": "진주"
+    }
+  ],
+  "start": "2021-01-27 01:00",
+  "end": "2021-04-09 00:00",
+  "daily_rows": 73,
+  "same_day_overlap": 0,
+  "lag1_overlap": 0,
+  "complete_feature_days": 0,
+  "caveat": "Hourly extremes are not official daily extremes. Missing rainfall remains unknown. Prior-day observations only; forecasts require issue-time provenance."
+}

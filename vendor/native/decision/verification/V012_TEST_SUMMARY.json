@@ -1,0 +1,24 @@
+{
+  "version": "0.1.2",
+  "started_at": "2026-09-17T12:36:15.548073+00:00",
+  "tests_run": 144,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "v011_methods_preserved": 107,
+  "v011_methods_missing": [],
+  "new_test_methods": 37,
+  "categories": {
+    "test_decision_agent": 30,
+    "test_final_review": 9,
+    "test_real_contracts": 15,
+    "test_review_regressions": 7,
+    "test_streamlit_integration": 7,
+    "test_v011_reproductions": 10,
+    "test_v011_scope_workflow": 22,
+    "test_v012_policies": 22,
+    "test_v012_reproductions": 12,
+    "test_workflow": 10
+  },
+  "full_operational_e2e": "NOT RUN: no real Operation implementation"
+}

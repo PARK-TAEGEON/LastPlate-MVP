@@ -1,0 +1,1714 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LastPlate Inventory & Risk — DEMO</title>
+<style>body{font:16px/1.6 system-ui,sans-serif;color:#173344;background:#f3f6f7;margin:0}main{max-width:1100px;margin:32px auto;padding:24px}header,section{background:white;padding:24px;margin-bottom:20px;border-radius:12px}h1{margin:0}.banner{background:#fff2c9;padding:12px;border-radius:8px}table{border-collapse:collapse;width:100%}td,th{text-align:left;padding:10px;border-bottom:1px solid #ddd}li{padding:10px}li p{margin:0;color:#526572}pre{white-space:pre-wrap;overflow-wrap:anywhere}.scroll{overflow:auto}</style>
+<main><header><p class="banner"><b>DEMO / SIMULATION</b> · 실제 공공 API 미연동 · 최종 운영 결정 없음</p><h1>Inventory & Risk Agent</h1><p>기준일 2026-09-17 · 알림 24개 · 독립 대체 후보 10개</p><p>후보는 Decision Agent와 운영자의 검토 대상입니다. 영양 기준은 메뉴 한 가지에 대한 DEMO 설정이며, 전체 식사의 영양 적합성을 뜻하지 않습니다.</p></header>
+<section><h2>발견된 이상</h2><ul><li><b>MEDIUM · overstock</b> 간장<p>usable 5000.0g; demand 300.0g</p></li><li><b>MEDIUM · low_stock</b> 계란<p>usable 4000.0g &lt; minimum 5000.0g</p></li><li><b>HIGH · ingredient_shortage</b> 계란<p>service-date shortage 11000.0g</p></li><li><b>HIGH · insufficient_order</b> 계란<p>shortage 11000.0g; planned order 1000.0g</p></li><li><b>HIGH · ingredient_shortage</b> 닭고기<p>service-date shortage 9000.0g</p></li><li><b>HIGH · insufficient_order</b> 닭고기<p>shortage 9000.0g; planned order 1000.0g</p></li><li><b>MEDIUM · overstock</b> 돼지고기<p>usable 40000.0g; demand 0g</p></li><li><b>MEDIUM · overstock</b> 두부<p>usable 38000.0g; demand 8000.0g</p></li><li><b>MEDIUM · over_order</b> 두부<p>usable 38000.0g; demand 8000.0g; planned 8000.0g</p></li><li><b>HIGH · expiry_risk</b> 두부<p>현재 재고 8.0kg / 유통기한 D-1 / 기한 내 메뉴: 두부조림</p></li><li><b>MEDIUM · overstock</b> 버섯<p>usable 10000.0g; demand 0g</p></li><li><b>MEDIUM · long_unused_inventory</b> 버섯<p>last used 2026-08-01</p></li><li><b>MEDIUM · overstock</b> 소고기<p>usable 30000.0g; demand 0g</p></li><li><b>MEDIUM · overstock</b> 소금<p>usable 5000.0g; demand 0g</p></li><li><b>MEDIUM · long_unused_inventory</b> 소금<p>last used 2026-07-01</p></li><li><b>MEDIUM · overstock</b> 양배추<p>usable 10000.0g; demand 4500.0g</p></li><li><b>MEDIUM · overstock</b> 양파<p>usable 10000.0g; demand 2000.0g</p></li><li><b>HIGH · price_risk</b> 계란<p>weekly 22.0% (increase) / monthly 22.0% (increase) / triggered_rules=[&#x27;weekly_increase&#x27;, &#x27;monthly_increase&#x27;]</p></li><li><b>HIGH · supply_risk</b> 계란<p>조류인플루엔자 영향에 따른 공급 위험 DEMO / period=2026-09-18..2026-09-24 / inventory={&#x27;ingredient&#x27;: &#x27;계란&#x27;, &#x27;current_stock_g&#x27;: 4000.0, &#x27;usable_today_g&#x27;: 4000.0, &#x27;required_g&#x27;: 15000.0, &#x27;shortage_at_service_g&#x27;: 11000.0, &#x27;planned_order_g&#x27;: 1000.0, &#x27;uncovered_order_g&#x27;: 10000.0, &#x27;order_arrival_verified&#x27;: False}</p></li><li><b>HIGH · supply_risk</b> 닭고기<p>조류인플루엔자 영향에 따른 공급 위험 DEMO / period=2026-09-18..2026-09-24 / inventory={&#x27;ingredient&#x27;: &#x27;닭고기&#x27;, &#x27;current_stock_g&#x27;: 6000.0, &#x27;usable_today_g&#x27;: 6000.0, &#x27;required_g&#x27;: 15000.0, &#x27;shortage_at_service_g&#x27;: 9000.0, &#x27;planned_order_g&#x27;: 1000.0, &#x27;uncovered_order_g&#x27;: 8000.0, &#x27;order_arrival_verified&#x27;: False}</p></li><li><b>HIGH · nutrition_violation</b> None<p>minimum_protein / kcal_range / protein_similarity / kcal_similarity</p></li><li><b>HIGH · nutrition_violation</b> None<p>sodium_limit</p></li><li><b>HIGH · nutrition_violation</b> None<p>minimum_protein / kcal_range / protein_similarity / kcal_similarity</p></li><li><b>HIGH · nutrition_violation</b> None<p>sodium_limit</p></li></ul></section><section><h2>대체 메뉴 후보</h2><p>각 후보의 재고는 독립적으로 계산됩니다. 복수 후보를 함께 선택할 때는 재검증해야 합니다.</p><div class="scroll"><table><thead><tr><th>제공일</th><th>원래 메뉴</th><th>후보</th><th>영양</th><th>재고 가용</th><th>비용</th><th>검토 가능</th></tr></thead><tbody><tr><td>2026-09-21</td><td>계란찜</td><td>두부조림</td><td>PASS</td><td>True</td><td>lower</td><td>True</td></tr><tr><td>2026-09-21</td><td>계란찜</td><td>버섯볶음</td><td>FAIL</td><td>True</td><td>lower</td><td>False</td></tr><tr><td>2026-09-21</td><td>계란찜</td><td>짜게조린두부</td><td>FAIL</td><td>True</td><td>lower</td><td>False</td></tr><tr><td>2026-09-23</td><td>계란말이</td><td>두부조림</td><td>PASS</td><td>True</td><td>lower</td><td>True</td></tr><tr><td>2026-09-23</td><td>계란말이</td><td>버섯볶음</td><td>FAIL</td><td>True</td><td>lower</td><td>False</td></tr><tr><td>2026-09-23</td><td>계란말이</td><td>짜게조린두부</td><td>FAIL</td><td>True</td><td>lower</td><td>False</td></tr><tr><td>2026-09-24</td><td>닭갈비</td><td>제육볶음</td><td>PASS</td><td>True</td><td>higher</td><td>True</td></tr><tr><td>2026-09-24</td><td>닭갈비</td><td>소고기볶음</td><td>PASS</td><td>True</td><td>higher</td><td>True</td></tr><tr><td>2026-09-18</td><td>닭갈비</td><td>제육볶음</td><td>PASS</td><td>True</td><td>higher</td><td>True</td></tr><tr><td>2026-09-18</td><td>닭갈비</td><td>소고기볶음</td><td>PASS</td><td>True</td><td>higher</td><td>True</td></tr></tbody></table></div></section>
+<section><h2>재실행 요청</h2><p>demand_forecast, operation_agent</p><h2>Decision Trace</h2><ol><li>Event Parser: mode=full, 1 events; selected=[&#x27;inventory_analyzer&#x27;, &#x27;price_risk_analyzer&#x27;, &#x27;supply_risk_analyzer&#x27;, &#x27;impact_analyzer&#x27;, &#x27;substitute_candidate_generator&#x27;, &#x27;nutrition_constraint_checker&#x27;]</li><li>Inventory Analyzer: 10 ingredients; 4 impacts; 1 priority-use candidates</li><li>Inventory: 간장 current=5000.0g, required=300.0g, service shortage=0.0g, planned=0.0g</li><li>Inventory: 계란 current=4000.0g, required=15000.0g, service shortage=11000.0g, planned=1000.0g</li><li>Inventory: 닭고기 current=6000.0g, required=15000.0g, service shortage=9000.0g, planned=1000.0g</li><li>Inventory: 돼지고기 current=40000.0g, required=0g, service shortage=0g, planned=0.0g</li><li>Inventory: 두부 current=38000.0g, required=8000.0g, service shortage=0.0g, planned=8000.0g</li><li>Inventory: 버섯 current=10000.0g, required=0g, service shortage=0g, planned=0.0g</li><li>Inventory: 소고기 current=30000.0g, required=0g, service shortage=0g, planned=0.0g</li><li>Inventory: 소금 current=5000.0g, required=0g, service shortage=0g, planned=0.0g</li><li>Inventory: 양배추 current=10000.0g, required=4500.0g, service shortage=0.0g, planned=0.0g</li><li>Inventory: 양파 current=10000.0g, required=2000.0g, service shortage=0.0g, planned=0.0g</li><li>Price Risk Analyzer: 계란 weekly=22.0%, monthly=22.0%, rules=[&#x27;weekly_increase&#x27;, &#x27;monthly_increase&#x27;]</li><li>Supply Risk Analyzer: 2 observations, 2 unique active events</li><li>Impact Analyzer: event-5c08996f9b70ea138c16 -&gt; 2026-09-18 두부조림/두부 (inventory_expiry_event)</li><li>Impact Analyzer: event-1d283aad08c64ca6cd97 -&gt; 2026-09-21 계란찜/계란 (inventory_shortage_event)</li><li>Impact Analyzer: event-6641afce70ce71913ce5 -&gt; 2026-09-23 계란말이/계란 (inventory_shortage_event)</li><li>Impact Analyzer: event-9b29d19c53fe8171446c -&gt; 2026-09-24 닭갈비/닭고기 (inventory_shortage_event)</li><li>Impact Analyzer: event-919d9422c16d786b70a2 -&gt; 2026-09-21 계란찜/계란 (price_event)</li><li>Impact Analyzer: event-919d9422c16d786b70a2 -&gt; 2026-09-23 계란말이/계란 (price_event)</li><li>Impact Analyzer: event-c03f1bcb68ff2bcd2d9b -&gt; 2026-09-21 계란찜/계란 (supply_risk)</li><li>Impact Analyzer: event-c03f1bcb68ff2bcd2d9b -&gt; 2026-09-23 계란말이/계란 (supply_risk)</li><li>Impact Analyzer: event-ded6a1cc926a534e56fd -&gt; 2026-09-18 닭갈비/닭고기 (supply_risk)</li><li>Impact Analyzer: event-ded6a1cc926a534e56fd -&gt; 2026-09-24 닭갈비/닭고기 (supply_risk)</li><li>Substitute Candidate Generator: 10 independent alternatives; cause IDs retained</li><li>Nutrition Constraint Checker: candidate-e9157fb9e1038dff4c8b PASS []</li><li>Nutrition Constraint Checker: candidate-cd3f4e8120f04600183b FAIL [&#x27;minimum_protein&#x27;, &#x27;kcal_range&#x27;, &#x27;protein_similarity&#x27;, &#x27;kcal_similarity&#x27;]</li><li>Nutrition Constraint Checker: candidate-00c335412dbadc4b3f52 FAIL [&#x27;sodium_limit&#x27;]</li><li>Nutrition Constraint Checker: candidate-2194a4ebf66f683a2acd PASS []</li><li>Nutrition Constraint Checker: candidate-035ec9274418c888e198 FAIL [&#x27;minimum_protein&#x27;, &#x27;kcal_range&#x27;, &#x27;protein_similarity&#x27;, &#x27;kcal_similarity&#x27;]</li><li>Nutrition Constraint Checker: candidate-88e84e1a8f3e992f8f2f FAIL [&#x27;sodium_limit&#x27;]</li><li>Nutrition Constraint Checker: candidate-e2f70dd4ce19993efebb PASS []</li><li>Nutrition Constraint Checker: candidate-ef864023fb14f57790f0 PASS []</li><li>Nutrition Constraint Checker: candidate-53a8db37216d1eeb2d79 PASS []</li><li>Nutrition Constraint Checker: candidate-1f82a0f626e834e5fb2a PASS []</li><li>Candidate cost: candidate-e9157fb9e1038dff4c8b delta=-195.0 KRW/serving</li><li>Candidate cost: candidate-cd3f4e8120f04600183b delta=-47.0 KRW/serving</li><li>Candidate cost: candidate-00c335412dbadc4b3f52 delta=-127.0 KRW/serving</li><li>Candidate cost: candidate-2194a4ebf66f683a2acd delta=-256.0 KRW/serving</li><li>Candidate cost: candidate-035ec9274418c888e198 delta=-108.0 KRW/serving</li><li>Candidate cost: candidate-88e84e1a8f3e992f8f2f delta=-188.0 KRW/serving</li><li>Candidate cost: candidate-e2f70dd4ce19993efebb delta=286.0 KRW/serving</li><li>Candidate cost: candidate-ef864023fb14f57790f0 delta=2686.0 KRW/serving</li><li>Candidate cost: candidate-53a8db37216d1eeb2d79 delta=286.0 KRW/serving</li><li>Candidate cost: candidate-1f82a0f626e834e5fb2a delta=2686.0 KRW/serving</li><li>Risk Report Builder: 10 menu alternatives, 1 priority-use candidates; approval required</li></ol></section><section><details><summary>전체 구조화 보고서와 데이터 출처</summary><pre>{
+  &quot;schema_version&quot;: &quot;2.0&quot;,
+  &quot;advisory_only&quot;: true,
+  &quot;as_of&quot;: &quot;2026-09-17&quot;,
+  &quot;analysis_mode&quot;: &quot;full&quot;,
+  &quot;status&quot;: &quot;ok&quot;,
+  &quot;period&quot;: {
+    &quot;start&quot;: &quot;2026-09-17&quot;,
+    &quot;end&quot;: &quot;2026-09-24&quot;
+  },
+  &quot;forecast_version&quot;: null,
+  &quot;input_snapshot_id&quot;: &quot;snapshot-bc4a73545130ed28930d&quot;,
+  &quot;clarification&quot;: {
+    &quot;status&quot;: &quot;not_required&quot;,
+    &quot;event_ids&quot;: []
+  },
+  &quot;recheck_status&quot;: {
+    &quot;demand_forecast&quot;: {
+      &quot;status&quot;: &quot;requested&quot;,
+      &quot;execute_allowed&quot;: true,
+      &quot;executed&quot;: false
+    },
+    &quot;operation_agent&quot;: {
+      &quot;status&quot;: &quot;requested&quot;,
+      &quot;executed&quot;: false
+    }
+  },
+  &quot;execution&quot;: {
+    &quot;executed_nodes&quot;: [
+      &quot;event_parser&quot;,
+      &quot;inventory_analyzer&quot;,
+      &quot;price_risk_analyzer&quot;,
+      &quot;supply_risk_analyzer&quot;,
+      &quot;impact_analyzer&quot;,
+      &quot;substitute_candidate_generator&quot;,
+      &quot;nutrition_constraint_checker&quot;,
+      &quot;risk_report_builder&quot;
+    ],
+    &quot;skipped_nodes&quot;: [],
+    &quot;scope&quot;: &quot;full&quot;,
+    &quot;previous_report_reused&quot;: false
+  },
+  &quot;errors&quot;: [],
+  &quot;inventory_status&quot;: [
+    {
+      &quot;ingredient&quot;: &quot;간장&quot;,
+      &quot;current_stock_g&quot;: 5000.0,
+      &quot;usable_today_g&quot;: 5000.0,
+      &quot;required_g&quot;: 300.0,
+      &quot;shortage_at_service_g&quot;: 0.0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;current_stock_g&quot;: 4000.0,
+      &quot;usable_today_g&quot;: 4000.0,
+      &quot;required_g&quot;: 15000.0,
+      &quot;shortage_at_service_g&quot;: 11000.0,
+      &quot;planned_order_g&quot;: 1000.0,
+      &quot;uncovered_order_g&quot;: 10000.0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;current_stock_g&quot;: 6000.0,
+      &quot;usable_today_g&quot;: 6000.0,
+      &quot;required_g&quot;: 15000.0,
+      &quot;shortage_at_service_g&quot;: 9000.0,
+      &quot;planned_order_g&quot;: 1000.0,
+      &quot;uncovered_order_g&quot;: 8000.0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;돼지고기&quot;,
+      &quot;current_stock_g&quot;: 40000.0,
+      &quot;usable_today_g&quot;: 40000.0,
+      &quot;required_g&quot;: 0,
+      &quot;shortage_at_service_g&quot;: 0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;current_stock_g&quot;: 38000.0,
+      &quot;usable_today_g&quot;: 38000.0,
+      &quot;required_g&quot;: 8000.0,
+      &quot;shortage_at_service_g&quot;: 0.0,
+      &quot;planned_order_g&quot;: 8000.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;버섯&quot;,
+      &quot;current_stock_g&quot;: 10000.0,
+      &quot;usable_today_g&quot;: 10000.0,
+      &quot;required_g&quot;: 0,
+      &quot;shortage_at_service_g&quot;: 0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;소고기&quot;,
+      &quot;current_stock_g&quot;: 30000.0,
+      &quot;usable_today_g&quot;: 30000.0,
+      &quot;required_g&quot;: 0,
+      &quot;shortage_at_service_g&quot;: 0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;소금&quot;,
+      &quot;current_stock_g&quot;: 5000.0,
+      &quot;usable_today_g&quot;: 5000.0,
+      &quot;required_g&quot;: 0,
+      &quot;shortage_at_service_g&quot;: 0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;양배추&quot;,
+      &quot;current_stock_g&quot;: 10000.0,
+      &quot;usable_today_g&quot;: 10000.0,
+      &quot;required_g&quot;: 4500.0,
+      &quot;shortage_at_service_g&quot;: 0.0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    },
+    {
+      &quot;ingredient&quot;: &quot;양파&quot;,
+      &quot;current_stock_g&quot;: 10000.0,
+      &quot;usable_today_g&quot;: 10000.0,
+      &quot;required_g&quot;: 2000.0,
+      &quot;shortage_at_service_g&quot;: 0.0,
+      &quot;planned_order_g&quot;: 0.0,
+      &quot;uncovered_order_g&quot;: 0,
+      &quot;order_arrival_verified&quot;: false
+    }
+  ],
+  &quot;detected_events&quot;: [
+    {
+      &quot;event_type&quot;: &quot;attendance_event&quot;,
+      &quot;event_id&quot;: &quot;event-65f7d50e6ad2bb99e982&quot;,
+      &quot;ingredient&quot;: null,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;end_date&quot;: null,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: 35,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;description&quot;: &quot;내일 외부 손님 35명 추가됩니다.&quot;,
+      &quot;source_type&quot;: &quot;user&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;inventory_expiry_event&quot;,
+      &quot;event_id&quot;: &quot;event-5c08996f9b70ea138c16&quot;,
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;date&quot;: &quot;2026-09-17&quot;,
+      &quot;end_date&quot;: &quot;2026-09-18&quot;,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;description&quot;: &quot;lot-73839946edffbbbd08ba expiry=2026-09-18&quot;,
+      &quot;source_type&quot;: &quot;inventory_analysis&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;inventory_shortage_event&quot;,
+      &quot;event_id&quot;: &quot;event-1d283aad08c64ca6cd97&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;end_date&quot;: null,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;lunch 계란찜: shortage 3000.0g&quot;,
+      &quot;source_type&quot;: &quot;inventory_analysis&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;inventory_shortage_event&quot;,
+      &quot;event_id&quot;: &quot;event-6641afce70ce71913ce5&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;end_date&quot;: null,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;lunch 계란말이: shortage 8000.0g&quot;,
+      &quot;source_type&quot;: &quot;inventory_analysis&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;inventory_shortage_event&quot;,
+      &quot;event_id&quot;: &quot;event-9b29d19c53fe8171446c&quot;,
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;date&quot;: &quot;2026-09-24&quot;,
+      &quot;end_date&quot;: null,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;lunch 닭갈비: shortage 9000.0g&quot;,
+      &quot;source_type&quot;: &quot;inventory_analysis&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;price_event&quot;,
+      &quot;event_id&quot;: &quot;event-919d9422c16d786b70a2&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;date&quot;: &quot;2026-09-17&quot;,
+      &quot;end_date&quot;: &quot;2026-09-24&quot;,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;weekly=22.0%, monthly=22.0%; rules=[&#x27;weekly_increase&#x27;, &#x27;monthly_increase&#x27;]&quot;,
+      &quot;source_type&quot;: &quot;DEMO:demo_price_trend.csv;DEMO:demo_monthly_price.csv&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;supply_risk&quot;,
+      &quot;event_id&quot;: &quot;event-c03f1bcb68ff2bcd2d9b&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;end_date&quot;: &quot;2026-09-24&quot;,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;조류인플루엔자 영향에 따른 공급 위험 DEMO&quot;,
+      &quot;source_type&quot;: &quot;simulation&quot;,
+      &quot;needs_clarification&quot;: false
+    },
+    {
+      &quot;event_type&quot;: &quot;supply_risk&quot;,
+      &quot;event_id&quot;: &quot;event-ded6a1cc926a534e56fd&quot;,
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;end_date&quot;: &quot;2026-09-24&quot;,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;조류인플루엔자 영향에 따른 공급 위험 DEMO&quot;,
+      &quot;source_type&quot;: &quot;simulation&quot;,
+      &quot;needs_clarification&quot;: false
+    }
+  ],
+  &quot;alerts&quot;: [
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;간장: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 5000.0g; demand 300.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;간장&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;low_stock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;계란: low_stock&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 4000.0g &lt; minimum 5000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;ingredient_shortage&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;계란: ingredient_shortage&quot;,
+      &quot;evidence&quot;: [
+        &quot;service-date shortage 11000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-6641afce70ce71913ce5&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;insufficient_order&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;계란: insufficient_order&quot;,
+      &quot;evidence&quot;: [
+        &quot;shortage 11000.0g; planned order 1000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-6641afce70ce71913ce5&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;ingredient_shortage&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;닭고기: ingredient_shortage&quot;,
+      &quot;evidence&quot;: [
+        &quot;service-date shortage 9000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;insufficient_order&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;닭고기: insufficient_order&quot;,
+      &quot;evidence&quot;: [
+        &quot;shortage 9000.0g; planned order 1000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;돼지고기: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 40000.0g; demand 0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;돼지고기&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;두부: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 38000.0g; demand 8000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;over_order&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;두부: excess_order&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 38000.0g; demand 8000.0g; planned 8000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: &quot;예정 발주량 재검토 후보&quot;,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;expiry_risk&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;두부: expiry_risk&quot;,
+      &quot;evidence&quot;: [
+        &quot;현재 재고 8.0kg&quot;,
+        &quot;유통기한 D-1&quot;,
+        &quot;기한 내 메뉴: 두부조림&quot;
+      ],
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: &quot;기존 재고 우선 사용 검토&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-5c08996f9b70ea138c16&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;버섯: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 10000.0g; demand 0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;버섯&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;long_unused_inventory&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;버섯: long_unused_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;last used 2026-08-01&quot;
+      ],
+      &quot;ingredient&quot;: &quot;버섯&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;소고기: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 30000.0g; demand 0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;소고기&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;소금: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 5000.0g; demand 0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;소금&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;long_unused_inventory&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;소금: long_unused_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;last used 2026-07-01&quot;
+      ],
+      &quot;ingredient&quot;: &quot;소금&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;양배추: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 10000.0g; demand 4500.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;양배추&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;overstock&quot;,
+      &quot;severity&quot;: &quot;MEDIUM&quot;,
+      &quot;message&quot;: &quot;양파: excess_inventory&quot;,
+      &quot;evidence&quot;: [
+        &quot;usable 10000.0g; demand 2000.0g&quot;
+      ],
+      &quot;ingredient&quot;: &quot;양파&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;price_risk&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;계란 가격 이상&quot;,
+      &quot;evidence&quot;: [
+        &quot;weekly 22.0% (increase)&quot;,
+        &quot;monthly 22.0% (increase)&quot;,
+        &quot;triggered_rules=[&#x27;weekly_increase&#x27;, &#x27;monthly_increase&#x27;]&quot;
+      ],
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-919d9422c16d786b70a2&quot;
+      ],
+      &quot;details&quot;: {
+        &quot;price_analysis&quot;: {
+          &quot;ingredient&quot;: &quot;계란&quot;,
+          &quot;current_price&quot;: 6100.0,
+          &quot;reference_price&quot;: 5000.0,
+          &quot;unit&quot;: &quot;kg&quot;,
+          &quot;price_change_pct&quot;: 22.0,
+          &quot;weekly_direction&quot;: &quot;increase&quot;,
+          &quot;direction&quot;: &quot;increase&quot;,
+          &quot;long_term_change_pct&quot;: 22.0,
+          &quot;outside_monthly_range&quot;: true,
+          &quot;seasonal_assessment&quot;: &quot;outside_historical_same_month_range&quot;,
+          &quot;monthly_direction&quot;: &quot;increase&quot;,
+          &quot;triggered_rules&quot;: [
+            &quot;weekly_increase&quot;,
+            &quot;monthly_increase&quot;
+          ],
+          &quot;is_alert&quot;: true,
+          &quot;requires_impact_analysis&quot;: true,
+          &quot;severity&quot;: &quot;HIGH&quot;
+        }
+      }
+    },
+    {
+      &quot;type&quot;: &quot;supply_risk&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;계란 공급 위험&quot;,
+      &quot;evidence&quot;: [
+        &quot;조류인플루엔자 영향에 따른 공급 위험 DEMO&quot;,
+        &quot;period=2026-09-18..2026-09-24&quot;,
+        &quot;inventory={&#x27;ingredient&#x27;: &#x27;계란&#x27;, &#x27;current_stock_g&#x27;: 4000.0, &#x27;usable_today_g&#x27;: 4000.0, &#x27;required_g&#x27;: 15000.0, &#x27;shortage_at_service_g&#x27;: 11000.0, &#x27;planned_order_g&#x27;: 1000.0, &#x27;uncovered_order_g&#x27;: 10000.0, &#x27;order_arrival_verified&#x27;: False}&quot;
+      ],
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;supply_risk&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;닭고기 공급 위험&quot;,
+      &quot;evidence&quot;: [
+        &quot;조류인플루엔자 영향에 따른 공급 위험 DEMO&quot;,
+        &quot;period=2026-09-18..2026-09-24&quot;,
+        &quot;inventory={&#x27;ingredient&#x27;: &#x27;닭고기&#x27;, &#x27;current_stock_g&#x27;: 6000.0, &#x27;usable_today_g&#x27;: 6000.0, &#x27;required_g&#x27;: 15000.0, &#x27;shortage_at_service_g&#x27;: 9000.0, &#x27;planned_order_g&#x27;: 1000.0, &#x27;uncovered_order_g&#x27;: 8000.0, &#x27;order_arrival_verified&#x27;: False}&quot;
+      ],
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;candidate_id&quot;: null,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;nutrition_violation&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;버섯볶음 영양 검증 FAIL&quot;,
+      &quot;evidence&quot;: [
+        &quot;minimum_protein&quot;,
+        &quot;kcal_range&quot;,
+        &quot;protein_similarity&quot;,
+        &quot;kcal_similarity&quot;
+      ],
+      &quot;ingredient&quot;: null,
+      &quot;candidate_id&quot;: &quot;candidate-cd3f4e8120f04600183b&quot;,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;nutrition_violation&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;짜게조린두부 영양 검증 FAIL&quot;,
+      &quot;evidence&quot;: [
+        &quot;sodium_limit&quot;
+      ],
+      &quot;ingredient&quot;: null,
+      &quot;candidate_id&quot;: &quot;candidate-00c335412dbadc4b3f52&quot;,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;nutrition_violation&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;버섯볶음 영양 검증 FAIL&quot;,
+      &quot;evidence&quot;: [
+        &quot;minimum_protein&quot;,
+        &quot;kcal_range&quot;,
+        &quot;protein_similarity&quot;,
+        &quot;kcal_similarity&quot;
+      ],
+      &quot;ingredient&quot;: null,
+      &quot;candidate_id&quot;: &quot;candidate-035ec9274418c888e198&quot;,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;details&quot;: {}
+    },
+    {
+      &quot;type&quot;: &quot;nutrition_violation&quot;,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;message&quot;: &quot;짜게조린두부 영양 검증 FAIL&quot;,
+      &quot;evidence&quot;: [
+        &quot;sodium_limit&quot;
+      ],
+      &quot;ingredient&quot;: null,
+      &quot;candidate_id&quot;: &quot;candidate-88e84e1a8f3e992f8f2f&quot;,
+      &quot;candidate_action&quot;: null,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;details&quot;: {}
+    }
+  ],
+  &quot;price_risks&quot;: [
+    {
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;current_price&quot;: 6100.0,
+      &quot;reference_price&quot;: 5000.0,
+      &quot;unit&quot;: &quot;kg&quot;,
+      &quot;price_change_pct&quot;: 22.0,
+      &quot;weekly_direction&quot;: &quot;increase&quot;,
+      &quot;direction&quot;: &quot;increase&quot;,
+      &quot;long_term_change_pct&quot;: 22.0,
+      &quot;outside_monthly_range&quot;: true,
+      &quot;seasonal_assessment&quot;: &quot;outside_historical_same_month_range&quot;,
+      &quot;monthly_direction&quot;: &quot;increase&quot;,
+      &quot;triggered_rules&quot;: [
+        &quot;weekly_increase&quot;,
+        &quot;monthly_increase&quot;
+      ],
+      &quot;is_alert&quot;: true,
+      &quot;requires_impact_analysis&quot;: true,
+      &quot;severity&quot;: &quot;HIGH&quot;
+    }
+  ],
+  &quot;supply_risks&quot;: [
+    {
+      &quot;event_type&quot;: &quot;supply_risk&quot;,
+      &quot;event_id&quot;: &quot;event-c03f1bcb68ff2bcd2d9b&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;end_date&quot;: &quot;2026-09-24&quot;,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;조류인플루엔자 영향에 따른 공급 위험 DEMO&quot;,
+      &quot;source_type&quot;: &quot;simulation&quot;,
+      &quot;needs_clarification&quot;: false,
+      &quot;inventory_context&quot;: {
+        &quot;ingredient&quot;: &quot;계란&quot;,
+        &quot;current_stock_g&quot;: 4000.0,
+        &quot;usable_today_g&quot;: 4000.0,
+        &quot;required_g&quot;: 15000.0,
+        &quot;shortage_at_service_g&quot;: 11000.0,
+        &quot;planned_order_g&quot;: 1000.0,
+        &quot;uncovered_order_g&quot;: 10000.0,
+        &quot;order_arrival_verified&quot;: false
+      }
+    },
+    {
+      &quot;event_type&quot;: &quot;supply_risk&quot;,
+      &quot;event_id&quot;: &quot;event-ded6a1cc926a534e56fd&quot;,
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;end_date&quot;: &quot;2026-09-24&quot;,
+      &quot;restriction&quot;: null,
+      &quot;attendance_delta&quot;: null,
+      &quot;severity&quot;: &quot;HIGH&quot;,
+      &quot;description&quot;: &quot;조류인플루엔자 영향에 따른 공급 위험 DEMO&quot;,
+      &quot;source_type&quot;: &quot;simulation&quot;,
+      &quot;needs_clarification&quot;: false,
+      &quot;inventory_context&quot;: {
+        &quot;ingredient&quot;: &quot;닭고기&quot;,
+        &quot;current_stock_g&quot;: 6000.0,
+        &quot;usable_today_g&quot;: 6000.0,
+        &quot;required_g&quot;: 15000.0,
+        &quot;shortage_at_service_g&quot;: 9000.0,
+        &quot;planned_order_g&quot;: 1000.0,
+        &quot;uncovered_order_g&quot;: 8000.0,
+        &quot;order_arrival_verified&quot;: false
+      }
+    }
+  ],
+  &quot;affected_menus&quot;: [
+    {
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;menu_name&quot;: &quot;두부조림&quot;,
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;affected_ingredient&quot;: &quot;두부&quot;,
+      &quot;cause&quot;: &quot;inventory_expiry_event&quot;,
+      &quot;cause_event_id&quot;: &quot;event-5c08996f9b70ea138c16&quot;,
+      &quot;lot_id&quot;: &quot;lot-73839946edffbbbd08ba&quot;,
+      &quot;expiry_date&quot;: &quot;2026-09-18&quot;,
+      &quot;expired_before_service&quot;: false
+    },
+    {
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;menu_name&quot;: &quot;계란찜&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;affected_ingredient&quot;: &quot;계란&quot;,
+      &quot;cause&quot;: &quot;inventory_shortage_event&quot;,
+      &quot;cause_event_id&quot;: &quot;event-1d283aad08c64ca6cd97&quot;,
+      &quot;shortage_g&quot;: 3000.0
+    },
+    {
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;menu_name&quot;: &quot;계란말이&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;affected_ingredient&quot;: &quot;계란&quot;,
+      &quot;cause&quot;: &quot;inventory_shortage_event&quot;,
+      &quot;cause_event_id&quot;: &quot;event-6641afce70ce71913ce5&quot;,
+      &quot;shortage_g&quot;: 8000.0
+    },
+    {
+      &quot;date&quot;: &quot;2026-09-24&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;menu_name&quot;: &quot;닭갈비&quot;,
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;affected_ingredient&quot;: &quot;닭고기&quot;,
+      &quot;cause&quot;: &quot;inventory_shortage_event&quot;,
+      &quot;cause_event_id&quot;: &quot;event-9b29d19c53fe8171446c&quot;,
+      &quot;shortage_g&quot;: 9000.0
+    },
+    {
+      &quot;affected_ingredient&quot;: &quot;계란&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;menu_name&quot;: &quot;계란찜&quot;,
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;cause&quot;: &quot;price_event&quot;,
+      &quot;cause_event_id&quot;: &quot;event-919d9422c16d786b70a2&quot;
+    },
+    {
+      &quot;affected_ingredient&quot;: &quot;계란&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;menu_name&quot;: &quot;계란말이&quot;,
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;cause&quot;: &quot;price_event&quot;,
+      &quot;cause_event_id&quot;: &quot;event-919d9422c16d786b70a2&quot;
+    },
+    {
+      &quot;affected_ingredient&quot;: &quot;계란&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;menu_name&quot;: &quot;계란찜&quot;,
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;cause&quot;: &quot;supply_risk&quot;,
+      &quot;cause_event_id&quot;: &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+    },
+    {
+      &quot;affected_ingredient&quot;: &quot;계란&quot;,
+      &quot;ingredient&quot;: &quot;계란&quot;,
+      &quot;menu_name&quot;: &quot;계란말이&quot;,
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;cause&quot;: &quot;supply_risk&quot;,
+      &quot;cause_event_id&quot;: &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+    },
+    {
+      &quot;affected_ingredient&quot;: &quot;닭고기&quot;,
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;menu_name&quot;: &quot;닭갈비&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;meal_type&quot;: &quot;dinner&quot;,
+      &quot;cause&quot;: &quot;supply_risk&quot;,
+      &quot;cause_event_id&quot;: &quot;event-ded6a1cc926a534e56fd&quot;
+    },
+    {
+      &quot;affected_ingredient&quot;: &quot;닭고기&quot;,
+      &quot;ingredient&quot;: &quot;닭고기&quot;,
+      &quot;menu_name&quot;: &quot;닭갈비&quot;,
+      &quot;date&quot;: &quot;2026-09-24&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;cause&quot;: &quot;supply_risk&quot;,
+      &quot;cause_event_id&quot;: &quot;event-ded6a1cc926a534e56fd&quot;
+    }
+  ],
+  &quot;affected_ingredients&quot;: [
+    &quot;간장&quot;,
+    &quot;계란&quot;,
+    &quot;닭고기&quot;,
+    &quot;돼지고기&quot;,
+    &quot;두부&quot;,
+    &quot;버섯&quot;,
+    &quot;소고기&quot;,
+    &quot;소금&quot;,
+    &quot;양배추&quot;,
+    &quot;양파&quot;
+  ],
+  &quot;substitute_candidates&quot;: [
+    {
+      &quot;candidate_id&quot;: &quot;candidate-e9157fb9e1038dff4c8b&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;계란찜&quot;,
+      &quot;candidate_menu&quot;: &quot;두부조림&quot;,
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;PASS&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;lower&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: true,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-cd3f4e8120f04600183b&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;계란찜&quot;,
+      &quot;candidate_menu&quot;: &quot;버섯볶음&quot;,
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;FAIL&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;lower&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: false,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-00c335412dbadc4b3f52&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;계란찜&quot;,
+      &quot;candidate_menu&quot;: &quot;짜게조린두부&quot;,
+      &quot;date&quot;: &quot;2026-09-21&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;FAIL&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;lower&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: false,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-2194a4ebf66f683a2acd&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;계란말이&quot;,
+      &quot;candidate_menu&quot;: &quot;두부조림&quot;,
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;PASS&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;lower&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: true,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-035ec9274418c888e198&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;계란말이&quot;,
+      &quot;candidate_menu&quot;: &quot;버섯볶음&quot;,
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;FAIL&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;lower&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: false,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-88e84e1a8f3e992f8f2f&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;계란말이&quot;,
+      &quot;candidate_menu&quot;: &quot;짜게조린두부&quot;,
+      &quot;date&quot;: &quot;2026-09-23&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;FAIL&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;lower&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: false,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-e2f70dd4ce19993efebb&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;,
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;닭갈비&quot;,
+      &quot;candidate_menu&quot;: &quot;제육볶음&quot;,
+      &quot;date&quot;: &quot;2026-09-24&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;PASS&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;higher&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: true,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-ef864023fb14f57790f0&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;,
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;닭갈비&quot;,
+      &quot;candidate_menu&quot;: &quot;소고기볶음&quot;,
+      &quot;date&quot;: &quot;2026-09-24&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;nutrition_check&quot;: &quot;PASS&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;higher&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: true,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-53a8db37216d1eeb2d79&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;닭갈비&quot;,
+      &quot;candidate_menu&quot;: &quot;제육볶음&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;meal_type&quot;: &quot;dinner&quot;,
+      &quot;nutrition_check&quot;: &quot;PASS&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;higher&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: true,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-1f82a0f626e834e5fb2a&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;kind&quot;: &quot;menu_substitution&quot;,
+      &quot;original_menu&quot;: &quot;닭갈비&quot;,
+      &quot;candidate_menu&quot;: &quot;소고기볶음&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;meal_type&quot;: &quot;dinner&quot;,
+      &quot;nutrition_check&quot;: &quot;PASS&quot;,
+      &quot;inventory_available&quot;: true,
+      &quot;shortages_g&quot;: {},
+      &quot;allocation_scope&quot;: &quot;independent option after reserving all other scheduled menus&quot;,
+      &quot;price_effect&quot;: &quot;higher&quot;,
+      &quot;supply_risks&quot;: [],
+      &quot;price_risks&quot;: [],
+      &quot;eligible_for_review&quot;: true,
+      &quot;reason&quot;: &quot;동일 메뉴 분류의 독립 후보; 영양·알레르기·재고 검증 결과 확인&quot;,
+      &quot;requires_approval&quot;: true
+    }
+  ],
+  &quot;priority_use_candidates&quot;: [
+    {
+      &quot;candidate_id&quot;: &quot;priority-c6ea701fb9b444a6a516&quot;,
+      &quot;kind&quot;: &quot;priority_inventory_use&quot;,
+      &quot;date&quot;: &quot;2026-09-18&quot;,
+      &quot;meal_type&quot;: &quot;lunch&quot;,
+      &quot;menu_name&quot;: &quot;두부조림&quot;,
+      &quot;ingredient&quot;: &quot;두부&quot;,
+      &quot;affected_ingredient&quot;: &quot;두부&quot;,
+      &quot;lot_id&quot;: &quot;lot-73839946edffbbbd08ba&quot;,
+      &quot;expiry_date&quot;: &quot;2026-09-18&quot;,
+      &quot;quantity_g&quot;: 8000.0,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-5c08996f9b70ea138c16&quot;
+      ],
+      &quot;requires_approval&quot;: true,
+      &quot;reason&quot;: &quot;기존 식단의 FEFO 배분량 내 임박 재고 우선 사용 검토; 자동 적용 없음&quot;
+    }
+  ],
+  &quot;nutrition_results&quot;: [
+    {
+      &quot;candidate_id&quot;: &quot;candidate-e9157fb9e1038dff4c8b&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;violations&quot;: [],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 104.1,
+          &quot;protein&quot;: 8.93,
+          &quot;carbohydrate&quot;: 1.42,
+          &quot;fat&quot;: 6.66,
+          &quot;sodium&quot;: 99.8
+        },
+        &quot;serving_g&quot;: 80.0,
+        &quot;allergens&quot;: [
+          &quot;계란&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 77.59,
+          &quot;protein&quot;: 8.24,
+          &quot;carbohydrate&quot;: 2.55,
+          &quot;fat&quot;: 4.0,
+          &quot;sodium&quot;: 171.4
+        },
+        &quot;serving_g&quot;: 83.0,
+        &quot;allergens&quot;: [
+          &quot;대두&quot;,
+          &quot;밀&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: -26.51,
+        &quot;protein&quot;: -0.69,
+        &quot;carbohydrate&quot;: 1.13,
+        &quot;fat&quot;: -2.66,
+        &quot;sodium&quot;: 71.6
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-cd3f4e8120f04600183b&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;status&quot;: &quot;FAIL&quot;,
+      &quot;violations&quot;: [
+        &quot;minimum_protein&quot;,
+        &quot;kcal_range&quot;,
+        &quot;protein_similarity&quot;,
+        &quot;kcal_similarity&quot;
+      ],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 104.1,
+          &quot;protein&quot;: 8.93,
+          &quot;carbohydrate&quot;: 1.42,
+          &quot;fat&quot;: 6.66,
+          &quot;sodium&quot;: 99.8
+        },
+        &quot;serving_g&quot;: 80.0,
+        &quot;allergens&quot;: [
+          &quot;계란&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 17.6,
+          &quot;protein&quot;: 2.48,
+          &quot;carbohydrate&quot;: 2.64,
+          &quot;fat&quot;: 0.24,
+          &quot;sodium&quot;: 4.0
+        },
+        &quot;serving_g&quot;: 80.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: -86.5,
+        &quot;protein&quot;: -6.45,
+        &quot;carbohydrate&quot;: 1.22,
+        &quot;fat&quot;: -6.42,
+        &quot;sodium&quot;: -95.8
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-00c335412dbadc4b3f52&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;status&quot;: &quot;FAIL&quot;,
+      &quot;violations&quot;: [
+        &quot;sodium_limit&quot;
+      ],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 104.1,
+          &quot;protein&quot;: 8.93,
+          &quot;carbohydrate&quot;: 1.42,
+          &quot;fat&quot;: 6.66,
+          &quot;sodium&quot;: 99.8
+        },
+        &quot;serving_g&quot;: 80.0,
+        &quot;allergens&quot;: [
+          &quot;계란&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 86.6,
+          &quot;protein&quot;: 9.6,
+          &quot;carbohydrate&quot;: 3.4,
+          &quot;fat&quot;: 4.0,
+          &quot;sodium&quot;: 1106.4
+        },
+        &quot;serving_g&quot;: 100.0,
+        &quot;allergens&quot;: [
+          &quot;대두&quot;,
+          &quot;밀&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: -17.5,
+        &quot;protein&quot;: 0.67,
+        &quot;carbohydrate&quot;: 1.98,
+        &quot;fat&quot;: -2.66,
+        &quot;sodium&quot;: 1006.6
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-2194a4ebf66f683a2acd&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;violations&quot;: [],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 118.4,
+          &quot;protein&quot;: 10.19,
+          &quot;carbohydrate&quot;: 1.49,
+          &quot;fat&quot;: 7.61,
+          &quot;sodium&quot;: 114.0
+        },
+        &quot;serving_g&quot;: 90.0,
+        &quot;allergens&quot;: [
+          &quot;계란&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 77.59,
+          &quot;protein&quot;: 8.24,
+          &quot;carbohydrate&quot;: 2.55,
+          &quot;fat&quot;: 4.0,
+          &quot;sodium&quot;: 171.4
+        },
+        &quot;serving_g&quot;: 83.0,
+        &quot;allergens&quot;: [
+          &quot;대두&quot;,
+          &quot;밀&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: -40.81,
+        &quot;protein&quot;: -1.95,
+        &quot;carbohydrate&quot;: 1.06,
+        &quot;fat&quot;: -3.61,
+        &quot;sodium&quot;: 57.4
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-035ec9274418c888e198&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;status&quot;: &quot;FAIL&quot;,
+      &quot;violations&quot;: [
+        &quot;minimum_protein&quot;,
+        &quot;kcal_range&quot;,
+        &quot;protein_similarity&quot;,
+        &quot;kcal_similarity&quot;
+      ],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 118.4,
+          &quot;protein&quot;: 10.19,
+          &quot;carbohydrate&quot;: 1.49,
+          &quot;fat&quot;: 7.61,
+          &quot;sodium&quot;: 114.0
+        },
+        &quot;serving_g&quot;: 90.0,
+        &quot;allergens&quot;: [
+          &quot;계란&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 17.6,
+          &quot;protein&quot;: 2.48,
+          &quot;carbohydrate&quot;: 2.64,
+          &quot;fat&quot;: 0.24,
+          &quot;sodium&quot;: 4.0
+        },
+        &quot;serving_g&quot;: 80.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: -100.8,
+        &quot;protein&quot;: -7.71,
+        &quot;carbohydrate&quot;: 1.15,
+        &quot;fat&quot;: -7.37,
+        &quot;sodium&quot;: -110.0
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-88e84e1a8f3e992f8f2f&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;status&quot;: &quot;FAIL&quot;,
+      &quot;violations&quot;: [
+        &quot;sodium_limit&quot;
+      ],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 118.4,
+          &quot;protein&quot;: 10.19,
+          &quot;carbohydrate&quot;: 1.49,
+          &quot;fat&quot;: 7.61,
+          &quot;sodium&quot;: 114.0
+        },
+        &quot;serving_g&quot;: 90.0,
+        &quot;allergens&quot;: [
+          &quot;계란&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 86.6,
+          &quot;protein&quot;: 9.6,
+          &quot;carbohydrate&quot;: 3.4,
+          &quot;fat&quot;: 4.0,
+          &quot;sodium&quot;: 1106.4
+        },
+        &quot;serving_g&quot;: 100.0,
+        &quot;allergens&quot;: [
+          &quot;대두&quot;,
+          &quot;밀&quot;
+        ],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: -31.8,
+        &quot;protein&quot;: -0.59,
+        &quot;carbohydrate&quot;: 1.91,
+        &quot;fat&quot;: -3.61,
+        &quot;sodium&quot;: 992.4
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-e2f70dd4ce19993efebb&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;,
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;violations&quot;: [],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 172.5,
+          &quot;protein&quot;: 31.39,
+          &quot;carbohydrate&quot;: 1.74,
+          &quot;fat&quot;: 3.63,
+          &quot;sodium&quot;: 79.4
+        },
+        &quot;serving_g&quot;: 130.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 212.0,
+          &quot;protein&quot;: 32.62,
+          &quot;carbohydrate&quot;: 1.86,
+          &quot;fat&quot;: 8.42,
+          &quot;sodium&quot;: 72.8
+        },
+        &quot;serving_g&quot;: 140.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: 39.5,
+        &quot;protein&quot;: 1.23,
+        &quot;carbohydrate&quot;: 0.12,
+        &quot;fat&quot;: 4.79,
+        &quot;sodium&quot;: -6.6
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-ef864023fb14f57790f0&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;,
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;violations&quot;: [],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 172.5,
+          &quot;protein&quot;: 31.39,
+          &quot;carbohydrate&quot;: 1.74,
+          &quot;fat&quot;: 3.63,
+          &quot;sodium&quot;: 79.4
+        },
+        &quot;serving_g&quot;: 130.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 248.0,
+          &quot;protein&quot;: 31.42,
+          &quot;carbohydrate&quot;: 1.86,
+          &quot;fat&quot;: 12.02,
+          &quot;sodium&quot;: 84.8
+        },
+        &quot;serving_g&quot;: 140.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: 75.5,
+        &quot;protein&quot;: 0.03,
+        &quot;carbohydrate&quot;: 0.12,
+        &quot;fat&quot;: 8.39,
+        &quot;sodium&quot;: 5.4
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-53a8db37216d1eeb2d79&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;violations&quot;: [],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 172.5,
+          &quot;protein&quot;: 31.39,
+          &quot;carbohydrate&quot;: 1.74,
+          &quot;fat&quot;: 3.63,
+          &quot;sodium&quot;: 79.4
+        },
+        &quot;serving_g&quot;: 130.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 212.0,
+          &quot;protein&quot;: 32.62,
+          &quot;carbohydrate&quot;: 1.86,
+          &quot;fat&quot;: 8.42,
+          &quot;sodium&quot;: 72.8
+        },
+        &quot;serving_g&quot;: 140.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: 39.5,
+        &quot;protein&quot;: 1.23,
+        &quot;carbohydrate&quot;: 0.12,
+        &quot;fat&quot;: 4.79,
+        &quot;sodium&quot;: -6.6
+      }
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-1f82a0f626e834e5fb2a&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;status&quot;: &quot;PASS&quot;,
+      &quot;violations&quot;: [],
+      &quot;original&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 172.5,
+          &quot;protein&quot;: 31.39,
+          &quot;carbohydrate&quot;: 1.74,
+          &quot;fat&quot;: 3.63,
+          &quot;sodium&quot;: 79.4
+        },
+        &quot;serving_g&quot;: 130.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;candidate&quot;: {
+        &quot;totals&quot;: {
+          &quot;kcal&quot;: 248.0,
+          &quot;protein&quot;: 31.42,
+          &quot;carbohydrate&quot;: 1.86,
+          &quot;fat&quot;: 12.02,
+          &quot;sodium&quot;: 84.8
+        },
+        &quot;serving_g&quot;: 140.0,
+        &quot;allergens&quot;: [],
+        &quot;missing&quot;: []
+      },
+      &quot;delta&quot;: {
+        &quot;kcal&quot;: 75.5,
+        &quot;protein&quot;: 0.03,
+        &quot;carbohydrate&quot;: 0.12,
+        &quot;fat&quot;: 8.39,
+        &quot;sodium&quot;: 5.4
+      }
+    }
+  ],
+  &quot;cost_impacts&quot;: [
+    {
+      &quot;candidate_id&quot;: &quot;candidate-e9157fb9e1038dff4c8b&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 447.0,
+      &quot;candidate_per_serving&quot;: 252.0,
+      &quot;delta_per_serving&quot;: -195.0,
+      &quot;delta_total&quot;: -19500.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-cd3f4e8120f04600183b&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 447.0,
+      &quot;candidate_per_serving&quot;: 400.0,
+      &quot;delta_per_serving&quot;: -47.0,
+      &quot;delta_total&quot;: -4700.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-00c335412dbadc4b3f52&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-1d283aad08c64ca6cd97&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 447.0,
+      &quot;candidate_per_serving&quot;: 320.0,
+      &quot;delta_per_serving&quot;: -127.0,
+      &quot;delta_total&quot;: -12700.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-2194a4ebf66f683a2acd&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 508.0,
+      &quot;candidate_per_serving&quot;: 252.0,
+      &quot;delta_per_serving&quot;: -256.0,
+      &quot;delta_total&quot;: -25600.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-035ec9274418c888e198&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 508.0,
+      &quot;candidate_per_serving&quot;: 400.0,
+      &quot;delta_per_serving&quot;: -108.0,
+      &quot;delta_total&quot;: -10800.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-88e84e1a8f3e992f8f2f&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-6641afce70ce71913ce5&quot;,
+        &quot;event-919d9422c16d786b70a2&quot;,
+        &quot;event-c03f1bcb68ff2bcd2d9b&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 508.0,
+      &quot;candidate_per_serving&quot;: 320.0,
+      &quot;delta_per_serving&quot;: -188.0,
+      &quot;delta_total&quot;: -18800.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-e2f70dd4ce19993efebb&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;,
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 954.0,
+      &quot;candidate_per_serving&quot;: 1240.0,
+      &quot;delta_per_serving&quot;: 286.0,
+      &quot;delta_total&quot;: 28600.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-ef864023fb14f57790f0&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-9b29d19c53fe8171446c&quot;,
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 954.0,
+      &quot;candidate_per_serving&quot;: 3640.0,
+      &quot;delta_per_serving&quot;: 2686.0,
+      &quot;delta_total&quot;: 268600.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-53a8db37216d1eeb2d79&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 954.0,
+      &quot;candidate_per_serving&quot;: 1240.0,
+      &quot;delta_per_serving&quot;: 286.0,
+      &quot;delta_total&quot;: 14300.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    },
+    {
+      &quot;candidate_id&quot;: &quot;candidate-1f82a0f626e834e5fb2a&quot;,
+      &quot;cause_event_ids&quot;: [
+        &quot;event-ded6a1cc926a534e56fd&quot;
+      ],
+      &quot;currency&quot;: &quot;KRW&quot;,
+      &quot;original_per_serving&quot;: 954.0,
+      &quot;candidate_per_serving&quot;: 3640.0,
+      &quot;delta_per_serving&quot;: 2686.0,
+      &quot;delta_total&quot;: 134300.0,
+      &quot;basis&quot;: &quot;current price estimate; excludes labor, waste and delivery; not an order&quot;
+    }
+  ],
+  &quot;recommended_rechecks&quot;: [
+    &quot;demand_forecast&quot;,
+    &quot;operation_agent&quot;
+  ],
+  &quot;decision_trace&quot;: [
+    &quot;Event Parser: mode=full, 1 events; selected=[&#x27;inventory_analyzer&#x27;, &#x27;price_risk_analyzer&#x27;, &#x27;supply_risk_analyzer&#x27;, &#x27;impact_analyzer&#x27;, &#x27;substitute_candidate_generator&#x27;, &#x27;nutrition_constraint_checker&#x27;]&quot;,
+    &quot;Inventory Analyzer: 10 ingredients; 4 impacts; 1 priority-use candidates&quot;,
+    &quot;Inventory: 간장 current=5000.0g, required=300.0g, service shortage=0.0g, planned=0.0g&quot;,
+    &quot;Inventory: 계란 current=4000.0g, required=15000.0g, service shortage=11000.0g, planned=1000.0g&quot;,
+    &quot;Inventory: 닭고기 current=6000.0g, required=15000.0g, service shortage=9000.0g, planned=1000.0g&quot;,
+    &quot;Inventory: 돼지고기 current=40000.0g, required=0g, service shortage=0g, planned=0.0g&quot;,
+    &quot;Inventory: 두부 current=38000.0g, required=8000.0g, service shortage=0.0g, planned=8000.0g&quot;,
+    &quot;Inventory: 버섯 current=10000.0g, required=0g, service shortage=0g, planned=0.0g&quot;,
+    &quot;Inventory: 소고기 current=30000.0g, required=0g, service shortage=0g, planned=0.0g&quot;,
+    &quot;Inventory: 소금 current=5000.0g, required=0g, service shortage=0g, planned=0.0g&quot;,
+    &quot;Inventory: 양배추 current=10000.0g, required=4500.0g, service shortage=0.0g, planned=0.0g&quot;,
+    &quot;Inventory: 양파 current=10000.0g, required=2000.0g, service shortage=0.0g, planned=0.0g&quot;,
+    &quot;Price Risk Analyzer: 계란 weekly=22.0%, monthly=22.0%, rules=[&#x27;weekly_increase&#x27;, &#x27;monthly_increase&#x27;]&quot;,
+    &quot;Supply Risk Analyzer: 2 observations, 2 unique active events&quot;,
+    &quot;Impact Analyzer: event-5c08996f9b70ea138c16 -&gt; 2026-09-18 두부조림/두부 (inventory_expiry_event)&quot;,
+    &quot;Impact Analyzer: event-1d283aad08c64ca6cd97 -&gt; 2026-09-21 계란찜/계란 (inventory_shortage_event)&quot;,
+    &quot;Impact Analyzer: event-6641afce70ce71913ce5 -&gt; 2026-09-23 계란말이/계란 (inventory_shortage_event)&quot;,
+    &quot;Impact Analyzer: event-9b29d19c53fe8171446c -&gt; 2026-09-24 닭갈비/닭고기 (inventory_shortage_event)&quot;,
+    &quot;Impact Analyzer: event-919d9422c16d786b70a2 -&gt; 2026-09-21 계란찜/계란 (price_event)&quot;,
+    &quot;Impact Analyzer: event-919d9422c16d786b70a2 -&gt; 2026-09-23 계란말이/계란 (price_event)&quot;,
+    &quot;Impact Analyzer: event-c03f1bcb68ff2bcd2d9b -&gt; 2026-09-21 계란찜/계란 (supply_risk)&quot;,
+    &quot;Impact Analyzer: event-c03f1bcb68ff2bcd2d9b -&gt; 2026-09-23 계란말이/계란 (supply_risk)&quot;,
+    &quot;Impact Analyzer: event-ded6a1cc926a534e56fd -&gt; 2026-09-18 닭갈비/닭고기 (supply_risk)&quot;,
+    &quot;Impact Analyzer: event-ded6a1cc926a534e56fd -&gt; 2026-09-24 닭갈비/닭고기 (supply_risk)&quot;,
+    &quot;Substitute Candidate Generator: 10 independent alternatives; cause IDs retained&quot;,
+    &quot;Nutrition Constraint Checker: candidate-e9157fb9e1038dff4c8b PASS []&quot;,
+    &quot;Nutrition Constraint Checker: candidate-cd3f4e8120f04600183b FAIL [&#x27;minimum_protein&#x27;, &#x27;kcal_range&#x27;, &#x27;protein_similarity&#x27;, &#x27;kcal_similarity&#x27;]&quot;,
+    &quot;Nutrition Constraint Checker: candidate-00c335412dbadc4b3f52 FAIL [&#x27;sodium_limit&#x27;]&quot;,
+    &quot;Nutrition Constraint Checker: candidate-2194a4ebf66f683a2acd PASS []&quot;,
+    &quot;Nutrition Constraint Checker: candidate-035ec9274418c888e198 FAIL [&#x27;minimum_protein&#x27;, &#x27;kcal_range&#x27;, &#x27;protein_similarity&#x27;, &#x27;kcal_similarity&#x27;]&quot;,
+    &quot;Nutrition Constraint Checker: candidate-88e84e1a8f3e992f8f2f FAIL [&#x27;sodium_limit&#x27;]&quot;,
+    &quot;Nutrition Constraint Checker: candidate-e2f70dd4ce19993efebb PASS []&quot;,
+    &quot;Nutrition Constraint Checker: candidate-ef864023fb14f57790f0 PASS []&quot;,
+    &quot;Nutrition Constraint Checker: candidate-53a8db37216d1eeb2d79 PASS []&quot;,
+    &quot;Nutrition Constraint Checker: candidate-1f82a0f626e834e5fb2a PASS []&quot;,
+    &quot;Candidate cost: candidate-e9157fb9e1038dff4c8b delta=-195.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-cd3f4e8120f04600183b delta=-47.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-00c335412dbadc4b3f52 delta=-127.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-2194a4ebf66f683a2acd delta=-256.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-035ec9274418c888e198 delta=-108.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-88e84e1a8f3e992f8f2f delta=-188.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-e2f70dd4ce19993efebb delta=286.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-ef864023fb14f57790f0 delta=2686.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-53a8db37216d1eeb2d79 delta=286.0 KRW/serving&quot;,
+    &quot;Candidate cost: candidate-1f82a0f626e834e5fb2a delta=2686.0 KRW/serving&quot;,
+    &quot;Risk Report Builder: 10 menu alternatives, 1 priority-use candidates; approval required&quot;
+  ],
+  &quot;data_sources&quot;: {
+    &quot;recipe&quot;: &quot;DEMO:demo_recipe_ingredients.csv&quot;,
+    &quot;nutrition&quot;: &quot;DEMO:demo_nutrition.csv&quot;,
+    &quot;price_trend&quot;: &quot;DEMO:demo_price_trend.csv&quot;,
+    &quot;monthly_price&quot;: &quot;DEMO:demo_monthly_price.csv&quot;,
+    &quot;inventory&quot;: &quot;DEMO:food_inventory.xlsx&quot;,
+    &quot;supply_risk&quot;: &quot;DEMO/SIMULATION:demo_risk_events.csv&quot;,
+    &quot;weekly_menu&quot;: &quot;DEMO:weekly_menu.xlsx&quot;,
+    &quot;constraints&quot;: &quot;DEMO configurable dish-level thresholds&quot;
+  },
+  &quot;limitations&quot;: [
+    &quot;DEMO dish-level constraints, not official institutional standards or whole-meal validation.&quot;,
+    &quot;Independent candidates require reallocation before joint selection. No automatic operational action.&quot;,
+    &quot;Planned orders are not available stock; arrival dates are unknown.&quot;,
+    &quot;Declared allergen exclusions only; missing nutrition/allergens cannot PASS.&quot;,
+    &quot;Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.&quot;,
+    &quot;Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID.&quot;
+  ]
+}</pre></details></section></main></html>

@@ -1,0 +1,10 @@
+{
+  "all_6_validation_mae_recomputed_from_saved_predictions": true,
+  "same_181_validation_dates_for_all_candidates": true,
+  "test_mae_recomputed_from_181_saved_predictions": true,
+  "test_dates_strictly_after_validation": true,
+  "deployed_model_checksum_and_metadata_match": true,
+  "operational_history_rows": 0,
+  "pytest_passed": 31,
+  "python_source_compilation": "passed"
+}

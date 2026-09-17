@@ -1,0 +1,29 @@
+{
+  "demand": {
+    "existing_files": 267,
+    "changed": [],
+    "added": []
+  },
+  "operation": {
+    "existing_files": 49,
+    "changed": [],
+    "added": []
+  },
+  "inventory_risk": {
+    "existing_files": 74,
+    "changed": [
+      "inventory_risk\\agents\\inventory_risk.py",
+      "inventory_risk\\graph\\inventory_risk_workflow.py",
+      "inventory_risk\\schemas\\risk_report.py",
+      "inventory_risk\\tools\\inventory.py"
+    ],
+    "added": [
+      "inventory_risk/tools/active_evidence.py"
+    ]
+  },
+  "decision": {
+    "existing_files": 104,
+    "changed": [],
+    "added": []
+  }
+}

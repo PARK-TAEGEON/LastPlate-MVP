@@ -1,0 +1,125 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "analysis_mode": {
+      "anyOf": [
+        {
+          "const": "full",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Analysis Mode"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "agent": {
+      "title": "Agent",
+      "type": "string"
+    },
+    "reason": {
+      "title": "Reason",
+      "type": "string"
+    },
+    "input_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Revision"
+    },
+    "source_agent": {
+      "default": "decision",
+      "title": "Source Agent",
+      "type": "string"
+    },
+    "source_result_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Result Revision"
+    },
+    "baseline_result_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Baseline Result Revision"
+    },
+    "result_revision": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Result Revision"
+    },
+    "status": {
+      "default": "pending",
+      "enum": [
+        "pending",
+        "completed",
+        "failed",
+        "stale"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "attempts": {
+      "default": 0,
+      "title": "Attempts",
+      "type": "integer"
+    },
+    "required_dependencies": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Required Dependencies",
+      "type": "object"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Error"
+    }
+  },
+  "required": [
+    "request_id",
+    "agent",
+    "reason"
+  ],
+  "title": "RecheckRequest",
+  "type": "object"
+}

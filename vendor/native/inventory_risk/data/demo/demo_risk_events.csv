@@ -1,0 +1,3 @@
+﻿date,end_date,event_type,ingredient,severity,description,source_type
+2026-09-18,2026-09-24,supply_risk,계란,HIGH,조류인플루엔자 영향에 따른 공급 위험 DEMO,simulation
+2026-09-18,2026-09-24,supply_risk,닭고기,HIGH,조류인플루엔자 영향에 따른 공급 위험 DEMO,simulation

@@ -1,0 +1,984 @@
+{
+  "$defs": {
+    "Amount": {
+      "additionalProperties": false,
+      "properties": {
+        "amount": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Amount",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "unit": {
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "amount",
+        "unit"
+      ],
+      "title": "Amount",
+      "type": "object"
+    },
+    "Applicability": {
+      "additionalProperties": false,
+      "description": "Proposed extension: no OOD schema exists in the inspected ML-v2 receipt.",
+      "properties": {
+        "status": {
+          "default": "UNKNOWN",
+          "enum": [
+            "IN_DOMAIN",
+            "OOD",
+            "NOT_APPLICABLE",
+            "UNKNOWN"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Reasons",
+          "type": "array"
+        }
+      },
+      "title": "Applicability",
+      "type": "object"
+    },
+    "ConstraintPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum_serving_amount": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Amount"
+          },
+          "title": "Minimum Serving Amount",
+          "type": "object"
+        },
+        "minimum_protein": {
+          "anyOf": [
+            {
+              "maximum": 1000000000,
+              "minimum": 0,
+              "multipleOf": 1e-06,
+              "type": "number",
+              "x-max-significant-digits": 15
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum Protein"
+        },
+        "calorie_range": {
+          "anyOf": [
+            {
+              "maxItems": 2,
+              "minItems": 2,
+              "prefixItems": [
+                {
+                  "maximum": 1000000000,
+                  "minimum": 0,
+                  "multipleOf": 1e-06,
+                  "type": "number",
+                  "x-max-significant-digits": 15
+                },
+                {
+                  "maximum": 1000000000,
+                  "minimum": 0,
+                  "multipleOf": 1e-06,
+                  "type": "number",
+                  "x-max-significant-digits": 15
+                }
+              ],
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calorie Range"
+        },
+        "sodium_max": {
+          "anyOf": [
+            {
+              "maximum": 1000000000,
+              "minimum": 0,
+              "multipleOf": 1e-06,
+              "type": "number",
+              "x-max-significant-digits": 15
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sodium Max"
+        },
+        "allergy_restriction": {
+          "anyOf": [
+            {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Allergy Restriction"
+        }
+      },
+      "title": "ConstraintPolicy",
+      "type": "object"
+    },
+    "DemandResult": {
+      "additionalProperties": false,
+      "properties": {
+        "prediction": {
+          "maximum": 1000000.0,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Prediction",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "prediction_interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PredictionInterval"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "model_version": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Model Version"
+        },
+        "input_snapshot_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Snapshot Id"
+        },
+        "applicability": {
+          "$ref": "#/$defs/Applicability"
+        },
+        "warnings": {
+          "items": {
+            "$ref": "#/$defs/DemandWarning"
+          },
+          "title": "Warnings",
+          "type": "array"
+        },
+        "operational_eligible": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operational Eligible"
+        },
+        "availability_status": {
+          "anyOf": [
+            {
+              "enum": [
+                "validated_declared_receipts",
+                "historical_unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Availability Status"
+        },
+        "prediction_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prediction Id"
+        },
+        "created_at": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Created At"
+        },
+        "target_date": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Target Date"
+        },
+        "deadline_at": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Deadline At"
+        },
+        "timezone": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Timezone"
+        },
+        "mode": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mode"
+        },
+        "input_data": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Input Data"
+        },
+        "availability": {
+          "$ref": "#/$defs/JsonValue",
+          "default": null
+        },
+        "weather": {
+          "$ref": "#/$defs/JsonValue",
+          "default": null
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Policy"
+        }
+      },
+      "required": [
+        "prediction"
+      ],
+      "title": "DemandResult",
+      "type": "object"
+    },
+    "DemandWarning": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "minLength": 1,
+          "title": "Code",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "OOD",
+            "NOT_APPLICABLE",
+            "EVIDENCE_UNKNOWN",
+            "OTHER"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "INFO",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "message": {
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "category",
+        "severity",
+        "message"
+      ],
+      "title": "DemandWarning",
+      "type": "object"
+    },
+    "EvidenceBundle": {
+      "additionalProperties": false,
+      "properties": {
+        "recipe": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "inventory": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "nutrition": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NutritionEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "policy": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/EvidenceRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "title": "EvidenceBundle",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "meal_id": {
+          "minLength": 1,
+          "title": "Meal Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "version",
+        "snapshot_id",
+        "meal_id"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "InventoryRow": {
+      "additionalProperties": false,
+      "properties": {
+        "ingredient": {
+          "minLength": 1,
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "stock": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Stock",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "unit": {
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ingredient",
+        "stock",
+        "unit"
+      ],
+      "title": "InventoryRow",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "Nutrition": {
+      "additionalProperties": false,
+      "properties": {
+        "protein": {
+          "anyOf": [
+            {
+              "maximum": 1000000000,
+              "minimum": 0,
+              "multipleOf": 1e-06,
+              "type": "number",
+              "x-max-significant-digits": 15
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Protein"
+        },
+        "calories": {
+          "anyOf": [
+            {
+              "maximum": 1000000000,
+              "minimum": 0,
+              "multipleOf": 1e-06,
+              "type": "number",
+              "x-max-significant-digits": 15
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Calories"
+        },
+        "sodium": {
+          "anyOf": [
+            {
+              "maximum": 1000000000,
+              "minimum": 0,
+              "multipleOf": 1e-06,
+              "type": "number",
+              "x-max-significant-digits": 15
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sodium"
+        },
+        "allergens": {
+          "anyOf": [
+            {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Allergens"
+        }
+      },
+      "title": "Nutrition",
+      "type": "object"
+    },
+    "NutritionEvidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "minLength": 1,
+          "title": "Source",
+          "type": "string"
+        },
+        "version": {
+          "minLength": 1,
+          "title": "Version",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "meal_id": {
+          "minLength": 1,
+          "title": "Meal Id",
+          "type": "string"
+        },
+        "recipe_version": {
+          "minLength": 1,
+          "title": "Recipe Version",
+          "type": "string"
+        },
+        "recipe_snapshot_id": {
+          "minLength": 1,
+          "title": "Recipe Snapshot Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source",
+        "version",
+        "snapshot_id",
+        "meal_id",
+        "recipe_version",
+        "recipe_snapshot_id"
+      ],
+      "title": "NutritionEvidence",
+      "type": "object"
+    },
+    "OperationPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_mode": {
+          "default": "simulation",
+          "enum": [
+            "simulation",
+            "operation"
+          ],
+          "title": "Execution Mode",
+          "type": "string"
+        },
+        "policy_acknowledged": {
+          "default": false,
+          "title": "Policy Acknowledged",
+          "type": "boolean"
+        },
+        "capacity_servings": {
+          "anyOf": [
+            {
+              "maximum": 1000000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Capacity Servings"
+        },
+        "maximum_input_servings": {
+          "default": 100000,
+          "maximum": 1000000,
+          "minimum": 1,
+          "title": "Maximum Input Servings",
+          "type": "integer"
+        },
+        "provenance": {
+          "$ref": "#/$defs/EvidenceBundle"
+        },
+        "rounding_policy": {
+          "default": "legacy_combined",
+          "enum": [
+            "legacy_combined",
+            "purchase_only",
+            "cooking_and_purchase"
+          ],
+          "title": "Rounding Policy",
+          "type": "string"
+        },
+        "cooking_quantum": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "maximum": 1000000.0,
+                "minimum": 0.001,
+                "multipleOf": 1e-06,
+                "type": "number",
+                "x-max-significant-digits": 15
+              },
+              "propertyNames": {
+                "enum": [
+                  "g",
+                  "ml",
+                  "ea"
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cooking Quantum"
+        },
+        "purchase_quantum": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "maximum": 1000000.0,
+                "minimum": 0.001,
+                "multipleOf": 1e-06,
+                "type": "number",
+                "x-max-significant-digits": 15
+              },
+              "propertyNames": {
+                "enum": [
+                  "g",
+                  "ml",
+                  "ea"
+                ]
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Purchase Quantum"
+        },
+        "fractional_ea_inventory": {
+          "default": false,
+          "title": "Fractional Ea Inventory",
+          "type": "boolean"
+        },
+        "safety_margin_pct": {
+          "default": 3,
+          "maximum": 100.0,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Safety Margin Pct",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "trim_loss_pct": {
+          "additionalProperties": {
+            "maximum": 99.0,
+            "minimum": 0,
+            "multipleOf": 1e-06,
+            "type": "number",
+            "x-max-significant-digits": 15
+          },
+          "title": "Trim Loss Pct",
+          "type": "object"
+        },
+        "minimum_servings": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Minimum Servings",
+          "type": "integer"
+        },
+        "shortage_policy": {
+          "default": "conservative",
+          "enum": [
+            "conservative",
+            "expected"
+          ],
+          "title": "Shortage Policy",
+          "type": "string"
+        },
+        "order_tolerance_pct": {
+          "default": 5,
+          "maximum": 100.0,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Order Tolerance Pct",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "quantity_quantum": {
+          "additionalProperties": {
+            "maximum": 1000000.0,
+            "minimum": 0.001,
+            "multipleOf": 1e-06,
+            "type": "number",
+            "x-max-significant-digits": 15
+          },
+          "deprecated": true,
+          "description": "legacy_combined only; new policies use cooking_quantum / purchase_quantum",
+          "propertyNames": {
+            "enum": [
+              "g",
+              "ml",
+              "ea"
+            ]
+          },
+          "title": "Quantity Quantum",
+          "type": "object"
+        },
+        "planned_servings": {
+          "anyOf": [
+            {
+              "maximum": 1000000,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Planned Servings"
+        },
+        "required_menus": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Required Menus",
+          "type": "array"
+        },
+        "constraints": {
+          "$ref": "#/$defs/ConstraintPolicy"
+        },
+        "nutrition_per_serving": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Nutrition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "data_mode": {
+          "default": "UNSPECIFIED",
+          "enum": [
+            "DEMO",
+            "REAL",
+            "UNSPECIFIED"
+          ],
+          "title": "Data Mode",
+          "type": "string"
+        }
+      },
+      "title": "OperationPolicy",
+      "type": "object"
+    },
+    "OrderRow": {
+      "additionalProperties": false,
+      "properties": {
+        "ingredient": {
+          "minLength": 1,
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "planned_order": {
+          "maximum": 1000000000,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Planned Order",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "unit": {
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "ingredient",
+        "planned_order",
+        "unit"
+      ],
+      "title": "OrderRow",
+      "type": "object"
+    },
+    "PredictionInterval": {
+      "additionalProperties": false,
+      "properties": {
+        "lower": {
+          "maximum": 1000000.0,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Lower",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "upper": {
+          "maximum": 1000000.0,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Upper",
+          "type": "number",
+          "x-max-significant-digits": 15
+        }
+      },
+      "required": [
+        "lower",
+        "upper"
+      ],
+      "title": "PredictionInterval",
+      "type": "object"
+    },
+    "RecipeRow": {
+      "additionalProperties": false,
+      "properties": {
+        "menu_name": {
+          "minLength": 1,
+          "title": "Menu Name",
+          "type": "string"
+        },
+        "ingredient": {
+          "minLength": 1,
+          "title": "Ingredient",
+          "type": "string"
+        },
+        "amount_per_serving": {
+          "exclusiveMinimum": 0.0,
+          "maximum": 1000000000,
+          "minimum": 0,
+          "multipleOf": 1e-06,
+          "title": "Amount Per Serving",
+          "type": "number",
+          "x-max-significant-digits": 15
+        },
+        "unit": {
+          "minLength": 1,
+          "title": "Unit",
+          "type": "string"
+        }
+      },
+      "required": [
+        "menu_name",
+        "ingredient",
+        "amount_per_serving",
+        "unit"
+      ],
+      "title": "RecipeRow",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "demand_result": {
+      "$ref": "#/$defs/DemandResult"
+    },
+    "recipe_data": {
+      "items": {
+        "$ref": "#/$defs/RecipeRow"
+      },
+      "title": "Recipe Data",
+      "type": "array"
+    },
+    "inventory_data": {
+      "items": {
+        "$ref": "#/$defs/InventoryRow"
+      },
+      "title": "Inventory Data",
+      "type": "array"
+    },
+    "planned_orders": {
+      "items": {
+        "$ref": "#/$defs/OrderRow"
+      },
+      "title": "Planned Orders",
+      "type": "array"
+    },
+    "config": {
+      "$ref": "#/$defs/OperationPolicy"
+    }
+  },
+  "required": [
+    "demand_result",
+    "recipe_data",
+    "inventory_data",
+    "planned_orders"
+  ],
+  "title": "OperationInput",
+  "type": "object"
+}

@@ -1,0 +1,27 @@
+﻿date,menu,meat_v1,meat_v2,soup_v1,soup_v2,scope,main_dish_label,main_dish_status,review_type,review_note
+2016-02-01,"쌀밥/잡곡밥 (쌀,현미흑미:국내산) 오징어찌개  쇠불고기 (쇠고기:호주산) 계란찜  청포묵무침  요구르트  포기김치 (배추,고추가루:국내산) ",0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-03-15,쌀밥/잡곡밥 (쌀:국내산) 쑥국  소불고기 (쇠고기:호주산) 골뱅이무침*소면  마늘쫑볶음   포기김치 (김치:국내산)  ,1,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-03-21, 쌀밥/잡곡밥 (쌀:국내산) 꽃게탕  버섯불고기 (쇠고기:호주산) 계란말이  도토리묵무침  포기김치 (김치:국내산)  ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-04-04,"쌀밥/잡곡밥 (쌀,현미흑미:국내산) 순두부찌개  쇠불고기  브로컬리맛살볶음  풋마늘초무침  포기김치 (배추,고추가루:국내산)   ",0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-04-25,쌀밥/잡곡밥 (쌀:국내산) 콩나물국  돈간장불고기  김치전  버섯볶음  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-05-10,쌀밥/잡곡밥 (쌀:국내산) 콩나물국  버섯불고기  오징어초무침  시금치나물  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-05-23,쌀밥/잡곡밥 (쌀:국내산) 북어콩나물국  쇠고기불고기 (쇠고기:호주산) 옥수수전  오이무침  포기김치 (김치:국내산)   ,1,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-07-04,쌀밥/잡곡밥 (쌀:국내산) 감자고추장찌개  버섯불고기  맛살겨자초무침  노각무침  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-07-21,쌀밥/잡곡밥 (쌀:국내산) 우묵콩국  고추장불고기  명태엿장조림  깻잎지  알타리김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-08-12,불고기덮밥 (쌀:국내산) 맑은국  새우까스&탈탈소스  고구마범벅  노각무침  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-08-29,쌀밥/잡곡밥 (쌀:국내산) 순두부찌개  소불고기  골뱅이무침*소면  아삭고추무침  포기김치 (김치:국내산)   ,1,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-10-04,쌀밥/잡곡밥 (쌀:국내산) 배추된장국  버섯불고기 (쇠고기:호주산) 골뱅이소면무침  마늘쫑건새우볶음  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-10-17,쌀밥/잡곡밥 (쌀:국내산) 미역국  소불고기  모둠양채쌈  매운어묵볶음  포기김치 (김치:국내산)   ,1,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-11-24,쌀밥/잡곡밥 (쌀:국내산) 수제비국  짬뽕불고기  우엉잡채  참나물  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-12-14,소불고기덮밥 (쌀:국내산) 가쯔오장국  고구마튀김  멕시칸샐러드  청경채무침  포기김치 (김치:국내산)   ,1,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-12-19,쌀밥/잡곡밥 (쌀:국내산) 배추된장국  짬뽕불고기  감자채볶음  하루나겉절이  포기김치 (김치:국내산)   ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2016-12-26,쌀밥/잡곡밥 (쌀:국내산) 동태찌개  돈육간장불고기  두부새싹구이  풋마늘대무침  포기김치 (김치:국내산)   ,1,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2017-01-03,쌀밥/잡곡밥 (쌀:국내산) 홍합탕  매운동태찜 (동태:러시아산) 언양식불고기  콩나물파채절이  포기김치 (김치:국내산) ,0,1,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,불고기 문자열 존재를 확인. 육류 실재/메인 메뉴 여부는 레시피 없이 단정하지 않음.
+2017-01-04,곤드레밥 (쌀:국내산) 황태국  동그랑땡전  비빔메밀국수  꽈리고추멸치볶음  배추겉절이 (김치:국내산) ,0,0,1,1,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인. 별도 황태국이 있으므로 soup=1 유지.
+2020-03-10,"쌀밥/잡곡밥 (쌀,현미,흑미:국내산) 대파육개장*칼국수  가자미엿장조림  꼬들단무지무침  청경채겉절이  포기김치 (배추,고추가루:국내산) ",0,0,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인. 육개장*칼국수 복합 명칭은 현재 키워드 지표만으로 국/찌개 의미를 완전히 표현하지 못함.
+2020-04-21,"쌀밥/잡곡밥 (쌀,현미,흑미:국내산) 멸치국수  오향장육  꼬막미나리초무침 베리베리샐러드 양배추,케일*우렁쌈장 식혜 깍두기 (고추가루:국내산) ",0,0,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인.
+2020-04-29,"새우날치알볶음밥 (쌀,돈민찌:국내산) 쌀국수(숙주들어감)  장어구이*소스  춘권튀김*칠리드레질  오이무초무침 망고,복숭아아이스티 배추김치 (배추,고추가루:국내산) ",0,0,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인.
+2020-05-12,"쌀밥/잡곡밥 (쌀,현미,흑미:국내산) 열무물국수  소갈비찜 (소갈비:호주산) 오징어링,새우튀김  호박숙*양념장 꽃맛살과일샐러드 포기김치 (배추,고추가루:국내산) ",1,1,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인.
+2020-06-05,베이컨김치볶음밥 (쌀:국내산) 냉모밀국수  해물부추전  야채고로케  수박  깍두기 (김치:국내산) ,0,0,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인.
+2020-07-01,쌀밥/잡곡밥 냉모밀국수 매운돈갈비찜 메밀전병*간장 고구마순볶음 포기김치 양상추샐러드*딸기요거트 ,1,1,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인.
+2020-09-11,쌀밥/흑미밥/찰현미밥 잔치국수 (New)수제어묵소세지핫도그 순대채소볶음 참나물두부무침 알타리김치 양상추샐러드*참깨D ,0,0,1,0,whole_menu_keyword_presence,,not_in_source,assistant_manual_text_review,국수 문자열을 국/찌개 표식에서 제외한 것을 확인.

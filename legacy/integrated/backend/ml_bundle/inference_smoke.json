@@ -1,0 +1,28 @@
+{
+  "scope": "Historical in-sample inference only; not an evaluation score or operational result",
+  "result": {
+    "prediction": 1034,
+    "model_version": "v20260917T054002-4222a35a",
+    "prediction_id": "db5f06e3403e4db19f9eac847d0cc73b",
+    "predicted_at": "2026-09-17T05:48:21.797680+00:00",
+    "input_data": {
+      "employees": 2983.0,
+      "vacation": 69.0,
+      "business_trip": 183.0,
+      "work_from_home": 362.0,
+      "overtime": 551.0,
+      "weekday": "화",
+      "menu": "쌀밥/귀리밥/찰현미밥 들깨미역국 교촌간장치킨 옥수수콘치즈구이 가지고추장무침 포기김치/요구르트 양배추샐러드*사우전D ",
+      "date": "2021-01-26"
+    }
+  },
+  "monitoring": {
+    "count": 0,
+    "overall_mae": null,
+    "recent_30_mae": null,
+    "recent_60_mae": null,
+    "baseline_mae": null,
+    "retraining_needed": false,
+    "reason": "No actual results"
+  }
+}

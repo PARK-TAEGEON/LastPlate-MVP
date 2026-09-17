@@ -1,0 +1,47 @@
+{
+  "selected_model": "lightgbm",
+  "selected_group": "C",
+  "validation_mae": 84.69060773480663,
+  "test_metrics": {
+    "mae": 89.7513812154696,
+    "rmse": 109.53681991516402,
+    "mape_pct": 11.11611189596598,
+    "mape_excluded_zeros": 0,
+    "n": 181
+  },
+  "splits": {
+    "train": {
+      "start": "2016-02-01",
+      "end": "2019-07-16",
+      "rows": 843
+    },
+    "validation": {
+      "start": "2019-07-17",
+      "end": "2020-04-08",
+      "rows": 181
+    },
+    "test": {
+      "start": "2020-04-09",
+      "end": "2021-01-26",
+      "rows": 181
+    }
+  },
+  "baselines": {
+    "train_mean": {
+      "mae": 187.51381215469613,
+      "rmse": 223.84468273548575,
+      "mape_pct": 25.50814920355153,
+      "mape_excluded_zeros": 0,
+      "n": 181
+    },
+    "available_times_train_rate": {
+      "mae": 215.82872928176795,
+      "rmse": 248.27138288173902,
+      "mape_pct": 30.39618044413493,
+      "mape_excluded_zeros": 0,
+      "n": 181
+    }
+  },
+  "weather": "D skipped: 0/1205 rows have complete lag-1 weather. No subset comparison or fabricated weather.",
+  "model_version": "v20260917T054002-4222a35a"
+}

@@ -1,0 +1,82 @@
+{
+  "selected_model": "lightgbm",
+  "selected_group": "B",
+  "validation_mae": 85.77348066298343,
+  "test_metrics": {
+    "mae": 83.99447513812154,
+    "rmse": 104.42065903425994,
+    "mape_pct": 10.253369131949993,
+    "mape_excluded_zeros": 0,
+    "n": 181
+  },
+  "splits": {
+    "train": {
+      "start": "2016-02-03",
+      "end": "2019-07-16",
+      "rows": 834
+    },
+    "validation": {
+      "start": "2019-07-17",
+      "end": "2020-04-08",
+      "rows": 181
+    },
+    "test": {
+      "start": "2020-04-09",
+      "end": "2021-01-26",
+      "rows": 181
+    }
+  },
+  "baselines": {
+    "train_mean": {
+      "mae": 187.26519337016575,
+      "rmse": 223.62037434725042,
+      "mape_pct": 25.452244622356645,
+      "mape_excluded_zeros": 0,
+      "n": 181
+    },
+    "available_times_train_rate": {
+      "mae": 215.48618784530387,
+      "rmse": 247.8392479363984,
+      "mape_pct": 30.337379029926964,
+      "mape_excluded_zeros": 0,
+      "n": 181
+    }
+  },
+  "weather": "D enabled: prior-calendar-day observed weather, complete on all A/B/C/D rows.",
+  "model_version": "v20260917T055533-5959a6df",
+  "weather_features": [
+    "temp_mean",
+    "temp_max",
+    "temp_min",
+    "humidity"
+  ],
+  "common_weather_rows": true,
+  "excluded_dates": [
+    "2016-02-01",
+    "2016-02-02",
+    "2016-06-28",
+    "2018-02-20",
+    "2018-02-21",
+    "2018-02-27",
+    "2018-03-12",
+    "2018-07-03",
+    "2018-11-02"
+  ],
+  "original_splits": {
+    "train": {
+      "start": "2016-02-01",
+      "end": "2019-07-16",
+      "rows": 843
+    },
+    "validation": {
+      "start": "2019-07-17",
+      "end": "2020-04-08",
+      "rows": 181
+    },
+    "test": {
+      "start": "2020-04-09",
+      "end": "2021-01-26",
+      "rows": 181
+    }
+  }
+}

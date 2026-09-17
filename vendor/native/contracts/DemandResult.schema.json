@@ -1,0 +1,132 @@
+{
+  "properties": {
+    "prediction_id": {
+      "title": "Prediction Id",
+      "type": "string"
+    },
+    "target_date": {
+      "title": "Target Date",
+      "type": "string"
+    },
+    "predicted_diners": {
+      "title": "Predicted Diners",
+      "type": "number"
+    },
+    "lower_bound": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Lower Bound"
+    },
+    "upper_bound": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Upper Bound"
+    },
+    "predicted_rate": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Predicted Rate"
+    },
+    "available_population": {
+      "anyOf": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Available Population"
+    },
+    "model_version": {
+      "title": "Model Version",
+      "type": "string"
+    },
+    "model_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Type"
+    },
+    "applicability": {
+      "enum": [
+        "IN_RANGE",
+        "OUT_OF_DISTRIBUTION",
+        "UNKNOWN"
+      ],
+      "title": "Applicability",
+      "type": "string"
+    },
+    "confidence": {
+      "enum": [
+        "LOW",
+        "UNKNOWN"
+      ],
+      "title": "Confidence",
+      "type": "string"
+    },
+    "warnings": {
+      "items": {
+        "additionalProperties": true,
+        "type": "object"
+      },
+      "title": "Warnings",
+      "type": "array"
+    },
+    "training_ranges": {
+      "additionalProperties": true,
+      "title": "Training Ranges",
+      "type": "object"
+    },
+    "source_type": {
+      "const": "MODEL",
+      "default": "MODEL",
+      "title": "Source Type",
+      "type": "string"
+    },
+    "source_payload": {
+      "additionalProperties": true,
+      "title": "Source Payload",
+      "type": "object"
+    }
+  },
+  "required": [
+    "prediction_id",
+    "target_date",
+    "predicted_diners",
+    "model_version",
+    "applicability",
+    "confidence",
+    "source_payload"
+  ],
+  "title": "DemandResult",
+  "type": "object"
+}

@@ -1,0 +1,31 @@
+{
+  "prediction_id": "39d463ff96e44eb7b554709155759689",
+  "prediction": 1034,
+  "model_version": "v20260917T054002-4222a35a",
+  "created_at": "2026-09-17T12:34:48.535715+00:00",
+  "target_date": "2021-01-26",
+  "deadline_at": "2021-01-26T01:00:00+00:00",
+  "timezone": "Asia/Seoul",
+  "mode": "demo",
+  "input_data": {
+    "employees": 2983.0,
+    "vacation": 69.0,
+    "business_trip": 183.0,
+    "work_from_home": 362.0,
+    "overtime": 551.0,
+    "date": "2021-01-26",
+    "weekday": "화",
+    "menu": "쌀밥 들깨미역국 교촌간장치킨 옥수수콘치즈구이"
+  },
+  "availability": {},
+  "weather": null,
+  "policy": {
+    "timezone": "Asia/Seoul",
+    "cutoff_time": "10:00",
+    "actual_ready_time": "14:00",
+    "deadline_days_before": 0,
+    "mode": "demo"
+  },
+  "operational_eligible": false,
+  "availability_status": "historical_unknown"
+}

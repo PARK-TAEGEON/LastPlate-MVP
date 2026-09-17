@@ -1,0 +1,1 @@
+"""LastPlate FastAPI backend package."""

@@ -1,0 +1,92 @@
+[
+  {
+    "path": "README.md",
+    "change": "modified",
+    "before_sha256": "012940619b60dbc60a32bc85a5083c5c50fd10e7953df3d21d277f1a9673d0da",
+    "after_sha256": "e1516f329e1524576dfd5fdec3e19f03c02162b2f3c277bd184138f76ee88a9f"
+  },
+  {
+    "path": "app/main.py",
+    "change": "modified",
+    "before_sha256": "de5feb6ffce95ff5d6538f798cff30d76b1b26e8026fc6fd6d94f655acec183a",
+    "after_sha256": "d4f1258acfc147f8c38e518191de7469f210635dfea5e4f9fe7ec9cb60fca1de"
+  },
+  {
+    "path": "integration/adapters/decision_adapter.py",
+    "change": "modified",
+    "before_sha256": "f5bbe62ac50eef38908626feee709aca28a8a791e5f6a36fff4d072ded465776",
+    "after_sha256": "bf75158af9f63e702257a732ff58f9cfba2463d9407329c64dd6abc07037b5f0"
+  },
+  {
+    "path": "integration/adapters/operation_adapter.py",
+    "change": "modified",
+    "before_sha256": "c11309c6c79a984ea507d9ca37715be29ffb33d1c44da6673137b722356e9e74",
+    "after_sha256": "8cde5db14cfdaf0feba8f0a126288355e7d605bab11e63dabf0000354c2dcdff"
+  },
+  {
+    "path": "integration/native_stock.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "721e6efb265518ff6353df2284ff62679935ffc6b8ce6e7f762e343037869fae"
+  },
+  {
+    "path": "integration/orchestrator.py",
+    "change": "modified",
+    "before_sha256": "8b2ef04c4af6307a25956d2381ba716489a430b6f0985b04d7268fc2249ae06b",
+    "after_sha256": "dc94939052b3831811ddd3ce181481a6fca124a71e8731dbc9191fe7448aa8a7"
+  },
+  {
+    "path": "inventory_risk/tools/inventory.py",
+    "change": "modified",
+    "before_sha256": "cd4759d0395ee76c2a904ca5fabced74f605aaf1d3d6c57fb0dd551dd3150052",
+    "after_sha256": "b5ab66f68d329b9bd9c509cd15f687cdea08cc3dece4466b53f23e1de80f232a"
+  },
+  {
+    "path": "inventory_risk/tools/usable_stock.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "3a41d1bfa359c47c62ea2fc69846d0451f1ef7248f23a61e4fe5c80ea37bc370"
+  },
+  {
+    "path": "pyproject.toml",
+    "change": "modified",
+    "before_sha256": "1ae646539f382a3c3eefc281eaf9c27b22c770f44a931d14a0074a6fca18e727",
+    "after_sha256": "8c32d11f0a57cc554a1aad5e83c294bb875e5c455e16ac1eaa441812820c6f42"
+  },
+  {
+    "path": "tests/integration/test_p1_v012.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "03e97383bbd2e14c24d2cf5e39f12bb7b0185b9171688aae432d49d20473c6dc"
+  },
+  {
+    "path": "tests/review/final_checks.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "2c7afa76b81edd517cbd849bdaedf81ea8aa1463b9734ef1fd6f84853a3dd269"
+  },
+  {
+    "path": "tests/review/followup_review.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "c7b7acd5f92797fe09530fc593f9a9a56ebde100373b5d84fa7848ab52528731"
+  },
+  {
+    "path": "tests/review/probe_review.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "10233ac58171050ad93467789f40e59d71f0d4e14415c01acfa892bfffcda61b"
+  },
+  {
+    "path": "tests/review/run.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "5692ffa649933cd2915a2c064c2e7c32c8d44ad4fbee2e934029c26a627749ce"
+  },
+  {
+    "path": "tests/review/test_review_findings.py",
+    "change": "added",
+    "before_sha256": null,
+    "after_sha256": "33fca73041a55d8733d23c2071ffeb924662bbec52d3dd104c4694f45271bcb3"
+  }
+]

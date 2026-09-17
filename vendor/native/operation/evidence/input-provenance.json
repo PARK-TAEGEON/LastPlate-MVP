@@ -1,0 +1,19 @@
+{
+  "baseline_zip_sha256": "aced2076acc5eace2a95c334762b129fbb916998fbfbaeece443929d0db6f6ee",
+  "review": {
+    "path": "C:\\Users\\user\\Documents\\Codex\\2026-09-17\\esg-chatgpt-conversation-6a9f6084-c5e4-83e8-3\\outputs\\LastPlate-Operation-정식리뷰.md",
+    "sha256": "6bc2dc499954eaa11f4e566a2d2210f0b30a0df712c95163a0f96c98a09c6db3"
+  },
+  "native_demand_contract_inspected": {
+    "path": "C:\\Users\\user\\Documents\\Codex\\2026-09-17\\files-mentioned-by-the-user-data\\outputs\\lastplate-ml-v2\\tools\\demand.py",
+    "sha256": "3cbbf438b979c7d9de2bbc05d8ca6fbe0d04f94087b26e019ffa72eaceeb8b4f",
+    "scope": "ML-v2 prediction receipt metadata; no OOD applicability schema found; upstream source unchanged"
+  },
+  "environment": {
+    "pydantic": "2.13.5",
+    "langgraph": "1.2.11",
+    "pytest": "9.1.1",
+    "streamlit": "1.64.0",
+    "jsonschema": "4.26.0"
+  }
+}

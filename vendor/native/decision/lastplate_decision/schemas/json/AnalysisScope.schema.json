@@ -1,0 +1,82 @@
+{
+  "$defs": {
+    "MenuScope": {
+      "additionalProperties": false,
+      "properties": {
+        "menu": {
+          "minLength": 1,
+          "title": "Menu",
+          "type": "string"
+        },
+        "ingredients": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Ingredients",
+          "type": "array"
+        },
+        "ingredients_complete": {
+          "default": false,
+          "title": "Ingredients Complete",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "menu"
+      ],
+      "title": "MenuScope",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "target_date": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Date"
+    },
+    "meal_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Meal Type"
+    },
+    "menus": {
+      "items": {
+        "$ref": "#/$defs/MenuScope"
+      },
+      "title": "Menus",
+      "type": "array"
+    },
+    "menus_complete": {
+      "default": false,
+      "title": "Menus Complete",
+      "type": "boolean"
+    },
+    "coverage": {
+      "default": "unknown",
+      "enum": [
+        "full",
+        "event",
+        "unknown"
+      ],
+      "title": "Coverage",
+      "type": "string"
+    }
+  },
+  "title": "AnalysisScope",
+  "type": "object"
+}

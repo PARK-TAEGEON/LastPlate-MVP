@@ -1,0 +1,2 @@
+{"pipeline": "COMPLETE", "superseded_events": [{"event_type": "supply_risk", "action": null, "superseded": true, "event_id": "event-fc8697b675435142f63a", "ingredient": "두부", "date": "2026-09-18", "end_date": null, "restriction": null, "attendance_delta": null, "severity": "HIGH", "description": "REVOKED_PUBLIC_SUPPLY", "source_type": "user", "needs_clarification": false, "source_text": null, "matched_sources": ["inventory", "recipe", "weekly_menu"], "reason": null}], "supply_risks": [], "decision_inventory_actions": []}
+

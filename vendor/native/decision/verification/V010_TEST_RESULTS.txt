@@ -1,0 +1,54 @@
+Python 3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]
+
+test_alias_restriction (tests.test_decision_agent.DecisionTests.test_alias_restriction) ... ok
+test_bad_numbers_rejected (tests.test_decision_agent.DecisionTests.test_bad_numbers_rejected) ... ok
+test_case1_keep_and_inventory (tests.test_decision_agent.DecisionTests.test_case1_keep_and_inventory) ... ok
+test_case2_attendance_requests_rerun (tests.test_decision_agent.DecisionTests.test_case2_attendance_requests_rerun) ... ok
+test_case3_price_supply_review (tests.test_decision_agent.DecisionTests.test_case3_price_supply_review) ... ok
+test_case4_cheap_failed_nutrition_blocked (tests.test_decision_agent.DecisionTests.test_case4_cheap_failed_nutrition_blocked) ... ok
+test_case5_demo (tests.test_decision_agent.DecisionTests.test_case5_demo) ... ok
+test_case6_inventory_nutrition_conflict (tests.test_decision_agent.DecisionTests.test_case6_inventory_nutrition_conflict) ... ok
+test_duplicate_candidate_id (tests.test_decision_agent.DecisionTests.test_duplicate_candidate_id) ... ok
+test_each_hard_constraint (tests.test_decision_agent.DecisionTests.test_each_hard_constraint) ... ok
+test_event_acknowledged_by_both (tests.test_decision_agent.DecisionTests.test_event_acknowledged_by_both) ... ok
+test_expired_inventory (tests.test_decision_agent.DecisionTests.test_expired_inventory) ... ok
+test_global_nutrition_failure_blocks_inventory (tests.test_decision_agent.DecisionTests.test_global_nutrition_failure_blocks_inventory) ... ok
+test_immutable_deterministic (tests.test_decision_agent.DecisionTests.test_immutable_deterministic) ... ok
+test_insufficient_servings (tests.test_decision_agent.DecisionTests.test_insufficient_servings) ... ok
+test_missing_event_fields_rejected (tests.test_decision_agent.DecisionTests.test_missing_event_fields_rejected) ... ok
+test_missing_inputs (tests.test_decision_agent.DecisionTests.test_missing_inputs) ... ok
+test_nutrition_fail_wins_over_pass (tests.test_decision_agent.DecisionTests.test_nutrition_fail_wins_over_pass) ... ok
+test_order_range_preserved (tests.test_decision_agent.DecisionTests.test_order_range_preserved) ... ok
+test_order_units_not_inferred (tests.test_decision_agent.DecisionTests.test_order_units_not_inferred) ... ok
+test_partial_report_suppresses_actions (tests.test_decision_agent.DecisionTests.test_partial_report_suppresses_actions) ... ok
+test_restriction_normalized (tests.test_decision_agent.DecisionTests.test_restriction_normalized) ... ok
+test_scoped_allergy_blocks_candidate (tests.test_decision_agent.DecisionTests.test_scoped_allergy_blocks_candidate) ... ok
+test_shortage_probability (tests.test_decision_agent.DecisionTests.test_shortage_probability) ... ok
+test_soft_priority_config (tests.test_decision_agent.DecisionTests.test_soft_priority_config) ... ok
+test_supply_unavailable_overrides_pass (tests.test_decision_agent.DecisionTests.test_supply_unavailable_overrides_pass) ... ok
+test_text_alert_does_not_invent_quantity (tests.test_decision_agent.DecisionTests.test_text_alert_does_not_invent_quantity) ... ok
+test_trace_complete (tests.test_decision_agent.DecisionTests.test_trace_complete) ... ok
+test_unknown_constraints_not_passed (tests.test_decision_agent.DecisionTests.test_unknown_constraints_not_passed) ... ok
+test_unknown_recheck_preserved (tests.test_decision_agent.DecisionTests.test_unknown_recheck_preserved) ... ok
+test_demo_label_on_actions (tests.test_review_regressions.ReviewRegressionTests.test_demo_label_on_actions) ... ok
+test_nested_demo_recognized (tests.test_review_regressions.ReviewRegressionTests.test_nested_demo_recognized) ... ok
+test_order_conflicting_status (tests.test_review_regressions.ReviewRegressionTests.test_order_conflicting_status) ... ok
+test_partial_report_recheck (tests.test_review_regressions.ReviewRegressionTests.test_partial_report_recheck) ... ok
+test_price_event_requires_operation_ack (tests.test_review_regressions.ReviewRegressionTests.test_price_event_requires_operation_ack) ... ok
+test_unrelated_candidate_not_linked (tests.test_review_regressions.ReviewRegressionTests.test_unrelated_candidate_not_linked) ... ok
+test_zero_servings_for_zero_demand_valid (tests.test_review_regressions.ReviewRegressionTests.test_zero_servings_for_zero_demand_valid) ... ok
+test_attendance_refreshes_final_recommendation (tests.test_workflow.WorkflowTests.test_attendance_refreshes_final_recommendation) ... ok
+test_blocked_cannot_be_approved (tests.test_workflow.WorkflowTests.test_blocked_cannot_be_approved) ... ok
+test_callback_failure_invalidates_stale_result (tests.test_workflow.WorkflowTests.test_callback_failure_invalidates_stale_result) ... ok
+test_compound_route (tests.test_workflow.WorkflowTests.test_compound_route) ... ok
+test_expiry_route (tests.test_workflow.WorkflowTests.test_expiry_route) ... ok
+test_full_order_interrupt_approve_no_execution (tests.test_workflow.WorkflowTests.test_full_order_interrupt_approve_no_execution) ... ok
+test_modify_revalidates_and_interrupts_again (tests.test_workflow.WorkflowTests.test_modify_revalidates_and_interrupts_again) ... ok
+test_price_route_inventory_before_operation (tests.test_workflow.WorkflowTests.test_price_route_inventory_before_operation) ... ok
+test_recheck_cycles_bounded (tests.test_workflow.WorkflowTests.test_recheck_cycles_bounded) ... ok
+test_separate_threads (tests.test_workflow.WorkflowTests.test_separate_threads) ... ok
+
+----------------------------------------------------------------------
+Ran 47 tests in 0.196s
+
+OK

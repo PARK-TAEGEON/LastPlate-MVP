@@ -1,0 +1,117 @@
+{
+  "schema_version": "2.0",
+  "advisory_only": true,
+  "as_of": "2026-09-17",
+  "analysis_mode": "event",
+  "status": "needs_clarification",
+  "period": {
+    "start": "2026-09-17",
+    "end": "2026-09-24"
+  },
+  "forecast_version": null,
+  "input_snapshot_id": "snapshot-553bc5e78fc446f452a0",
+  "clarification": {
+    "status": "required",
+    "event_ids": [
+      "event-e107cbe0d0b6b67969ce"
+    ]
+  },
+  "recheck_status": {
+    "demand_forecast": {
+      "status": "blocked_clarification",
+      "execute_allowed": false,
+      "executed": false
+    },
+    "operation_agent": {
+      "status": "blocked",
+      "executed": false
+    }
+  },
+  "execution": {
+    "executed_nodes": [
+      "event_parser",
+      "risk_report_builder"
+    ],
+    "skipped_nodes": [
+      "inventory_analyzer",
+      "price_risk_analyzer",
+      "supply_risk_analyzer",
+      "impact_analyzer",
+      "substitute_candidate_generator",
+      "nutrition_constraint_checker"
+    ],
+    "scope": "event_scoped",
+    "previous_report_reused": false
+  },
+  "errors": [],
+  "inventory_status": [],
+  "detected_events": [
+    {
+      "event_type": "attendance_event",
+      "event_id": "event-e107cbe0d0b6b67969ce",
+      "ingredient": null,
+      "date": null,
+      "end_date": null,
+      "restriction": null,
+      "attendance_delta": null,
+      "severity": "MEDIUM",
+      "description": "숫자 미확인",
+      "source_type": "user",
+      "needs_clarification": true
+    }
+  ],
+  "alerts": [
+    {
+      "type": "clarification_required",
+      "severity": "MEDIUM",
+      "message": "입력 확인이 필요합니다",
+      "evidence": [
+        "숫자 미확인"
+      ],
+      "ingredient": null,
+      "candidate_id": null,
+      "candidate_action": null,
+      "cause_event_ids": [
+        "event-e107cbe0d0b6b67969ce"
+      ],
+      "details": {}
+    }
+  ],
+  "price_risks": [],
+  "supply_risks": [],
+  "affected_menus": [],
+  "affected_ingredients": [],
+  "substitute_candidates": [],
+  "priority_use_candidates": [],
+  "nutrition_results": [],
+  "cost_impacts": [],
+  "recommended_rechecks": [],
+  "decision_trace": [
+    "Event Parser: mode=event, 1 events; selected=[]",
+    "SKIP inventory_analyzer: not_selected_for_event",
+    "SKIP price_risk_analyzer: not_selected_for_event",
+    "SKIP supply_risk_analyzer: not_selected_for_event",
+    "SKIP impact_analyzer: not_selected_for_event",
+    "SKIP substitute_candidate_generator: not_selected_for_event",
+    "SKIP nutrition_constraint_checker: not_selected_for_event",
+    "Risk Report Builder: 0 menu alternatives, 0 priority-use candidates; approval required"
+  ],
+  "data_sources": {
+    "recipe": "DEMO:demo_recipe_ingredients.csv",
+    "nutrition": "DEMO:demo_nutrition.csv",
+    "price_trend": "DEMO:demo_price_trend.csv",
+    "monthly_price": "DEMO:demo_monthly_price.csv",
+    "inventory": "DEMO:food_inventory.xlsx",
+    "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+    "weekly_menu": "DEMO:weekly_menu.xlsx",
+    "constraints": "DEMO configurable dish-level thresholds"
+  },
+  "limitations": [
+    "DEMO dish-level constraints, not official institutional standards or whole-meal validation.",
+    "Independent candidates require reallocation before joint selection. No automatic operational action.",
+    "Planned orders are not available stock; arrival dates are unknown.",
+    "Declared allergen exclusions only; missing nutrition/allergens cannot PASS.",
+    "Event-scoped reports omit skipped analyses; empty skipped results do not mean no risk.",
+    "Generated snapshot ID fingerprints observed inputs; production should provide its authoritative snapshot ID."
+  ]
+}

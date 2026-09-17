@@ -1,0 +1,1106 @@
+--- v0.1.1/test_decision_agent.py
++++ v0.1.2/test_decision_agent.py
+@@ -1,191 +1,191 @@
+-import unittest
+-from copy import deepcopy
+-from pydantic import ValidationError
+-from lastplate_decision.agents.decision import make_final_recommendation as decide
+-from lastplate_decision.config.decision_policy import DecisionPolicy
+-from examples.fixtures import baseline, PASS, recheck_names
+-from lastplate_decision.schemas.decision_output import DecisionOutput
+-
+-
+-class DecisionTests(unittest.TestCase):
+-    def setUp(self):
+-        self.p = baseline()
+-
+-    def run_decision(self):
+-        return decide(**self.p)
+-
+-    def candidate(self, **kwargs):
+-        value = dict(candidate_id="swap", ingredient="두부", replaces="계란", menu="계란찜", constraints=deepcopy(PASS))
+-        value.update(kwargs)
+-        self.p["inventory_risk_result"]["substitute_candidates"] = [value]
+-        return value
+-
+-    def test_case1_keep_and_inventory(self):
+-        r = self.run_decision()
+-        self.assertEqual(r["recommended_servings"], 523)
+-        self.assertEqual(r["inventory_actions"][0]["decision"], "ADJUST")
+-        self.assertTrue(r["requires_human_approval"])
+-        DecisionOutput.model_validate(r)
+-
+-    def test_case2_attendance_requests_rerun(self):
+-        self.p["user_events"] = [{"event_type": "attendance_event", "event_id": "guest-1", "attendance_delta": 35}]
+-        r = self.run_decision()
+-        self.assertEqual(recheck_names(r), ["demand_forecast", "operation"])
+-        self.assertIsNone(r["recommended_servings"])
+-        self.assertEqual(r["inventory_actions"][0]["decision"], "NEEDS_CONFIRMATION")
+-
+-    def test_event_acknowledged_by_both(self):
+-        self.p["user_events"] = [{"event_type": "attendance_event", "event_id": "guest-1", "attendance_delta": 35}]
+-        for key in ("demand_result", "operation_result"):
+-            self.p[key]["applied_event_ids"] = ["guest-1"]
+-        self.assertEqual(self.run_decision()["recommended_servings"], 523)
+-
+-    def test_case3_price_supply_review(self):
+-        self.candidate()
+-        self.p["inventory_risk_result"].update(price_risks=[{"ingredient": "계란", "message": "가격 +22%", "affected_menus": ["계란찜"]}],
+-            supply_risks=[{"ingredient": "계란", "severity": "HIGH", "affected_menus": ["계란찜"]}], affected_menus=["계란찜"])
+-        r = self.run_decision()
+-        self.assertTrue(all(a["decision"] == "REVIEW" for a in r["menu_actions"]))
+-        self.assertEqual(r["menu_actions"][0]["candidates"], ["swap"])
+-        self.assertTrue(r["critical_alerts"])
+-
+-    def test_case4_cheap_failed_nutrition_blocked(self):
+-        c = self.candidate(soft_scores={"cost": 1.0})
+-        c["constraints"]["nutrition"] = "FAIL"
+-        self.p["inventory_risk_result"]["price_risks"] = [{"ingredient": "계란", "affected_menus": ["계란찜"]}]
+-        r = self.run_decision()
+-        self.assertEqual(r["candidate_evaluations"][0]["decision"], "BLOCK")
+-        self.assertEqual(r["menu_actions"][0]["candidates"], [])
+-
+-    def test_case5_demo(self):
+-        self.p["inventory_risk_result"]["data_quality_notes"] = ["가격 정보: DEMO"]
+-        r = self.run_decision()
+-        self.assertEqual(r["confidence"], "MEDIUM")
+-        self.assertIn("DEMO", str(r["data_quality_notes"]))
+-
+-    def test_case6_inventory_nutrition_conflict(self):
+-        self.p["inventory_risk_result"]["nutrition_results"] = [{"candidate_id": "tofu-use", "status": "FAIL"}]
+-        r = self.run_decision()
+-        self.assertEqual(r["inventory_actions"][0]["decision"], "BLOCK")
+-        self.assertIsNone(r["inventory_actions"][0]["recommended"])
+-
+-    def test_global_nutrition_failure_blocks_inventory(self):
+-        self.p["operation_result"]["nutrition_constraints"]["status"] = "FAIL"
+-        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
+-
+-    def test_missing_inputs(self):
+-        r = decide({}, {}, {})
+-        self.assertEqual(r["confidence"], "LOW")
+-        self.assertIsNone(r["recommended_servings"])
+-
+-    def test_unknown_constraints_not_passed(self):
+-        self.p["operation_result"]["constraints"] = {}
+-        self.assertIsNone(self.run_decision()["recommended_servings"])
+-
+-    def test_expired_inventory(self):
+-        self.p["inventory_risk_result"]["inventory_recommendations"][0]["days_to_expiry"] = -1
+-        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
+-
+-    def test_restriction_normalized(self):
+-        self.p["user_events"] = [{"event_type": "ingredient_restriction_event", "ingredient": "두 부", "restriction": "do_not_use"}]
+-        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
+-
+-    def test_alias_restriction(self):
+-        self.candidate(ingredient="계란")
+-        self.p["user_events"] = [{"event_type": "ingredient_restriction_event", "ingredient": "달걀", "restriction": "do_not_use"}]
+-        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+-
+-    def test_each_hard_constraint(self):
+-        for key in PASS:
+-            with self.subTest(constraint=key):
+-                c = self.candidate()
+-                c["constraints"][key] = "FAIL"
+-                self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+-
+-    def test_supply_unavailable_overrides_pass(self):
+-        self.candidate()
+-        self.p["inventory_risk_result"]["supply_risks"] = [{"ingredient": "두부", "unavailable": True}]
+-        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+-
+-    def test_shortage_probability(self):
+-        self.p["operation_result"]["shortage_probability"] = .2
+-        self.assertEqual(self.run_decision()["serving_action"]["decision"], "BLOCK")
+-
+-    def test_insufficient_servings(self):
+-        self.p["operation_result"]["recommended_servings"] = 400
+-        self.assertEqual(self.run_decision()["status"], "blocked")
+-
+-    def test_text_alert_does_not_invent_quantity(self):
+-        self.p["inventory_risk_result"].update(inventory_recommendations=[], alerts=[{
+-            "type": "expiry_risk", "severity": "HIGH", "message": "두부 8kg D-1"}])
+-        action = self.run_decision()["inventory_actions"][0]
+-        self.assertEqual(action["decision"], "NEEDS_CONFIRMATION")
+-        self.assertIsNone(action["recommended"])
+-
+-    def test_scoped_allergy_blocks_candidate(self):
+-        self.candidate()
+-        self.p["inventory_risk_result"]["alerts"] = [{"type": "allergy", "severity": "HIGH", "ingredient": "두부", "message": "알레르기"}]
+-        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+-
+-    def test_nutrition_fail_wins_over_pass(self):
+-        self.candidate()
+-        self.p["inventory_risk_result"]["nutrition_results"] = [
+-            {"candidate_id": "swap", "status": "FAIL"}, {"candidate_id": "swap", "status": "PASS"}]
+-        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
+-
+-    def test_bad_numbers_rejected(self):
+-        for value in (-1, float("nan"), float("inf"), True, "487"):
+-            with self.subTest(value=value), self.assertRaises(ValidationError):
+-                decide({"prediction": value}, {}, {})
+-
+-    def test_missing_event_fields_rejected(self):
+-        with self.assertRaises(ValidationError):
+-            decide({}, {}, {}, [{"event_type": "attendance_event"}])
+-
+-    def test_duplicate_candidate_id(self):
+-        self.candidate(candidate_id="tofu-use")
+-        with self.assertRaises(ValidationError):
+-            self.run_decision()
+-
+-    def test_immutable_deterministic(self):
+-        original = deepcopy(self.p)
+-        self.assertEqual(self.run_decision(), self.run_decision())
+-        self.assertEqual(original, self.p)
+-
+-    def test_soft_priority_config(self):
+-        a = self.candidate(soft_scores={"waste": 1.0, "cost": 0.0})
+-        b = deepcopy(a)
+-        b.update(candidate_id="cheap", soft_scores={"waste": 0.0, "cost": 1.0})
+-        self.p["inventory_risk_result"]["substitute_candidates"].append(b)
+-        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["candidate_id"], "swap")
+-        policy = DecisionPolicy(priorities=("cost", "shortage", "safety", "nutrition", "supply", "waste", "preference"))
+-        self.assertEqual(decide(**self.p, policy=policy)["candidate_evaluations"][0]["candidate_id"], "cheap")
+-
+-    def test_partial_report_suppresses_actions(self):
+-        self.p["inventory_risk_result"]["status"] = "partial"
+-        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "NEEDS_CONFIRMATION")
+-
+-    def test_order_units_not_inferred(self):
+-        self.p["operation_result"]["order_recommendations"] = [{"ingredient": "돼지고기", "planned_order": 105,
+-            "recommended_min": 88, "recommended_max": 94, "status": "OVER", "constraints": PASS}]
+-        a = self.run_decision()["procurement_actions"][0]
+-        self.assertEqual(a["decision"], "NEEDS_CONFIRMATION")
+-        self.assertIsNone(a["unit"])
+-
+-    def test_order_range_preserved(self):
+-        self.p["operation_result"]["order_recommendations"] = [{"ingredient": "돼지고기", "planned_order": 105,
+-            "recommended_min": 88, "recommended_max": 94, "status": "OVER", "unit": "kg", "constraints": PASS}]
+-        self.assertEqual(self.run_decision()["procurement_actions"][0]["recommended"], {"min": 88, "max": 94})
+-
+-    def test_unknown_recheck_preserved(self):
+-        self.p["inventory_risk_result"]["recommended_rechecks"] = ["external_unknown"]
+-        self.assertIn("external_unknown", recheck_names(self.run_decision()))
+-
+-    def test_trace_complete(self):
+-        r = self.run_decision()
+-        self.assertEqual([t["step"] for t in r["decision_trace"]], list(range(1, len(r["decision_trace"])+1)))
+-        self.assertTrue(all(t["rule"] for t in r["decision_trace"]))
+-
+-
+-if __name__ == "__main__":
+-    unittest.main()
++import unittest
++from copy import deepcopy
++from pydantic import ValidationError
++from lastplate_decision.agents.decision import make_final_recommendation as decide
++from lastplate_decision.config.decision_policy import DecisionPolicy
++from examples.fixtures import baseline, PASS, recheck_names
++from lastplate_decision.schemas.decision_output import DecisionOutput
++
++
++class DecisionTests(unittest.TestCase):
++    def setUp(self):
++        self.p = baseline()
++
++    def run_decision(self):
++        return decide(**self.p)
++
++    def candidate(self, **kwargs):
++        value = dict(candidate_id="swap", ingredient="두부", replaces="계란", menu="계란찜", constraints=deepcopy(PASS))
++        value.update(kwargs)
++        self.p["inventory_risk_result"]["substitute_candidates"] = [value]
++        return value
++
++    def test_case1_keep_and_inventory(self):
++        r = self.run_decision()
++        self.assertEqual(r["recommended_servings"], 523)
++        self.assertEqual(r["inventory_actions"][0]["decision"], "ADJUST")
++        self.assertTrue(r["requires_human_approval"])
++        DecisionOutput.model_validate(r)
++
++    def test_case2_attendance_requests_rerun(self):
++        self.p["user_events"] = [{"event_type": "attendance_event", "event_id": "guest-1", "attendance_delta": 35}]
++        r = self.run_decision()
++        self.assertEqual(recheck_names(r), ["demand_forecast", "operation"])
++        self.assertIsNone(r["recommended_servings"])
++        self.assertEqual(r["inventory_actions"][0]["decision"], "NEEDS_CONFIRMATION")
++
++    def test_event_acknowledged_by_both(self):
++        self.p["user_events"] = [{"event_type": "attendance_event", "event_id": "guest-1", "attendance_delta": 35}]
++        for key in ("demand_result", "operation_result"):
++            self.p[key]["applied_event_ids"] = ["guest-1"]
++        self.assertEqual(self.run_decision()["recommended_servings"], 523)
++
++    def test_case3_price_supply_review(self):
++        self.candidate()
++        self.p["inventory_risk_result"].update(price_risks=[{"ingredient": "계란", "message": "가격 +22%", "affected_menus": ["계란찜"]}],
++            supply_risks=[{"ingredient": "계란", "severity": "HIGH", "affected_menus": ["계란찜"]}], affected_menus=["계란찜"])
++        r = self.run_decision()
++        self.assertTrue(all(a["decision"] == "REVIEW" for a in r["menu_actions"]))
++        self.assertEqual(r["menu_actions"][0]["candidates"], ["swap"])
++        self.assertTrue(r["critical_alerts"])
++
++    def test_case4_cheap_failed_nutrition_blocked(self):
++        c = self.candidate(soft_scores={"cost": 1.0})
++        c["constraints"]["nutrition"] = "FAIL"
++        self.p["inventory_risk_result"]["price_risks"] = [{"ingredient": "계란", "affected_menus": ["계란찜"]}]
++        r = self.run_decision()
++        self.assertEqual(r["candidate_evaluations"][0]["decision"], "BLOCK")
++        self.assertEqual(r["menu_actions"][0]["candidates"], [])
++
++    def test_case5_demo(self):
++        self.p["inventory_risk_result"]["data_quality_notes"] = ["가격 정보: DEMO"]
++        r = self.run_decision()
++        self.assertEqual(r["confidence"], "MEDIUM")
++        self.assertIn("DEMO", str(r["data_quality_notes"]))
++
++    def test_case6_inventory_nutrition_conflict(self):
++        self.p["inventory_risk_result"]["nutrition_results"] = [{"candidate_id": "tofu-use", "status": "FAIL"}]
++        r = self.run_decision()
++        self.assertEqual(r["inventory_actions"][0]["decision"], "BLOCK")
++        self.assertIsNone(r["inventory_actions"][0]["recommended"])
++
++    def test_global_nutrition_failure_blocks_inventory(self):
++        self.p["operation_result"]["nutrition_constraints"]["status"] = "FAIL"
++        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
++
++    def test_missing_inputs(self):
++        r = decide({}, {}, {})
++        self.assertEqual(r["confidence"], "LOW")
++        self.assertIsNone(r["recommended_servings"])
++
++    def test_unknown_constraints_not_passed(self):
++        self.p["operation_result"]["constraints"] = {}
++        self.assertIsNone(self.run_decision()["recommended_servings"])
++
++    def test_expired_inventory(self):
++        self.p["inventory_risk_result"]["inventory_recommendations"][0]["days_to_expiry"] = -1
++        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
++
++    def test_restriction_normalized(self):
++        self.p["user_events"] = [{"event_type": "ingredient_restriction_event", "ingredient": "두 부", "restriction": "do_not_use"}]
++        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "BLOCK")
++
++    def test_alias_restriction(self):
++        self.candidate(ingredient="계란")
++        self.p["user_events"] = [{"event_type": "ingredient_restriction_event", "ingredient": "달걀", "restriction": "do_not_use"}]
++        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
++
++    def test_each_hard_constraint(self):
++        for key in PASS:
++            with self.subTest(constraint=key):
++                c = self.candidate()
++                c["constraints"][key] = "FAIL"
++                self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
++
++    def test_supply_unavailable_overrides_pass(self):
++        self.candidate()
++        self.p["inventory_risk_result"]["supply_risks"] = [{"ingredient": "두부", "unavailable": True}]
++        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
++
++    def test_shortage_probability(self):
++        self.p["operation_result"]["shortage_probability"] = .2
++        self.assertEqual(self.run_decision()["serving_action"]["decision"], "BLOCK")
++
++    def test_insufficient_servings(self):
++        self.p["operation_result"]["recommended_servings"] = 400
++        self.assertEqual(self.run_decision()["status"], "blocked")
++
++    def test_text_alert_does_not_invent_quantity(self):
++        self.p["inventory_risk_result"].update(inventory_recommendations=[], alerts=[{
++            "type": "expiry_risk", "severity": "HIGH", "message": "두부 8kg D-1"}])
++        action = self.run_decision()["inventory_actions"][0]
++        self.assertEqual(action["decision"], "NEEDS_CONFIRMATION")
++        self.assertIsNone(action["recommended"])
++
++    def test_scoped_allergy_blocks_candidate(self):
++        self.candidate()
++        self.p["inventory_risk_result"]["alerts"] = [{"type": "allergy", "severity": "HIGH", "ingredient": "두부", "message": "알레르기"}]
++        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
++
++    def test_nutrition_fail_wins_over_pass(self):
++        self.candidate()
++        self.p["inventory_risk_result"]["nutrition_results"] = [
++            {"candidate_id": "swap", "status": "FAIL"}, {"candidate_id": "swap", "status": "PASS"}]
++        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["decision"], "BLOCK")
++
++    def test_bad_numbers_rejected(self):
++        for value in (-1, float("nan"), float("inf"), True, "487"):
++            with self.subTest(value=value), self.assertRaises(ValidationError):
++                decide({"prediction": value}, {}, {})
++
++    def test_missing_event_fields_rejected(self):
++        with self.assertRaises(ValidationError):
++            decide({}, {}, {}, [{"event_type": "attendance_event"}])
++
++    def test_duplicate_candidate_id(self):
++        self.candidate(candidate_id="tofu-use")
++        with self.assertRaises(ValidationError):
++            self.run_decision()
++
++    def test_immutable_deterministic(self):
++        original = deepcopy(self.p)
++        self.assertEqual(self.run_decision(), self.run_decision())
++        self.assertEqual(original, self.p)
++
++    def test_soft_priority_config(self):
++        a = self.candidate(soft_scores={"waste": 1.0, "cost": 0.0})
++        b = deepcopy(a)
++        b.update(candidate_id="cheap", soft_scores={"waste": 0.0, "cost": 1.0})
++        self.p["inventory_risk_result"]["substitute_candidates"].append(b)
++        self.assertEqual(self.run_decision()["candidate_evaluations"][0]["candidate_id"], "swap")
++        policy = DecisionPolicy(priorities=("cost", "shortage", "safety", "nutrition", "supply", "waste", "preference"))
++        self.assertEqual(decide(**self.p, policy=policy)["candidate_evaluations"][0]["candidate_id"], "cheap")
++
++    def test_partial_report_suppresses_actions(self):
++        self.p["inventory_risk_result"]["status"] = "partial"
++        self.assertEqual(self.run_decision()["inventory_actions"][0]["decision"], "NEEDS_CONFIRMATION")
++
++    def test_order_units_not_inferred(self):
++        self.p["operation_result"]["order_recommendations"] = [{"ingredient": "돼지고기", "planned_order": 105,
++            "recommended_min": 88, "recommended_max": 94, "status": "OVER", "constraints": PASS}]
++        a = self.run_decision()["procurement_actions"][0]
++        self.assertEqual(a["decision"], "NEEDS_CONFIRMATION")
++        self.assertIsNone(a["unit"])
++
++    def test_order_range_preserved(self):
++        self.p["operation_result"]["order_recommendations"] = [{"ingredient": "돼지고기", "planned_order": 105,
++            "recommended_min": 88, "recommended_max": 94, "status": "OVER", "unit": "kg", "constraints": PASS}]
++        self.assertEqual(self.run_decision()["procurement_actions"][0]["recommended"], {"min": 88, "max": 94})
++
++    def test_unknown_recheck_preserved(self):
++        self.p["inventory_risk_result"]["recommended_rechecks"] = ["external_unknown"]
++        self.assertIn("external_unknown", recheck_names(self.run_decision()))
++
++    def test_trace_complete(self):
++        r = self.run_decision()
++        self.assertEqual([t["step"] for t in r["decision_trace"]], list(range(1, len(r["decision_trace"])+1)))
++        self.assertTrue(all(t["rule"] for t in r["decision_trace"]))
++
++
++if __name__ == "__main__":
++    unittest.main()
+--- v0.1.1/test_final_review.py
++++ v0.1.2/test_final_review.py
+@@ -1,64 +1,64 @@
+-import unittest
+-from copy import deepcopy
+-from lastplate_decision import make_final_recommendation as decide
+-from lastplate_decision.schemas.decision_input import UserEvent
+-from examples.fixtures import baseline
+-
+-
+-class FinalReviewTests(unittest.TestCase):
+-    def test_shared_requested_revision_detects_stale_demand(self):
+-        p=baseline();p['input_revision']='new-input'
+-        r=decide(**p)
+-        self.assertIsNone(r['recommended_servings'])
+-        self.assertIn('demand_forecast',[q['agent'] for q in r['recommended_rechecks']])
+-
+-    def test_missing_requested_revision_holds(self):
+-        p=baseline();del p['input_revision']
+-        self.assertIsNone(decide(**p)['recommended_servings'])
+-
+-    def test_unrelated_restriction_date_not_applied(self):
+-        p=baseline();p['user_events']=[{'event_id':'future','event_type':'ingredient_restriction_event',
+-            'ingredient':'두부','restriction':'do_not_use','date':'2026-09-19'}]
+-        self.assertEqual(decide(**p)['status'],'ok')
+-
+-    def test_upstream_supply_event_alias(self):
+-        p=baseline();p['user_events']=[{'event_type':'supply_risk','event_id':'supply','ingredient':'두부','date':'2026-09-18'}]
+-        r=decide(**p)
+-        self.assertEqual({q['agent'] for q in r['recommended_rechecks']},{'inventory_risk','operation'})
+-        self.assertEqual(UserEvent.model_validate(p['user_events'][0]).event_type,'supply_event')
+-
+-    def test_top_level_date_conflict_holds(self):
+-        p=baseline();p['demand_result']['target_date']='2026-09-19'
+-        self.assertIsNone(decide(**p)['recommended_servings'])
+-
+-    def test_upstream_completion_claim_not_trusted(self):
+-        p=baseline()
+-        p['inventory_risk_result']['recommended_rechecks']=[{'request_id':'claimed','agent':'operation_agent',
+-            'reason':'review','input_revision':'input-1','status':'completed','result_revision':'operation_result-1'}]
+-        r=decide(**p)
+-        self.assertEqual(r['recommended_rechecks'][0]['status'],'pending')
+-
+-    def test_old_upstream_request_revision_is_not_silently_dropped(self):
+-        p=baseline()
+-        p['inventory_risk_result']['recommended_rechecks']=[{'request_id':'stale','agent':'operation_agent',
+-            'reason':'review','input_revision':'old-input'}]
+-        r=decide(**p)
+-        self.assertIsNone(r['recommended_servings'])
+-        self.assertIn('inventory_risk',[q['agent'] for q in r['recommended_rechecks']])
+-
+-    def test_fresh_result_without_event_ack_does_not_complete(self):
+-        from lastplate_decision.graph.decision_workflow import build_decision_workflow
+-        from examples.fixtures import refreshed
+-        p=baseline();p['user_events']=[{'event_type':'price_event','event_id':'unapplied','ingredient':'두부'}]
+-        g=build_decision_workflow({
+-            'operation':lambda payload:refreshed(payload['operation_result'],payload),
+-            'inventory_risk':lambda payload:refreshed(payload['inventory_risk_result'],payload)})
+-        r=g.invoke({'payload':p},{'configurable':{'thread_id':'unapplied'},'recursion_limit':100})
+-        self.assertTrue(r['recommendation']['recommended_rechecks'])
+-        self.assertIsNone(r['recommendation']['recommended_servings'])
+-        self.assertTrue(any('이벤트' in (q['error'] or '') for q in r['recheck_state']))
+-
+-    def test_future_inventory_action_not_selected(self):
+-        p=baseline();p['inventory_risk_result']['inventory_recommendations'][0]['scope']={'target_date':'2026-09-19','meal_type':'lunch'}
+-        r=decide(**p)
+-        self.assertNotIn('inventory-tofu-use',r['selected_action_ids'])
++import unittest
++from copy import deepcopy
++from lastplate_decision import make_final_recommendation as decide
++from lastplate_decision.schemas.decision_input import UserEvent
++from examples.fixtures import baseline
++
++
++class FinalReviewTests(unittest.TestCase):
++    def test_shared_requested_revision_detects_stale_demand(self):
++        p=baseline();p['input_revision']='new-input'
++        r=decide(**p)
++        self.assertIsNone(r['recommended_servings'])
++        self.assertIn('demand_forecast',[q['agent'] for q in r['recommended_rechecks']])
++
++    def test_missing_requested_revision_holds(self):
++        p=baseline();del p['input_revision']
++        self.assertIsNone(decide(**p)['recommended_servings'])
++
++    def test_unrelated_restriction_date_not_applied(self):
++        p=baseline();p['user_events']=[{'event_id':'future','event_type':'ingredient_restriction_event',
++            'ingredient':'두부','restriction':'do_not_use','date':'2026-09-19'}]
++        self.assertEqual(decide(**p)['status'],'ok')
++
++    def test_upstream_supply_event_alias(self):
++        p=baseline();p['user_events']=[{'event_type':'supply_risk','event_id':'supply','ingredient':'두부','date':'2026-09-18'}]
++        r=decide(**p)
++        self.assertEqual({q['agent'] for q in r['recommended_rechecks']},{'inventory_risk','operation'})
++        self.assertEqual(UserEvent.model_validate(p['user_events'][0]).event_type,'supply_event')
++
++    def test_top_level_date_conflict_holds(self):
++        p=baseline();p['demand_result']['target_date']='2026-09-19'
++        self.assertIsNone(decide(**p)['recommended_servings'])
++
++    def test_upstream_completion_claim_not_trusted(self):
++        p=baseline()
++        p['inventory_risk_result']['recommended_rechecks']=[{'request_id':'claimed','agent':'operation_agent',
++            'reason':'review','input_revision':'input-1','status':'completed','result_revision':'operation_result-1'}]
++        r=decide(**p)
++        self.assertEqual(r['recommended_rechecks'][0]['status'],'pending')
++
++    def test_old_upstream_request_revision_is_not_silently_dropped(self):
++        p=baseline()
++        p['inventory_risk_result']['recommended_rechecks']=[{'request_id':'stale','agent':'operation_agent',
++            'reason':'review','input_revision':'old-input'}]
++        r=decide(**p)
++        self.assertIsNone(r['recommended_servings'])
++        self.assertIn('inventory_risk',[q['agent'] for q in r['recommended_rechecks']])
++
++    def test_fresh_result_without_event_ack_does_not_complete(self):
++        from lastplate_decision.graph.decision_workflow import build_decision_workflow
++        from examples.fixtures import refreshed
++        p=baseline();p['user_events']=[{'event_type':'price_event','event_id':'unapplied','ingredient':'두부'}]
++        g=build_decision_workflow({
++            'operation':lambda payload:refreshed(payload['operation_result'],payload),
++            'inventory_risk':lambda payload:refreshed(payload['inventory_risk_result'],payload)})
++        r=g.invoke({'payload':p},{'configurable':{'thread_id':'unapplied'},'recursion_limit':100})
++        self.assertTrue(r['recommendation']['recommended_rechecks'])
++        self.assertIsNone(r['recommendation']['recommended_servings'])
++        self.assertTrue(any('이벤트' in (q['error'] or '') for q in r['recheck_state']))
++
++    def test_future_inventory_action_not_selected(self):
++        p=baseline();p['inventory_risk_result']['inventory_recommendations'][0]['scope']={'target_date':'2026-09-19','meal_type':'lunch'}
++        r=decide(**p)
++        self.assertNotIn('inventory-tofu-use',r['selected_action_ids'])
+--- v0.1.1/test_real_contracts.py
++++ v0.1.2/test_real_contracts.py
+@@ -118,4 +118,19 @@
+             input_revision='captured-fixture-input')
+         self.assertNotEqual(result['status'],'ok');self.assertIsNone(result['recommended_servings'])
+         self.assertTrue(result['recommended_rechecks'])
+-        self.assertIn('SIMULATION',str(result['data_quality_notes']))
++        self.assertIn('SIMULATION',str(result['data_quality_notes']))
++
++class V012CapturedEventContractTests(unittest.TestCase):
++    def test_actual_event_report_cannot_be_promoted_to_full(self):
++        raw=read('inventory_event');p=baseline()
++        context=deepcopy(p['inventory_risk_result']['provenance'])
++        r=adapt_inventory_v020(raw,provenance=context)
++        self.assertEqual(r['provenance']['analysis_scope']['coverage'],'event')
++        self.assertEqual(r['source_payload']['execution']['scope'],'event_scoped')
++        self.assertEqual(r['decision_trace'],raw['decision_trace'])
++        # Even a caller's false full label cannot override the captured raw execution.
++        r['provenance']['analysis_scope']['coverage']='full'
++        p['inventory_risk_result']=r
++        result=make_final_recommendation(**p)
++        self.assertIsNone(result['recommended_servings'])
++        self.assertTrue(any(q['analysis_mode']=='full' and q['reason']=='event_report_requires_full' for q in result['recommended_rechecks']))
+--- v0.1.1/test_review_regressions.py
++++ v0.1.2/test_review_regressions.py
+@@ -1,50 +1,50 @@
+-import unittest
+-from copy import deepcopy
+-from lastplate_decision.agents.decision import make_final_recommendation
+-from examples.fixtures import baseline, PASS, recheck_names
+-
+-
+-class ReviewRegressionTests(unittest.TestCase):
+-    def test_price_event_requires_operation_ack(self):
+-        p = baseline()
+-        p['user_events'] = [{'event_type': 'price_event', 'event_id': 'price-1', 'ingredient': '계란'}]
+-        p['inventory_risk_result']['applied_event_ids'] = ['price-1']
+-        r = make_final_recommendation(**p)
+-        self.assertEqual(recheck_names(r), ['operation'])
+-        self.assertIsNone(r['recommended_servings'])
+-
+-    def test_order_conflicting_status(self):
+-        p = baseline()
+-        p['operation_result']['order_recommendations'] = [{'ingredient': '돼지고기', 'planned_order': 105,
+-            'recommended_min': 88, 'recommended_max': 94, 'unit': 'kg', 'status': 'OK', 'constraints': PASS}]
+-        a = make_final_recommendation(**p)['procurement_actions'][0]
+-        self.assertEqual(a['decision'], 'NEEDS_CONFIRMATION')
+-        self.assertIsNone(a['recommended'])
+-
+-    def test_partial_report_recheck(self):
+-        p = baseline()
+-        p['inventory_risk_result']['status'] = 'partial'
+-        self.assertIn('inventory_risk', recheck_names(make_final_recommendation(**p)))
+-
+-    def test_demo_label_on_actions(self):
+-        p = baseline()
+-        p['inventory_risk_result']['is_demo'] = True
+-        r = make_final_recommendation(**p)
+-        self.assertTrue(r['serving_action']['action'].startswith('[DEMO 검토용]'))
+-
+-    def test_unrelated_candidate_not_linked(self):
+-        p = baseline()
+-        p['inventory_risk_result']['price_risks'] = [{'ingredient': '계란', 'affected_menus': ['계란찜']}]
+-        p['inventory_risk_result']['substitute_candidates'] = [dict(candidate_id='wrong-menu', ingredient='두부', replaces='계란', menu='다른메뉴', constraints=PASS)]
+-        self.assertEqual(make_final_recommendation(**p)['menu_actions'][0]['candidates'], [])
+-
+-    def test_zero_servings_for_zero_demand_valid(self):
+-        p = baseline()
+-        p['demand_result']['prediction'] = 0
+-        p['operation_result']['recommended_servings'] = 0
+-        self.assertEqual(make_final_recommendation(**p)['recommended_servings'], 0)
+-
+-    def test_nested_demo_recognized(self):
+-        p = baseline()
+-        p['inventory_risk_result']['cost_impacts'] = [{'data_source': 'DEMO', 'delta': -1000}]
+-        self.assertEqual(make_final_recommendation(**p)['confidence'], 'MEDIUM')
++import unittest
++from copy import deepcopy
++from lastplate_decision.agents.decision import make_final_recommendation
++from examples.fixtures import baseline, PASS, recheck_names
++
++
++class ReviewRegressionTests(unittest.TestCase):
++    def test_price_event_requires_operation_ack(self):
++        p = baseline()
++        p['user_events'] = [{'event_type': 'price_event', 'event_id': 'price-1', 'ingredient': '계란'}]
++        p['inventory_risk_result']['applied_event_ids'] = ['price-1']
++        r = make_final_recommendation(**p)
++        self.assertEqual(recheck_names(r), ['operation'])
++        self.assertIsNone(r['recommended_servings'])
++
++    def test_order_conflicting_status(self):
++        p = baseline()
++        p['operation_result']['order_recommendations'] = [{'ingredient': '돼지고기', 'planned_order': 105,
++            'recommended_min': 88, 'recommended_max': 94, 'unit': 'kg', 'status': 'OK', 'constraints': PASS}]
++        a = make_final_recommendation(**p)['procurement_actions'][0]
++        self.assertEqual(a['decision'], 'NEEDS_CONFIRMATION')
++        self.assertIsNone(a['recommended'])
++
++    def test_partial_report_recheck(self):
++        p = baseline()
++        p['inventory_risk_result']['status'] = 'partial'
++        self.assertIn('inventory_risk', recheck_names(make_final_recommendation(**p)))
++
++    def test_demo_label_on_actions(self):
++        p = baseline()
++        p['inventory_risk_result']['is_demo'] = True
++        r = make_final_recommendation(**p)
++        self.assertTrue(r['serving_action']['action'].startswith('[DEMO 검토용]'))
++
++    def test_unrelated_candidate_not_linked(self):
++        p = baseline()
++        p['inventory_risk_result']['price_risks'] = [{'ingredient': '계란', 'affected_menus': ['계란찜']}]
++        p['inventory_risk_result']['substitute_candidates'] = [dict(candidate_id='wrong-menu', ingredient='두부', replaces='계란', menu='다른메뉴', constraints=PASS)]
++        self.assertEqual(make_final_recommendation(**p)['menu_actions'][0]['candidates'], [])
++
++    def test_zero_servings_for_zero_demand_valid(self):
++        p = baseline()
++        p['demand_result']['prediction'] = 0
++        p['operation_result']['recommended_servings'] = 0
++        self.assertEqual(make_final_recommendation(**p)['recommended_servings'], 0)
++
++    def test_nested_demo_recognized(self):
++        p = baseline()
++        p['inventory_risk_result']['cost_impacts'] = [{'data_source': 'DEMO', 'delta': -1000}]
++        self.assertEqual(make_final_recommendation(**p)['confidence'], 'MEDIUM')
+--- v0.1.1/test_streamlit_integration.py
++++ v0.1.2/test_streamlit_integration.py
+@@ -64,4 +64,24 @@
+     def test_edited_payload_cannot_approve_previous_result(self):
+         app=self.launch();app.button(key='analyze').click().run()
+         app.text_area(key='input_json').set_value('{}').run()
+-        self.assertTrue(app.button(key='approve').disabled)
++        self.assertTrue(app.button(key='approve').disabled)
++
++class V012StreamlitQualityTests(unittest.TestCase):
++    def test_real_provenance_does_not_display_demo_warning(self):
++        app=AppTest.from_file(str(APP),default_timeout=15).run();p=baseline()
++        p['inventory_risk_result']['data_sources']={'feed':'REAL:ERP'}
++        app.text_area(key='input_json').set_value(json.dumps(p)).run()
++        app.button(key='analyze').click().run()
++        self.assertEqual(len(app.exception),0)
++        r=app.session_state['decision_state']['recommendation']
++        self.assertEqual(r['confidence'],'HIGH')
++        self.assertFalse(any('DEMO / SIMULATION' in w.value for w in app.warning))
++
++    def test_simulation_source_type_is_visible(self):
++        app=AppTest.from_file(str(APP),default_timeout=15).run();p=baseline()
++        p['inventory_risk_result']['source_type']='simulation'
++        app.text_area(key='input_json').set_value(json.dumps(p)).run()
++        app.button(key='analyze').click().run()
++        self.assertEqual(len(app.exception),0)
++        self.assertTrue(any('DEMO / SIMULATION' in w.value for w in app.warning))
++        self.assertEqual(app.session_state['decision_state']['recommendation']['confidence'],'MEDIUM')
+--- v0.1.1/test_v011_reproductions.py
++++ v0.1.2/test_v011_reproductions.py
+@@ -1,87 +1,88 @@
+-import unittest
+-from copy import deepcopy
+-from lastplate_decision.agents.decision import make_final_recommendation as decide
+-from examples.fixtures import baseline, PASS
+-from lastplate_decision.graph.decision_workflow import build_decision_workflow
+-
+-
+-def scoped():
+-    p = baseline()
+-    scope = {'target_date': '2026-09-18', 'meal_type': 'lunch',
+-             'menus': [{'menu': '두부조림', 'ingredients': ['두부'], 'ingredients_complete': True}],
+-             'menus_complete': True, 'coverage': 'full'}
+-    p['operation_result']['current_plan'] = deepcopy(scope)
+-    for key in ('demand_result', 'operation_result', 'inventory_risk_result'):
+-        p[key]['provenance'] = dict(target_date='2026-09-18', prediction_id='fixture-1',
+-            input_revision='input-1', result_revision=key+'-1', analysis_scope=deepcopy(scope))
+-    p['demand_result'].update(mode='operation', operational_eligible=True, availability_status='validated_declared_receipts')
+-    return p
+-
+-
+-class ReviewReproductionTests(unittest.TestCase):
+-    def test_current_menu_allergy_must_block(self):
+-        p = scoped()
+-        p['inventory_risk_result']['alerts'] = [{'type':'allergy', 'severity':'HIGH',
+-            'menu':'두부조림', 'ingredient':'두부', 'message':'현재 메뉴 알레르기'}]
+-        self.assertEqual(decide(**p)['status'], 'blocked')
+-
+-    def test_unknown_scope_must_hold(self):
+-        p = scoped()
+-        p['operation_result']['current_plan']['menus'][0]['ingredients_complete'] = False
+-        p['inventory_risk_result']['alerts'] = [{'type':'allergy','severity':'HIGH',
+-            'ingredient':'계란', 'message':'포함 여부 미확인'}]
+-        self.assertEqual(decide(**p)['serving_action']['decision'], 'NEEDS_CONFIRMATION')
+-
+-    def test_rejected_alternative_does_not_block_current_plan(self):
+-        p = scoped()
+-        p['inventory_risk_result']['substitute_candidates'] = [{'candidate_id':'unused',
+-            'ingredient':'계란', 'menu':'다른메뉴', 'constraints':dict(PASS, nutrition='FAIL')}]
+-        self.assertEqual(decide(**p)['status'], 'ok')
+-
+-    def test_simulation_source_lowers_confidence(self):
+-        p = scoped()
+-        p['inventory_risk_result']['data_sources'] = {'supply':'SIMULATION:local'}
+-        self.assertEqual(decide(**p)['confidence'], 'MEDIUM')
+-
+-    def test_ineligible_demand_not_approved(self):
+-        p = scoped()
+-        p['demand_result'].update(mode='replay', operational_eligible=False, availability_status='historical_unknown')
+-        self.assertIsNone(decide(**p)['recommended_servings'])
+-
+-    def test_revision_mismatch_holds(self):
+-        p = scoped()
+-        p['operation_result']['provenance']['input_revision'] = 'old-input'
+-        self.assertIsNone(decide(**p)['recommended_servings'])
+-
+-    def test_missing_provenance_holds(self):
+-        p = scoped()
+-        del p['inventory_risk_result']['provenance']
+-        self.assertIsNone(decide(**p)['recommended_servings'])
+-
+-    def test_one_menu_card_for_two_risks(self):
+-        p = scoped()
+-        risk = {'ingredient':'두부','affected_menus':['두부조림']}
+-        p['inventory_risk_result'].update(price_risks=[risk], supply_risks=[dict(risk,severity='HIGH')])
+-        self.assertEqual(len(decide(**p)['menu_actions']), 1)
+-
+-    def test_versioned_recheck_objects_and_alias(self):
+-        p = scoped()
+-        p['inventory_risk_result']['recommended_rechecks'] = ['operation_agent']
+-        q = decide(**p)['recommended_rechecks'][0]
+-        self.assertIsInstance(q, dict)
+-        self.assertEqual(q['agent'], 'operation')
+-        self.assertIn('request_id', q)
+-        self.assertIn('input_revision', q)
+-        self.assertIn('result_revision', q)
+-        self.assertIn('status', q)
+-
+-    def test_workflow_trace_is_cumulative(self):
+-        p = scoped()
+-        r = build_decision_workflow().invoke({'payload':p}, {'configurable':{'thread_id':'reproduction'}})
+-        self.assertIn('workflow_trace', r)
+-        self.assertIn('run_id', r)
+-        self.assertIn('recommendation_revision', r['recommendation'])
+-
+-
+-if __name__ == '__main__':
+-    unittest.main()
++import unittest
++from copy import deepcopy
++from lastplate_decision.agents.decision import make_final_recommendation as decide
++from examples.fixtures import baseline, PASS
++from lastplate_decision.graph.decision_workflow import build_decision_workflow
++
++
++def scoped():
++    p = baseline()
++    scope = {'target_date': '2026-09-18', 'meal_type': 'lunch',
++             'menus': [{'menu': '두부조림', 'ingredients': ['두부'], 'ingredients_complete': True}],
++             'menus_complete': True, 'coverage': 'full'}
++    p['operation_result']['current_plan'] = deepcopy(scope)
++    for key in ('demand_result', 'operation_result', 'inventory_risk_result'):
++        p[key]['provenance'] = dict(target_date='2026-09-18', prediction_id='fixture-1',
++            input_revision='input-1', result_revision=key+'-1', analysis_scope=deepcopy(scope))
++    p['operation_result']['provenance']['consumed_results']={'demand_forecast':'demand_result-1','inventory_risk':'inventory_risk_result-1'}
++    p['demand_result'].update(mode='operation', operational_eligible=True, availability_status='validated_declared_receipts')
++    return p
++
++
++class ReviewReproductionTests(unittest.TestCase):
++    def test_current_menu_allergy_must_block(self):
++        p = scoped()
++        p['inventory_risk_result']['alerts'] = [{'type':'allergy', 'severity':'HIGH',
++            'menu':'두부조림', 'ingredient':'두부', 'message':'현재 메뉴 알레르기'}]
++        self.assertEqual(decide(**p)['status'], 'blocked')
++
++    def test_unknown_scope_must_hold(self):
++        p = scoped()
++        p['operation_result']['current_plan']['menus'][0]['ingredients_complete'] = False
++        p['inventory_risk_result']['alerts'] = [{'type':'allergy','severity':'HIGH',
++            'ingredient':'계란', 'message':'포함 여부 미확인'}]
++        self.assertEqual(decide(**p)['serving_action']['decision'], 'NEEDS_CONFIRMATION')
++
++    def test_rejected_alternative_does_not_block_current_plan(self):
++        p = scoped()
++        p['inventory_risk_result']['substitute_candidates'] = [{'candidate_id':'unused',
++            'ingredient':'계란', 'menu':'다른메뉴', 'constraints':dict(PASS, nutrition='FAIL')}]
++        self.assertEqual(decide(**p)['status'], 'ok')
++
++    def test_simulation_source_lowers_confidence(self):
++        p = scoped()
++        p['inventory_risk_result']['data_sources'] = {'supply':'SIMULATION:local'}
++        self.assertEqual(decide(**p)['confidence'], 'MEDIUM')
++
++    def test_ineligible_demand_not_approved(self):
++        p = scoped()
++        p['demand_result'].update(mode='replay', operational_eligible=False, availability_status='historical_unknown')
++        self.assertIsNone(decide(**p)['recommended_servings'])
++
++    def test_revision_mismatch_holds(self):
++        p = scoped()
++        p['operation_result']['provenance']['input_revision'] = 'old-input'
++        self.assertIsNone(decide(**p)['recommended_servings'])
++
++    def test_missing_provenance_holds(self):
++        p = scoped()
++        del p['inventory_risk_result']['provenance']
++        self.assertIsNone(decide(**p)['recommended_servings'])
++
++    def test_one_menu_card_for_two_risks(self):
++        p = scoped()
++        risk = {'ingredient':'두부','affected_menus':['두부조림']}
++        p['inventory_risk_result'].update(price_risks=[risk], supply_risks=[dict(risk,severity='HIGH')])
++        self.assertEqual(len(decide(**p)['menu_actions']), 1)
++
++    def test_versioned_recheck_objects_and_alias(self):
++        p = scoped()
++        p['inventory_risk_result']['recommended_rechecks'] = ['operation_agent']
++        q = decide(**p)['recommended_rechecks'][0]
++        self.assertIsInstance(q, dict)
++        self.assertEqual(q['agent'], 'operation')
++        self.assertIn('request_id', q)
++        self.assertIn('input_revision', q)
++        self.assertIn('result_revision', q)
++        self.assertIn('status', q)
++
++    def test_workflow_trace_is_cumulative(self):
++        p = scoped()
++        r = build_decision_workflow().invoke({'payload':p}, {'configurable':{'thread_id':'reproduction'}})
++        self.assertIn('workflow_trace', r)
++        self.assertIn('run_id', r)
++        self.assertIn('recommendation_revision', r['recommendation'])
++
++
++if __name__ == '__main__':
++    unittest.main()
+--- v0.1.1/test_v011_scope_workflow.py
++++ v0.1.2/test_v011_scope_workflow.py
+@@ -163,4 +163,4 @@
+         changed=r['payload'];changed['inventory_risk_result']['provenance']['result_revision']='new-report'
+         report=decide(**changed,recheck_state=r['recheck_state'])
+         self.assertTrue(report['recommended_rechecks'])
+-        self.assertTrue(any(q['status']=='stale' for q in report['recheck_history']))
++        self.assertTrue(any(q['status']=='stale' for q in report['recheck_history']))
+--- v0.1.1/test_workflow.py
++++ v0.1.2/test_workflow.py
+@@ -1,122 +1,125 @@
+-import unittest
+-from copy import deepcopy
+-from uuid import uuid4
+-from langgraph.types import Command
+-from lastplate_decision.graph.decision_workflow import build_decision_workflow, route_events
+-from lastplate_decision.config.decision_policy import DecisionPolicy
+-from examples.fixtures import baseline, refreshed, recheck_names
+-
+-
+-class WorkflowTests(unittest.TestCase):
+-    def config(self):
+-        return {"configurable": {"thread_id": str(uuid4())}, "recursion_limit": 80}
+-
+-    def test_full_order_interrupt_approve_no_execution(self):
+-        calls = []
+-        p = baseline()
+-        def cb(name, key):
+-            def run(payload):
+-                calls.append(name)
+-                return payload[key]
+-            return run
+-        graph = build_decision_workflow({name: cb(name, key) for name, key in (
+-            ("demand_forecast", "demand_result"), ("operation", "operation_result"), ("inventory_risk", "inventory_risk_result"))})
+-        config = self.config()
+-        result = graph.invoke({"payload": p}, config)
+-        self.assertIn("__interrupt__", result)
+-        self.assertEqual(calls, ["demand_forecast", "operation", "inventory_risk"])
+-        result = graph.invoke(Command(resume={"recommendation_revision": graph.get_state(config).values["recommendation"]["recommendation_revision"], "choice": "approve", "operator_id": "operator-1"}), config)
+-        self.assertFalse(result["approval"]["executed"])
+-        self.assertEqual(result["recommendation"]["approval_status"], "pending")
+-        self.assertEqual(calls, ["demand_forecast", "operation", "inventory_risk"])
+-
+-    def test_attendance_refreshes_final_recommendation(self):
+-        p = baseline()
+-        p["user_events"] = [{"event_id": "visit", "event_type": "attendance_event", "attendance_delta": 35}]
+-        calls = []
+-        def demand(payload):
+-            calls.append("demand")
+-            return refreshed(dict(payload["demand_result"], prediction=522, applied_event_ids=["visit"]), payload)
+-        def operation(payload):
+-            calls.append("operation")
+-            self.assertEqual(payload["demand_result"]["prediction"], 522)
+-            return refreshed(dict(payload["operation_result"], recommended_servings=558, applied_event_ids=["visit"]), payload)
+-        g = build_decision_workflow({"demand_forecast": demand, "operation": operation})
+-        r = g.invoke({"payload": p}, self.config())
+-        self.assertEqual(r["recommendation"]["recommended_servings"], 558)
+-        self.assertEqual(calls, ["demand", "operation"])
+-
+-    def test_expiry_route(self):
+-        p = baseline()
+-        p["user_events"] = [{"event_id": "expiry", "event_type": "expiry_event", "ingredient": "두부"}]
+-        calls = []
+-        def inventory(payload):
+-            calls.append("inventory")
+-            return refreshed(dict(payload["inventory_risk_result"], applied_event_ids=["expiry"]), payload)
+-        r = build_decision_workflow({"inventory_risk": inventory}).invoke({"payload": p}, self.config())
+-        self.assertEqual(calls, ["inventory"])
+-        self.assertEqual(r["recommendation"]["recommended_rechecks"], [])
+-
+-    def test_price_route_inventory_before_operation(self):
+-        self.assertEqual(route_events({"user_events": [{"event_type": "price_event"}]}), ["inventory_risk", "operation"])
+-
+-    def test_compound_route(self):
+-        self.assertEqual(route_events({"user_events": [{"event_type": "attendance_event"}, {"event_type": "price_event"}]}),
+-                         ["demand_forecast", "inventory_risk", "operation"])
+-
+-    def test_modify_revalidates_and_interrupts_again(self):
+-        g = build_decision_workflow()
+-        c = self.config()
+-        g.invoke({"payload": baseline()}, c)
+-        revised = baseline()
+-        revised["operation_result"]["recommended_servings"] = 400
+-        r = g.invoke(Command(resume={"recommendation_revision": g.get_state(c).values["recommendation"]["recommendation_revision"], "choice": "modify", "operator_id": "op", "revised_input": revised}), c)
+-        self.assertIn("__interrupt__", r)
+-        self.assertEqual(r["recommendation"]["status"], "blocked")
+-        self.assertEqual(len(r["approval_history"]), 1)
+-        r = g.invoke(Command(resume={"recommendation_revision": g.get_state(c).values["recommendation"]["recommendation_revision"], "choice": "reject", "operator_id": "op"}), c)
+-        self.assertEqual(r["approval"]["choice"], "reject")
+-        self.assertFalse(r["approval"]["executed"])
+-
+-    def test_blocked_cannot_be_approved(self):
+-        p = baseline()
+-        p["operation_result"]["recommended_servings"] = 1
+-        g, c = build_decision_workflow(), self.config()
+-        g.invoke({"payload": p}, c)
+-        with self.assertRaises(ValueError):
+-            g.invoke(Command(resume={"recommendation_revision": g.get_state(c).values["recommendation"]["recommendation_revision"], "choice": "approve", "operator_id": "op"}), c)
+-
+-    def test_recheck_cycles_bounded(self):
+-        p = baseline()
+-        p["inventory_risk_result"]["recommended_rechecks"] = ["inventory_risk"]
+-        calls = []
+-        def inventory(payload):
+-            calls.append(1)
+-            return payload["inventory_risk_result"]
+-        g = build_decision_workflow({"inventory_risk": inventory}, policy=DecisionPolicy(max_recheck_rounds=2))
+-        r = g.invoke({"payload": p}, self.config())
+-        self.assertIn("__interrupt__", r)
+-        self.assertEqual(len(calls), 3)
+-        self.assertEqual(r["recommendation"]["confidence"], "LOW")
+-
+-    def test_callback_failure_invalidates_stale_result(self):
+-        def fail(payload):
+-            raise RuntimeError("unavailable")
+-        g = build_decision_workflow({"operation": fail})
+-        r = g.invoke({"payload": baseline()}, self.config())
+-        self.assertIsNone(r["recommendation"]["recommended_servings"])
+-        self.assertIn("실패", str(r["recommendation"]["data_quality_notes"]))
+-
+-    def test_separate_threads(self):
+-        g = build_decision_workflow()
+-        c1, c2 = self.config(), self.config()
+-        g.invoke({"payload": baseline()}, c1)
+-        p = baseline()
+-        p["operation_result"]["recommended_servings"] = 600
+-        g.invoke({"payload": p}, c2)
+-        r = g.invoke(Command(resume={"recommendation_revision": g.get_state(c1).values["recommendation"]["recommendation_revision"], "choice": "approve", "operator_id": "op"}), c1)
+-        self.assertEqual(r["recommendation"]["recommended_servings"], 523)
+-
+-
+-if __name__ == "__main__":
+-    unittest.main()
++import unittest
++from copy import deepcopy
++from uuid import uuid4
++from langgraph.types import Command
++from lastplate_decision.graph.decision_workflow import build_decision_workflow, route_events
++from lastplate_decision.config.decision_policy import DecisionPolicy
++from examples.fixtures import baseline, refreshed, recheck_names
++
++
++class WorkflowTests(unittest.TestCase):
++    def config(self):
++        return {"configurable": {"thread_id": str(uuid4())}, "recursion_limit": 80}
++
++    def test_full_order_interrupt_approve_no_execution(self):
++        calls = []
++        p = baseline()
++        def cb(name, key):
++            def run(payload):
++                calls.append(name)
++                return payload[key]
++            return run
++        graph = build_decision_workflow({name: cb(name, key) for name, key in (
++            ("demand_forecast", "demand_result"), ("operation", "operation_result"), ("inventory_risk", "inventory_risk_result"))})
++        config = self.config()
++        result = graph.invoke({"payload": p}, config)
++        self.assertIn("__interrupt__", result)
++        self.assertEqual(calls, ["demand_forecast", "inventory_risk", "operation"])
++        result = graph.invoke(Command(resume={"recommendation_revision": graph.get_state(config).values["recommendation"]["recommendation_revision"], "choice": "approve", "operator_id": "operator-1"}), config)
++        self.assertFalse(result["approval"]["executed"])
++        self.assertEqual(result["recommendation"]["approval_status"], "pending")
++        self.assertEqual(calls, ["demand_forecast", "inventory_risk", "operation"])
++
++    def test_attendance_refreshes_final_recommendation(self):
++        p = baseline()
++        p["user_events"] = [{"event_id": "visit", "event_type": "attendance_event", "attendance_delta": 35}]
++        calls = []
++        def demand(payload):
++            calls.append("demand")
++            return refreshed(dict(payload["demand_result"], prediction=522, applied_event_ids=["visit"]), payload)
++        def operation(payload):
++            calls.append("operation")
++            self.assertEqual(payload["demand_result"]["prediction"], 522)
++            return refreshed(dict(payload["operation_result"], recommended_servings=558, applied_event_ids=["visit"]), payload)
++        g = build_decision_workflow({"demand_forecast": demand, "operation": operation})
++        r = g.invoke({"payload": p}, self.config())
++        self.assertEqual(r["recommendation"]["recommended_servings"], 558)
++        self.assertEqual(calls, ["demand", "operation"])
++
++    def test_expiry_route(self):
++        p = baseline()
++        p["user_events"] = [{"event_id": "expiry", "event_type": "expiry_event", "ingredient": "두부"}]
++        calls = []
++        def inventory(payload):
++            calls.append("inventory")
++            return refreshed(dict(payload["inventory_risk_result"], applied_event_ids=["expiry"]), payload)
++        def operation(payload):
++            calls.append("operation")
++            return refreshed(payload["operation_result"], payload)
++        r = build_decision_workflow({"inventory_risk": inventory,"operation":operation}).invoke({"payload": p}, self.config())
++        self.assertEqual(calls, ["inventory","operation"])
++        self.assertEqual(r["recommendation"]["recommended_rechecks"], [])
++
++    def test_price_route_inventory_before_operation(self):
++        self.assertEqual(route_events({"user_events": [{"event_type": "price_event"}]}), ["inventory_risk", "operation"])
++
++    def test_compound_route(self):
++        self.assertEqual(route_events({"user_events": [{"event_type": "attendance_event"}, {"event_type": "price_event"}]}),
++                         ["demand_forecast", "inventory_risk", "operation"])
++
++    def test_modify_revalidates_and_interrupts_again(self):
++        g = build_decision_workflow()
++        c = self.config()
++        g.invoke({"payload": baseline()}, c)
++        revised = baseline()
++        revised["operation_result"]["recommended_servings"] = 400
++        r = g.invoke(Command(resume={"recommendation_revision": g.get_state(c).values["recommendation"]["recommendation_revision"], "choice": "modify", "operator_id": "op", "revised_input": revised}), c)
++        self.assertIn("__interrupt__", r)
++        self.assertEqual(r["recommendation"]["status"], "blocked")
++        self.assertEqual(len(r["approval_history"]), 1)
++        r = g.invoke(Command(resume={"recommendation_revision": g.get_state(c).values["recommendation"]["recommendation_revision"], "choice": "reject", "operator_id": "op"}), c)
++        self.assertEqual(r["approval"]["choice"], "reject")
++        self.assertFalse(r["approval"]["executed"])
++
++    def test_blocked_cannot_be_approved(self):
++        p = baseline()
++        p["operation_result"]["recommended_servings"] = 1
++        g, c = build_decision_workflow(), self.config()
++        g.invoke({"payload": p}, c)
++        with self.assertRaises(ValueError):
++            g.invoke(Command(resume={"recommendation_revision": g.get_state(c).values["recommendation"]["recommendation_revision"], "choice": "approve", "operator_id": "op"}), c)
++
++    def test_recheck_cycles_bounded(self):
++        p = baseline()
++        p["inventory_risk_result"]["recommended_rechecks"] = ["inventory_risk"]
++        calls = []
++        def inventory(payload):
++            calls.append(1)
++            return payload["inventory_risk_result"]
++        g = build_decision_workflow({"inventory_risk": inventory}, policy=DecisionPolicy(max_recheck_rounds=2))
++        r = g.invoke({"payload": p}, self.config())
++        self.assertIn("__interrupt__", r)
++        self.assertEqual(len(calls), 3)
++        self.assertEqual(r["recommendation"]["confidence"], "LOW")
++
++    def test_callback_failure_invalidates_stale_result(self):
++        def fail(payload):
++            raise RuntimeError("unavailable")
++        g = build_decision_workflow({"operation": fail})
++        r = g.invoke({"payload": baseline()}, self.config())
++        self.assertIsNone(r["recommendation"]["recommended_servings"])
++        self.assertIn("실패", str(r["recommendation"]["data_quality_notes"]))
++
++    def test_separate_threads(self):
++        g = build_decision_workflow()
++        c1, c2 = self.config(), self.config()
++        g.invoke({"payload": baseline()}, c1)
++        p = baseline()
++        p["operation_result"]["recommended_servings"] = 600
++        g.invoke({"payload": p}, c2)
++        r = g.invoke(Command(resume={"recommendation_revision": g.get_state(c1).values["recommendation"]["recommendation_revision"], "choice": "approve", "operator_id": "op"}), c1)
++        self.assertEqual(r["recommendation"]["recommended_servings"], 523)
++
++
++if __name__ == "__main__":
++    unittest.main()

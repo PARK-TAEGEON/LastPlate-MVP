@@ -1,0 +1,960 @@
+{
+  "site_id": "DEMO-LH",
+  "site_name": "LH 유사 시연 사업장",
+  "target_date": "2026-09-19",
+  "as_of": "2026-09-18",
+  "meal_type": "lunch",
+  "meal_capacity": 2000,
+  "attendance": {
+    "registered_population": 3000,
+    "vacation": 30,
+    "business_trip": 50,
+    "work_from_home": 10,
+    "overtime": 50
+  },
+  "weekly_menu": [
+    {
+      "date": "2026-09-19",
+      "meal_type": "lunch",
+      "menu_name": "두부조림"
+    }
+  ],
+  "recipes": [
+    {
+      "recipe_id": "R1",
+      "menu_name": "두부조림",
+      "category": "protein_side",
+      "ingredients": [
+        {
+          "ingredient": "두부",
+          "amount_per_serving": 80.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "간장",
+          "amount_per_serving": 3.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R2",
+      "menu_name": "계란찜",
+      "category": "protein_side",
+      "ingredients": [
+        {
+          "ingredient": "계란",
+          "amount_per_serving": 70.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "양파",
+          "amount_per_serving": 10.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R3",
+      "menu_name": "계란말이",
+      "category": "protein_side",
+      "ingredients": [
+        {
+          "ingredient": "계란",
+          "amount_per_serving": 80.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "양파",
+          "amount_per_serving": 10.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R4",
+      "menu_name": "닭갈비",
+      "category": "protein_main",
+      "ingredients": [
+        {
+          "ingredient": "닭고기",
+          "amount_per_serving": 100.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "양배추",
+          "amount_per_serving": 30.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R5",
+      "menu_name": "제육볶음",
+      "category": "protein_main",
+      "ingredients": [
+        {
+          "ingredient": "돼지고기",
+          "amount_per_serving": 120.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "양파",
+          "amount_per_serving": 20.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R6",
+      "menu_name": "버섯볶음",
+      "category": "protein_side",
+      "ingredients": [
+        {
+          "ingredient": "버섯",
+          "amount_per_serving": 80.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R7",
+      "menu_name": "짜게조린두부",
+      "category": "protein_side",
+      "ingredients": [
+        {
+          "ingredient": "두부",
+          "amount_per_serving": 80.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "간장",
+          "amount_per_serving": 20.0,
+          "unit": "g"
+        }
+      ]
+    },
+    {
+      "recipe_id": "R8",
+      "menu_name": "소고기볶음",
+      "category": "protein_main",
+      "ingredients": [
+        {
+          "ingredient": "소고기",
+          "amount_per_serving": 120.0,
+          "unit": "g"
+        },
+        {
+          "ingredient": "양파",
+          "amount_per_serving": 20.0,
+          "unit": "g"
+        }
+      ]
+    }
+  ],
+  "inventory": [
+    {
+      "ingredient": "두부",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-03",
+      "unit_price": 3000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "refrigerated",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "두부",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-04",
+      "unit_price": 3000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "refrigerated",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "계란",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-05",
+      "unit_price": 6100.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "refrigerated",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "닭고기",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-06",
+      "unit_price": 9000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "refrigerated",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "돼지고기",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-07",
+      "unit_price": 10000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "frozen",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "양파",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-08",
+      "unit_price": 2000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "ambient",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "간장",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-09",
+      "unit_price": 4000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "ambient",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "양배추",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-10",
+      "unit_price": 1800.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "refrigerated",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "버섯",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-11",
+      "unit_price": 5000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "refrigerated",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "소금",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-12",
+      "unit_price": 1000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "ambient",
+      "last_used_date": "2026-09-18"
+    },
+    {
+      "ingredient": "소고기",
+      "current_stock": 1000,
+      "unit": "kg",
+      "expiry_date": "2026-10-13",
+      "unit_price": 30000.0,
+      "minimum_stock": 0,
+      "planned_order": 0,
+      "storage_type": "frozen",
+      "last_used_date": "2026-09-18"
+    }
+  ],
+  "planned_orders": [
+    {
+      "ingredient": "두부",
+      "planned_order": 0,
+      "unit": "kg"
+    },
+    {
+      "ingredient": "간장",
+      "planned_order": 0,
+      "unit": "kg"
+    }
+  ],
+  "nutrition": [
+    {
+      "ingredient": "두부",
+      "serving_basis": 100.0,
+      "kcal": 95.0,
+      "protein": 10.0,
+      "carbohydrate": 3.0,
+      "fat": 5.0,
+      "sodium": 8.0,
+      "allergens": [
+        "대두"
+      ]
+    },
+    {
+      "ingredient": "계란",
+      "serving_basis": 100.0,
+      "kcal": 143.0,
+      "protein": 12.6,
+      "carbohydrate": 0.7,
+      "fat": 9.5,
+      "sodium": 142.0,
+      "allergens": [
+        "계란"
+      ]
+    },
+    {
+      "ingredient": "닭고기",
+      "serving_basis": 100.0,
+      "kcal": 165.0,
+      "protein": 31.0,
+      "carbohydrate": 0.0,
+      "fat": 3.6,
+      "sodium": 74.0,
+      "allergens": []
+    },
+    {
+      "ingredient": "돼지고기",
+      "serving_basis": 100.0,
+      "kcal": 170.0,
+      "protein": 27.0,
+      "carbohydrate": 0.0,
+      "fat": 7.0,
+      "sodium": 60.0,
+      "allergens": []
+    },
+    {
+      "ingredient": "양파",
+      "serving_basis": 100.0,
+      "kcal": 40.0,
+      "protein": 1.1,
+      "carbohydrate": 9.3,
+      "fat": 0.1,
+      "sodium": 4.0,
+      "allergens": []
+    },
+    {
+      "ingredient": "간장",
+      "serving_basis": 100.0,
+      "kcal": 53.0,
+      "protein": 8.0,
+      "carbohydrate": 5.0,
+      "fat": 0.0,
+      "sodium": 5500.0,
+      "allergens": [
+        "대두",
+        "밀"
+      ]
+    },
+    {
+      "ingredient": "양배추",
+      "serving_basis": 100.0,
+      "kcal": 25.0,
+      "protein": 1.3,
+      "carbohydrate": 5.8,
+      "fat": 0.1,
+      "sodium": 18.0,
+      "allergens": []
+    },
+    {
+      "ingredient": "버섯",
+      "serving_basis": 100.0,
+      "kcal": 22.0,
+      "protein": 3.1,
+      "carbohydrate": 3.3,
+      "fat": 0.3,
+      "sodium": 5.0,
+      "allergens": []
+    },
+    {
+      "ingredient": "소금",
+      "serving_basis": 100.0,
+      "kcal": 0.0,
+      "protein": 0.0,
+      "carbohydrate": 0.0,
+      "fat": 0.0,
+      "sodium": 39000.0,
+      "allergens": []
+    },
+    {
+      "ingredient": "소고기",
+      "serving_basis": 100.0,
+      "kcal": 200.0,
+      "protein": 26.0,
+      "carbohydrate": 0.0,
+      "fat": 10.0,
+      "sodium": 70.0,
+      "allergens": []
+    }
+  ],
+  "prices": [
+    {
+      "date": "2026-09-18",
+      "ingredient": "두부",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "계란",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "닭고기",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "돼지고기",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "양파",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "간장",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "양배추",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "버섯",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "소금",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    },
+    {
+      "date": "2026-09-18",
+      "ingredient": "소고기",
+      "current_price": 1000,
+      "price_1w_ago": 1000,
+      "price_2w_ago": 1000,
+      "price_3w_ago": 1000,
+      "price_4w_ago": 1000,
+      "unit": "kg"
+    }
+  ],
+  "monthly_prices": [
+    {
+      "year_month": "2024-09",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "두부",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "계란",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "닭고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "돼지고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "양파",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "간장",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "양배추",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "버섯",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "소금",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2024-09",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2025-09",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-04",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-05",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-06",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-07",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    },
+    {
+      "year_month": "2026-08",
+      "ingredient": "소고기",
+      "average_price": 1000,
+      "unit": "kg"
+    }
+  ],
+  "supply_events": [],
+  "sources": {
+    "recipe": "DEMO:demo_recipe_ingredients.csv",
+    "nutrition": "DEMO:demo_nutrition.csv",
+    "price_trend": "DEMO:demo_price_trend.csv",
+    "monthly_price": "DEMO:demo_monthly_price.csv",
+    "inventory": "DEMO:food_inventory.xlsx",
+    "supply_risk": "DEMO/SIMULATION:demo_risk_events.csv",
+    "weekly_menu": "DEMO:weekly_menu.xlsx",
+    "constraints": "DEMO:synthetic whole-meal nutrition supplied separately from dish-level inventory checks"
+  },
+  "operation_policy": {
+    "safety_margin_pct": 3,
+    "execution_mode": "simulation",
+    "constraints": {
+      "minimum_protein": 20,
+      "calorie_range": [
+        500,
+        900
+      ],
+      "sodium_max": 1500,
+      "allergy_restriction": [
+        "땅콩"
+      ]
+    },
+    "nutrition_per_serving": {
+      "protein": 30,
+      "calories": 700,
+      "sodium": 1000,
+      "allergens": [
+        "대두"
+      ]
+    }
+  },
+  "events": [],
+  "availability": null,
+  "is_demo": true
+}
