@@ -1,12 +1,13 @@
-import {api} from './api/lastplateApi.js?v=5';
-import {$,node,fmt,table} from './components/cards.js?v=5';
+import {api} from './api/lastplateApi.js?v=6';
+import {$,node,fmt,table} from './components/cards.js?v=6';
 
 const slots={rice:'밥',soup:'국',main:'메인반찬',side:'사이드반찬'};
 export function initMonthly(hooks){
   let data=null,sequence=0,running=false,stop=false,loadedKey='',dirty=false,sharedDraft=null,reading=false;
   const dayDrafts=new Map();
+  let exampleKey="",examplesReady=false;
   const draftKey=()=>selection()?.site+'|'+selection()?.date;
-  const captureDay=()=>({menus:Object.fromEntries(Object.keys(slots).map(s=>[s,$('day-'+s).value])),change:{reason:$('day-reason').value.trim(),increase:Number($('day-increase').value),decrease:Number($('day-decrease').value),note:$('day-note').value.trim()}});
+  const captureDay=()=>({diners:$('day-diners').value===''?null:Number($('day-diners').value),menus:Object.fromEntries(Object.keys(slots).map(s=>[s,$('day-'+s).value])),change:{reason:$('day-reason').value.trim(),increase:Number($('day-increase').value),decrease:Number($('day-decrease').value),note:$('day-note').value.trim()}});
   const selection=()=>hooks.selection();
   const selectedDay=()=>data?.days.find(d=>d.date===selection()?.date);
   const incomplete=day=>day?.summary?.calculation_complete===false;
@@ -25,6 +26,8 @@ export function initMonthly(hooks){
     $('month-refresh').disabled=locked||running||reading;
     $('month-input').disabled=locked||running;$('day-edit-fields').disabled=locked||running||reading||!data;
     $('month-stop').disabled=!running;$('month-stop').hidden=!running;
+    $('ack-button').disabled=locked||running||!canConfirm();
+    $('apply-examples').disabled=locked||running||!examplesReady||dirty||dayDrafts.has(draftKey());
   }
   function render(){
     if(!data)return;
@@ -44,7 +47,7 @@ export function initMonthly(hooks){
       b.append(node('strong',String(number),'calendar-number'));
       if(day){
         const stale=day.plan_id&&(dirty||day.generated_revision!==day.revision);
-        b.append(node('span',incomplete(day)?'계산 미완료 · 다시 시도':day.pending_plan_id?'계산 완료 · 저장 재시도':stale?'수정 · 재계산 필요':day.plan_id?(day.summary?.blocked?'확인 필요':'계획 생성됨'):'계획 생성 전','calendar-status'+(stale||incomplete(day)?' pending':'')));
+        b.append(node('span',incomplete(day)?'계산 미완료 · 다시 시도':day.pending_plan_id?'계산 완료 · 저장 재시도':stale?'수정 · 재계산 필요':day.plan_id?(day.summary?.confirmed_at?'조리량 확정':day.summary?.blocked?'확인 필요':'계획 생성됨'):'계획 생성 전','calendar-status'+(stale||incomplete(day)?' pending':'')));
         for(const [key,label] of Object.entries(slots))b.append(node('span',`${label} · ${day.menus[key]}`,'calendar-menu'));
         if(day.summary)b.append(node('span',`예상 ${fmt(day.summary.operating_diners)}명`,'calendar-diners'));
         if(day.change.increase||day.change.decrease)b.append(node('span',`증가 ${day.change.increase} · 감소 ${day.change.decrease}명`,'calendar-change'));
@@ -58,6 +61,7 @@ export function initMonthly(hooks){
   }
   function renderDay(){
     const saved=selectedDay();$('day-workspace').hidden=!saved;if(!saved)return;const day={...saved,...dayDrafts.get(draftKey())};
+    $('day-diners').value=day.diners??'';loadExamples();
     $('day-title').textContent=`${day.date} · 메뉴와 인원 변경`;
     for(const [key,label] of Object.entries(slots)){
       const select=$('day-'+key);select.replaceChildren(...data.catalog[key].map(name=>new Option(name,name)));select.value=day.menus[key];select.setAttribute('aria-label',label);
@@ -126,7 +130,7 @@ export function initMonthly(hooks){
   async function save(){
     if(!data)throw new Error('월간 식단을 먼저 불러오세요.');
     const input=sharedDraft||hooks.input();
-    update(await api.saveMonth(data.month,{site_id:selection().site,expected_revision:data.revision,attendance:input.attendance,inventory:input.inventory,planned_orders:input.planned_orders,inventory_uploaded:input.inventory_uploaded,days:data.days.map(d=>({date:d.date,menus:d.menus,change:d.change,...dayDrafts.get(selection().site+'|'+d.date)}))}));
+    update(await api.saveMonth(data.month,{site_id:selection().site,expected_revision:data.revision,attendance:input.attendance,inventory:input.inventory,planned_orders:input.planned_orders,inventory_uploaded:input.inventory_uploaded,days:data.days.map(d=>({date:d.date,menus:d.menus,change:d.change,diners:d.diners??null,...dayDrafts.get(selection().site+'|'+d.date)}))}));
     for(const d of data.days)dayDrafts.delete(selection().site+'|'+d.date);
   }
   async function generateMonth(){
@@ -147,9 +151,9 @@ export function initMonthly(hooks){
   $('month-calendar').addEventListener('click',async e=>{const b=e.target.closest('[data-calendar-date]');if(!b||running||hooks.locked())return;const day=data.days.find(d=>d.date===b.dataset.calendarDate);await hooks.select(day.date,day.plan_id,'planner');$('day-workspace').scrollIntoView({block:'start'});});
   $('day-form').addEventListener('input',()=>{dayDrafts.set(draftKey(),captureDay());$('day-reason').required=Number($('day-increase').value)>0||Number($('day-decrease').value)>0;$('day-state').textContent='저장 전 변경사항이 있습니다. 아래 변경사항 반영을 눌러 계산하세요.';renderAgent();sync(hooks.locked());});
   $('plan-form').addEventListener('input',capture);
-  $('day-form').addEventListener('submit',e=>{e.preventDefault();const {menus,change}=captureDay();void run('변경사항을 반영하고 Agent가 다시 계산합니다…',async()=>{
+  $('day-form').addEventListener('submit',e=>{e.preventDefault();const {menus,change,diners}=captureDay();void run('변경사항을 반영하고 Agent가 다시 계산합니다…',async()=>{
     if(!data.revision)await save();const day=selectedDay();
-    update(await api.saveDay(data.month,day.date,{site_id:selection().site,expected_revision:day.revision,menus,change}));
+    update(await api.saveDay(data.month,day.date,{site_id:selection().site,expected_revision:day.revision,menus,change,diners}));
     dayDrafts.delete(draftKey());
     const fresh=selectedDay();const result=await api.generateDay(data.month,fresh.date,{site_id:selection().site,expected_revision:fresh.revision});update(result.month);if(result.plan.saved)await hooks.select(fresh.date,result.plan.id);else await hooks.present(fresh.date,result.plan);message(resultMessage(result.plan,'선택한 날짜의 변경사항을 반영했습니다. Agent 권고를 확인하세요.'),!result.plan.saved||!result.plan.calculation_complete);
   });});
@@ -170,6 +174,48 @@ export function initMonthly(hooks){
   $('month-refresh').addEventListener('click',()=>{if(!running&&!hooks.locked())void onSelection(true);});
   $('month-input').addEventListener('change',()=>{if($('month-input').value)void hooks.select($('month-input').value+'-01',null);});
   $('day-plan-link').addEventListener('click',()=>$('plan-summary').scrollIntoView({block:'start'}));
+
+  function canConfirm(){
+    const day=selectedDay(),plan=hooks.plan();
+    if(!day||!plan||day.plan_id!==plan.id||!complete(day)||dirty||dayDrafts.has(draftKey())||(sharedDraft&&['attendance','inventory','planned_orders'].some(k=>JSON.stringify(sharedDraft[k])!==JSON.stringify(data.context[k]))))return false;
+    if(plan.confirmed_at)return true;
+    return plan.saved&&!plan.blocked&&day.diners!=null&&plan.operating_diners===day.diners&&$('warnings-reviewed').checked;
+  }
+  $('warnings-reviewed').addEventListener('change',()=>sync(hooks.locked()));
+  async function confirmPlan(){
+    if(!canConfirm())return;
+    await run('식수와 조리량을 확정합니다…',async()=>{
+      const day=selectedDay();const result=await api.confirmDay(data.month,day.date,{site_id:selection().site,expected_revision:day.revision,plan_id:hooks.plan().id,warnings_reviewed:true});
+      update(result.month);await hooks.select(day.date,result.plan.id);
+      message(`운영 식수 ${result.plan.confirmed_diners}명 · 조리량 ${result.plan.final_servings}식을 확정했습니다.`);
+    });
+  }
+  async function loadExamples(){
+    const day=selectedDay();if(!day)return;
+    const key=selection().site+'|'+day.date+'|'+day.revision;
+    if(key===exampleKey)return;exampleKey=key;examplesReady=false;
+    const root=$('data-examples');root.replaceChildren(node('p','시연 예시를 불러오는 중…','muted'));
+    try{
+      const response=await api.dataExamples(data.month,day.date,selection().site);if(key!==exampleKey)return;
+      root.replaceChildren();
+      for(const provider of response.providers){
+        const card=node('section',null,'data-example');const label=node('label'),input=node('input');input.type='checkbox';input.dataset.provider=provider.id;input.checked=response.selected.includes(provider.id);
+        label.append(input,node('strong',provider.title+' · '+provider.rows.length+'건'));card.append(label,node('p',provider.provider+' · 시연 자료 / 실제 API 미연결','muted'));
+        for(const row of provider.rows)card.append(node('p',row.label+' · '+row.description));root.append(card);
+      }
+      examplesReady=true;
+    }catch(error){if(key!==exampleKey)return;root.replaceChildren(node('p',error.message,'notice'));const retry=node('button','예시 다시 불러오기','secondary small');retry.type='button';retry.onclick=()=>{exampleKey='';void loadExamples();};root.append(retry);}
+    finally{sync(hooks.locked());}
+  }
+  $('apply-examples').addEventListener('click',()=>void run('선택한 시연 자료로 다시 계산합니다…',async()=>{
+    if(dirty||dayDrafts.has(draftKey()))throw new Error('메뉴·인원 변경사항을 먼저 반영하세요.');
+    if(!data.revision)await save();const day=selectedDay();
+    const providers=[...document.querySelectorAll('[data-provider]:checked')].map(i=>i.dataset.provider);
+    update(await api.applyExamples(data.month,day.date,{site_id:selection().site,expected_revision:day.revision,providers}));
+    const fresh=selectedDay();const result=await api.generateDay(data.month,day.date,{site_id:selection().site,expected_revision:fresh.revision});update(result.month);
+    if(result.plan.saved)await hooks.select(day.date,result.plan.id);else await hooks.present(day.date,result.plan);
+    message(resultMessage(result.plan,'시연 자료를 반영했습니다. 조리량·재료·가격·위험을 확인한 뒤 확정하세요.'),!result.plan.saved||!result.plan.calculation_complete);
+  }));
   async function onRetried(plan){const day=selectedDay();if(day?.pending_plan_id===plan.id){const result=await api.generateDay(data.month,day.date,{site_id:selection().site,expected_revision:day.revision});update(result.month);}}
-  return {beginSelection,onSelection,generateMonth,renderAgent,sync,capture,onRetried};
+  return {beginSelection,onSelection,generateMonth,renderAgent,sync,capture,onRetried,canConfirm,confirmPlan};
 }

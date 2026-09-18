@@ -11,7 +11,7 @@ from integration.adapters.operation_adapter import build_operation
 def fingerprint(value):
     return hashlib.sha256(json.dumps(value,sort_keys=True,ensure_ascii=False,allow_nan=False).encode()).hexdigest()
 
-def run_lastplate_pipeline(input_data, *, config=None, hooks=None, attendance_delta=0):
+def run_lastplate_pipeline(input_data, *, config=None, hooks=None, attendance_delta=0, operating_diners=None):
     """One lunch service per request; weekly context is explicitly scoped to that service.
 
     Config is server-owned. Hooks are advisory, may run again on retry, and must upsert
@@ -75,15 +75,17 @@ def run_lastplate_pipeline(input_data, *, config=None, hooks=None, attendance_de
             operation_input=build_operation(p,d)
             # Explicit event scenario, kept separate from the immutable ML output.
             # Operation still owns buffers, rounding, recipes, stock and order arithmetic.
-            if attendance_delta:
+            if attendance_delta or operating_diners is not None:
                 scenario=operation_input['demand_result']
-                scenario['prediction']=max(0,d['predicted_diners']+attendance_delta)
+                scenario['prediction']=operating_diners if operating_diners is not None else max(0,d['predicted_diners']+attendance_delta)
                 if scenario.get('prediction_interval'):
                     scenario['prediction_interval']={k:max(0,v+attendance_delta) for k,v in scenario['prediction_interval'].items()}
+                if operating_diners is not None:
+                    scenario['prediction_interval']=None
                 operation_input['_demand_envelope']['event_scenario']={
                     'raw_model_prediction':d['predicted_diners'],
                     'attendance_delta':attendance_delta,'scenario_diners':scenario['prediction'],
-                    'source':'explicit_user_event','requires_confirmation':True}
+                    'source':'operator_count' if operating_diners is not None else 'explicit_user_event','requires_confirmation':True}
                 result['warnings'].append(dict(code='EVENT_SCENARIO_APPLIED',stage='operation',
                     message='원본 ML 예측을 보존하고 명시적 인원 변동을 운영 시나리오에 반영했습니다. 운영자 확인이 필요합니다.'))
             o=call('operation',operation_input)
@@ -111,7 +113,8 @@ def run_lastplate_pipeline(input_data, *, config=None, hooks=None, attendance_de
     scope=dict(target_date=p['target_date'],meal_type=p['meal_type'],coverage='full',menus_complete=True,
         menus=[dict(menu=name,ingredients=[i['ingredient'] for recipe in p['recipes'] if recipe['menu_name']==name for i in recipe['ingredients']],
             ingredients_complete=any(recipe['menu_name']==name for recipe in p['recipes'])) for name in selected])
-    call('decision',dict(payload=p,demand=d,operation=o,inventory_risk=r,scope=scope))
+    call('decision',dict(payload=p,demand=d,operation=o,inventory_risk=r,scope=scope,
+        operating_diners=operating_diners))
     result['pipeline_status']='COMPLETE' if all(result[k] is not None for k in ('demand','operation','inventory_risk','decision')) and not result['errors'] else 'PARTIAL'
     result['timings']['total']=round(time.perf_counter()-start,4)
     return PipelineResult.model_validate(result).model_dump(mode='json')

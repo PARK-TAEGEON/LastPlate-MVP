@@ -16,7 +16,7 @@ log=logging.getLogger(__name__)
 
 
 def native_input(request, request_id, event_context):
-    p=request.model_dump(mode='json',exclude={'site_name','events','is_demo'})
+    p=request.model_dump(mode='json',exclude={'site_name','events','is_demo','operating_diners_override'})
     # Arrival dates are UI schedule notes, not verified stock/receipts in native contracts.
     p['planned_orders']=[{k:v for k,v in order.items() if k!='arrival_date'} for order in p['planned_orders']]
     p['request_id']=request_id
@@ -81,7 +81,7 @@ def plan(request, settings, parent_request_id=None):
         with TemporaryDirectory(prefix='lastplate-native-') as scratch:
             raw=run_lastplate_pipeline(p,config=PipelineConfig(storage_dir=Path(scratch),
                 mode=settings.mode,timeout_seconds=settings.stage_timeout),hooks=hooks,
-                attendance_delta=context['attendance_delta'])
+                attendance_delta=context['attendance_delta'], operating_diners=request.operating_diners_override)
         errors=[results.message(e) for e in raw['errors']]
         for diagnostic in context['diagnostics']:
             if diagnostic.get('errors'):

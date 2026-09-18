@@ -18,7 +18,7 @@ from backend.adapters.persistence import Conflict,now
 router=APIRouter(prefix='/api/ui/months')
 locks={}
 locks_guard=threading.Lock()
-SUMMARY_FIELDS=('model_diners','operating_diners','review_servings','blocked','calculation','calculation_complete','saved')
+SUMMARY_FIELDS=('model_diners','operating_diners','review_servings','final_servings','confirmed_at','blocked','calculation','calculation_complete','saved')
 
 class Change(Contract):
     reason:str=Field(default='',max_length=200)
@@ -31,6 +31,7 @@ class Change(Contract):
         return self
 
 class Day(Contract):
+    diners:int|None=Field(default=None,ge=0,le=100000,strict=True)
     date:date
     menus:dict[str,str]
     change:Change=Field(default_factory=Change)
@@ -45,6 +46,7 @@ class MonthSave(Contract):
     inventory_uploaded:bool=False
 
 class DaySave(Contract):
+    diners:int|None=Field(default=None,ge=0,le=100000,strict=True)
     site_id:str
     expected_revision:int=Field(ge=1)
     menus:dict[str,str]
@@ -60,6 +62,13 @@ class Review(Generate):
     candidate_index:int=Field(default=0,ge=0)
     decision:Literal['accept','reject']
     reason:str=Field(default='',max_length=500)
+
+class Confirmation(Generate):
+    plan_id:str
+    warnings_reviewed:Literal[True]
+
+class ExampleSelection(Generate):
+    providers:list[Literal['recipe','nutrition','price','supply']]=Field(max_length=4)
 
 def ensure(db):
     db.repo.connection.execute('CREATE TABLE IF NOT EXISTS api_month_schedules (site_id TEXT NOT NULL, month TEXT NOT NULL, revision INTEGER NOT NULL, data_json TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(site_id,month))')
@@ -143,9 +152,10 @@ def save_month(month:str,payload:MonthSave,request:Request):
             previous={d['date']:d for d in data['days']};days=[]
             for value in payload.days:
                 check_menus(value.menus,base);d=value.model_dump(mode='json');old=previous.get(d['date'])
-                changed=not old or base_changed or any(d[k]!=old[k] for k in ('menus','change'))
+                changed=not old or base_changed or any(d[k]!=old.get(k) for k in ('menus','change','diners'))
                 if old:
                     row={**old,**d,'revision':old['revision']+(1 if changed else 0)}
+                    if old['menus']!=d['menus']:row.pop('data_examples',None)
                     if old['change']!=d['change']:row.update(note_review=None,note_action='pending')
                 else:row={**d,'revision':1,'plan_id':None,'generated_revision':None,'reviews':[],'note_review':None,'note_action':'pending'}
                 days.append(row)
@@ -160,9 +170,10 @@ def save_day(month:str,target:date,payload:DaySave,request:Request):
             data=read(db,payload.site_id,month,True);d=day_in(data,str(target));check_menus(payload.menus,data['base'])
             if d['revision']!=payload.expected_revision:raise Conflict('이 날짜의 입력이 변경됐습니다. 새로고침 후 다시 반영하세요.')
             change=payload.change.model_dump()
-            if d['menus']!=payload.menus or d['change']!=change:
+            if d['menus']!=payload.menus or d['change']!=change or d.get('diners')!=payload.diners:
                 if d['change']!=change:d.update(note_action='pending',note_review=None)
-                d.update(menus=payload.menus,change=change,revision=d['revision']+1)
+                if d['menus']!=payload.menus:d.pop('data_examples',None)
+                d.update(menus=payload.menus,change=change,diners=payload.diners,revision=d['revision']+1)
             write(db,data)
         return view(data)
 
@@ -173,7 +184,49 @@ def day_request(data,d):
     if change['increase'] or change['decrease']:
         p['events'].append(dict(event_type='attendance_event',date=d['date'],attendance_delta=change['increase']-change['decrease'],reason=change['reason'],description=change['reason']))
     if change['note'] and d['note_action']=='accept':p['events'].append(d['date']+' '+change['note'])
-    return PlanRequest.model_validate(p)
+    p['operating_diners_override']=d.get('diners')
+    from backend.application.data_examples import apply_examples
+    return PlanRequest.model_validate(apply_examples(p,d.get('data_examples',[])))
+
+@router.get('/{month}/days/{target}/data-examples')
+def data_examples(month:str,target:date,site_id:str,request:Request):
+    from backend.application.data_examples import examples
+    with database(request) as db:
+        ensure(db);data=read(db,site_id,month);d=day_in(data,str(target))
+        bundles=examples(data['base'],d)
+        return {'providers':[{**b,'rows':[{k:v for k,v in row.items() if k!='value'} for row in b['rows']]} for b in bundles],
+                'selected':[b['id'] for b in d.get('data_examples',[])], 'revision':d['revision']}
+
+@router.post('/{month}/days/{target}/data-examples')
+def select_examples(month:str,target:date,payload:ExampleSelection,request:Request):
+    from backend.application.data_examples import examples
+    with database(request) as db:
+        ensure(db)
+        with db.repo.transaction():
+            data=read(db,payload.site_id,month,True);d=day_in(data,str(target))
+            if d['revision']!=payload.expected_revision:raise Conflict('입력이 변경됐습니다. 새로고침 후 적용하세요.')
+            if not data['base']['is_demo']:raise Conflict('시연 예시는 시연 사업장에서만 적용할 수 있습니다.')
+            selected=[b for b in examples(data['base'],d) if b['id'] in payload.providers]
+            if selected!=d.get('data_examples',[]):d.update(data_examples=selected,revision=d['revision']+1)
+            write(db,data)
+        return view(data)
+
+@router.post('/{month}/days/{target}/confirm')
+def confirm(month:str,target:date,payload:Confirmation,request:Request):
+    with database(request) as db:
+        ensure(db)
+        with db.repo.transaction():
+            data=read(db,payload.site_id,month,True);d=day_in(data,str(target))
+            if (d['revision']!=payload.expected_revision or d.get('plan_id')!=payload.plan_id
+                or d.get('generated_revision')!=d['revision']):raise Conflict('입력이 변경됐습니다. 최신 계획을 계산한 뒤 확정하세요.')
+            p=present_run(db,payload.plan_id)
+            if not p['saved'] or not p['calculation_complete']:raise Conflict('계산과 저장을 완료한 뒤 확정하세요.')
+            if p['blocked'] or (p['review_servings'] or 0)>p['capacity']:raise Conflict('차단 조건 또는 조리 용량 초과를 해결한 뒤 다시 계산하세요.')
+            if d.get('diners') is None or p['operating_diners']!=d['diners']:raise Conflict('확정할 식수를 입력하고 변경사항 반영을 눌러 조리량을 계산하세요.')
+            db.repo.connection.execute('INSERT OR IGNORE INTO api_plan_confirmations VALUES (?,?,?,?,?,?)',
+                (payload.plan_id,d['revision'],d['diners'],p['review_servings'],now(),int(p['is_demo'])))
+            p=present_run(db,payload.plan_id);d['summary']={k:p[k] for k in SUMMARY_FIELDS};write(db,data)
+        return {'month':view(data),'plan':p}
 
 @router.post('/{month}/days/{target}/generate')
 def generate(month:str,target:date,payload:Generate,request:Request):

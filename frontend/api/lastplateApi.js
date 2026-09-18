@@ -27,6 +27,9 @@ async function request(path,options={},valid=object){
 const post=(path,body,valid)=>request(path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},valid);
 const query=params=>new URLSearchParams(Object.entries(params).filter(([,v])=>v!=null&&v!=='')).toString();
 export const api={
+  confirmDay:(value,day,body)=>post(`/months/${value}/days/${day}/confirm`,body,v=>object(v)&&month(v.month)&&plan(v.plan)),
+  dataExamples:(value,day,site_id)=>request(`/months/${value}/days/${day}/data-examples?`+query({site_id}),{},v=>object(v)&&rows(v.providers)&&Array.isArray(v.selected)),
+  applyExamples:(value,day,body)=>post(`/months/${value}/days/${day}/data-examples`,body,month),
   month:(site_id,value)=>request(`/months/${encodeURIComponent(value)}?`+query({site_id}),{},month),
   saveMonth:(value,body)=>request(`/months/${encodeURIComponent(value)}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},month),
   saveDay:(value,day,body)=>request(`/months/${encodeURIComponent(value)}/days/${day}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)},month),

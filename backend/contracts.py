@@ -22,6 +22,7 @@ class Attendance(Contract):
 
 
 class PlanRequest(Contract):
+    operating_diners_override: int | None = Field(default=None, ge=0, le=100000, strict=True)
     site_id: str = Field(min_length=1, max_length=100, pattern=r'^[\w가-힣.-]+$')
     site_name: str = Field(min_length=1, max_length=120)
     target_date: date

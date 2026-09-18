@@ -76,6 +76,15 @@ def metadata(db,identity):
 
 def present_run(db,identity):
     row,meta=metadata(db,identity)
+    confirmation=db.repo.connection.execute('SELECT * FROM api_plan_confirmations WHERE request_id=?',(identity,)).fetchone()
+    if confirmation:
+        confirmation=dict(confirmation);confirmation['valid']=False
+        schedule=db.repo.connection.execute('SELECT data_json FROM api_month_schedules WHERE site_id=? AND month=?',
+            (row['site_id'],row['target_date'][:7])).fetchone()
+        if schedule:
+            d=next((d for d in json.loads(schedule[0])['days'] if d['date']==row['target_date']),None)
+            confirmation['valid']=bool(d and d.get('plan_id')==identity and d['revision']==confirmation['day_revision'] and d.get('generated_revision')==d['revision'])
+    meta['confirmation']=confirmation
     return plan_view(row['result'],row['request'],**meta)
 
 def completed(request,payload,result):

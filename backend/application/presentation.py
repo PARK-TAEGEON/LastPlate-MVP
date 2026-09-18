@@ -36,7 +36,7 @@ def event_view(context, target):
     return {'rows':rows,'attendance_delta':context.get('attendance_delta',0),
         'needs_review':uncertain,'message':'날짜 또는 내용을 더 구체적으로 입력하세요.' if uncertain else '해석한 날짜와 인원 변화를 확인하세요.'}
 
-def plan_view(result, request, *, created_at=None, version=None, acknowledged_at=None, previous=None):
+def plan_view(result, request, *, created_at=None, version=None, acknowledged_at=None, previous=None, confirmation=None):
     demand=result.get('demand') or {};op=result.get('operation') or {}
     risk=result.get('inventory_risk') or {};decision=result.get('decision') or {}
     serving=decision.get('serving_action') or {}
@@ -46,7 +46,8 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
     outcome=('문제 해결 전 사용 불가 · 조리량 미확정' if blocked else
         '일부 계산 미완료 · 조리량 미확정' if not complete else
         '추가 확인 필요 · 조리량 미확정')
-    # Read acknowledgement is never promoted to approval, even if the native value is non-null.
+    confirmed=bool(confirmation and confirmation['valid'])
+    if confirmed:outcome='시연 조리량 확정' if result['is_demo'] else '조리량 확정'
     issues=[];seen=set()
     def add(key,title,action,level='주의',target=None):
         identity=(key,target)
@@ -164,10 +165,13 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
         'acknowledged_at':acknowledged_at,'saved':result['persistence_status']=='SUCCESS',
         'calculation':'계획 계산 완료' if complete else '일부 계산 미완료','calculation_complete':complete,
         'outcome':outcome,'blocked':blocked,'ood':ood,
-        'next_action':(' '.join(calculation_actions) if calculation_actions else '해당 날짜의 계산 다시 시도를 눌러 주세요.') if not complete else
+        'next_action':('확정한 식수와 조리량을 기준으로 운영하고 종료 후 결과를 기록하세요. 표시된 운영 주의사항은 계속 확인하세요.') if confirmed else (' '.join(calculation_actions) if calculation_actions else '해당 날짜의 계산 다시 시도를 눌러 주세요.') if not complete else
             (' · '.join(failures+unknown)+' 항목을 확인하고 다시 계산하세요.') if failures or unknown else '운영 인원과 재고, 입력 자료의 확인 근거가 필요합니다.',
         'model_diners':demand.get('predicted_diners'),'operating_diners':op.get('base_demand'),
-        'review_servings':op.get('recommended_servings'),'final_servings':None,
+        'review_servings':op.get('recommended_servings'),'final_servings':confirmation['servings'] if confirmed else None,
+        'confirmed_at':confirmation['confirmed_at'] if confirmed else None,
+        'confirmed_diners':confirmation['diners'] if confirmed else None,
+        'operator_diners':request.get('operating_diners_override'),
         'margin_pct':op.get('safety_margin_pct'),'capacity':request['meal_capacity'],
         'menus':[m['menu_name'] for m in request['weekly_menu'] if m['date']==result['target_date'] and m['meal_type']=='lunch'],
         'issues':sorted(issues,key=lambda x:{'차단':0,'주의':1,'참고':2}[x['level']]),
@@ -179,12 +183,13 @@ def plan_view(result, request, *, created_at=None, version=None, acknowledged_at
         'event_inputs':[e for e in request.get('events',[]) if isinstance(e,str)],
         'sources':{'menu':source_label(request['sources'].get('weekly_menu')),
             'inventory':source_label(request['sources'].get('inventory')),'as_of':request['as_of']},
+        'data_examples':[v.removeprefix('DEMO: ').split(' integration example')[0] for v in request['sources'].values() if 'integration example' in v],
         'reason':'운영 기준 인원에 사업장 여유분을 더해 조리량을 계산했습니다. 재료 확보와 운영 조건을 확인해야 합니다.' if op.get('recommended_servings') is not None else '예상 식수와 조리량 계산을 완료한 뒤 조리 계획을 확인할 수 있습니다.'}
 
 def actual_view(row, revision=None, corrections=None):
     keys=['site_id','target_date','actual_diners','prepared_servings','unserved_leftover_kg',
         'plate_waste_kg','ingredient_waste_kg','shortage','notes','created_at','updated_at',
         'is_demo','plan_request_id','predicted_diners','operating_diners','recommended_servings',
-        'model_difference','operating_difference','overprep_servings']
+        'model_difference','operating_difference','overprep_servings','confirmed_diners','final_servings']
     return {**{k:row.get(k) for k in keys},'revision':revision,
         'corrections':[{'reason':r.get('reason'),'created_at':r.get('corrected_at') or r.get('created_at')} for r in corrections or []]}

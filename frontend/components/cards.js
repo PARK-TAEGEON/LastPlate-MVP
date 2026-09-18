@@ -52,9 +52,10 @@ export function renderPlan(plan){
   summary.append(node('p','다음 조치 · '+plan.next_action,'next-action'));
   if(plan.ood){const notice=node('div',null,'notice danger');notice.append(node('strong','이 사업장에서는 검증되지 않은 예측입니다.'),node('p','예측은 참고용입니다. 운영 인원과 사업장 적용 가능성을 먼저 확인하세요.'),routeButton('운영 인원 확인','create','staff'));summary.append(notice);}
   const metrics=node('div',null,'metric-grid');
-  for(const [label,value,unit,help,klass] of [['예상 식수',plan.model_diners,'명',plan.ood?'참고용 · 검증 범위 밖':'모델 예측 · 신뢰도 미산정',''],['이벤트 반영 식수',plan.operating_diners,'명',plan.events.attendance_delta?`인원 변경 ${signed(plan.events.attendance_delta)}명 반영`:'운영 변경사항 반영 기준',''],['권장 조리량 · 검토용',plan.review_servings,'식','미확정 · 운영 조건 확인 필요','review']]){
+  for(const [label,value,unit,help,klass] of [['예상 식수',plan.model_diners,'명',plan.ood?'참고용 · 검증 범위 밖':'모델 예측 · 신뢰도 미산정',''],[plan.operator_diners!=null?'운영 식수':'이벤트 반영 식수',plan.operating_diners,'명',plan.operator_diners!=null?'운영자 입력 식수 · 증감 중복 미적용':plan.events.attendance_delta?`인원 변경 ${signed(plan.events.attendance_delta)}명 반영`:'운영 변경사항 반영 기준',''],[plan.confirmed_at?'확정 조리량':'권장 조리량 · 확정 전',plan.final_servings??plan.review_servings,'식',plan.confirmed_at?'운영자가 확정한 수량':'식수를 정하고 하단에서 확정하세요.','review']]){
     const box=node('div',null,'metric-card '+klass);const strong=node('strong',fmt(value,'계산 미완료'));if(value!=null)strong.append(node('em',unit));box.append(node('span',label),strong,node('small',help));metrics.append(box);
   }summary.append(metrics);$('plan-summary').replaceChildren(summary);
+  if(plan.data_examples?.length)summary.append(node('p','적용된 시연 자료 · '+plan.data_examples.join(' / '),'notice info'));
   const cooking=$('cooking-card');cooking.replaceChildren(node('h2','조리 계획'),node('p',plan.menus.join(' · ')||'선택일 식단 확인 필요','data-title'));
   metric(cooking,'안전 여유분',amount(plan.margin_pct,'%'));metric(cooking,'급식 용량',amount(plan.capacity,'식'));cooking.append(node('p',plan.reason,'muted'));
   const check=node('ul',null,'check-list');for(const c of plan.checks){const li=node('li');li.append(node('span',c.label),node('span',`${c.status}${c.actual!=null?' · '+fmt(c.actual)+c.unit:''}${c.minimum!=null?' / 최소 '+fmt(c.minimum)+c.unit:''}${c.maximum!=null?' / 최대 '+fmt(c.maximum)+c.unit:''}${c.matched?.length?' · '+c.matched.join(', '):''}`));check.append(li);}if(plan.checks.length)details(cooking,'영양·알레르기 조건 확인',check);else cooking.append(node('p','영양·알레르기 검증 자료를 확인해야 합니다.','notice'));
@@ -72,11 +73,12 @@ export function renderPlan(plan){
   const candidate=c=>{const item=node('div',null,'candidate'+(!c.eligible?' unavailable':''));item.append(node('h3',`${c.original_menu} → ${c.menu}`),node('span',c.status,'badge subtle'),node('p',`영양: ${c.nutrition} · 재고: ${c.inventory} · ${c.cost}`));if(c.shortages.length)item.append(node('p',c.shortages.map(s=>`${s.ingredient} ${fmt(s.kg)}kg 부족`).join(' / ')));if(c.reasons.length)item.append(node('p',c.reasons.join(' · '),'notice danger'));return item;};
   if(eligible.length)eligible.forEach(c=>alternatives.append(candidate(c)));else alternatives.append(node('p','현재 검토 가능한 대체 메뉴가 없습니다.','muted'));
   if(excluded.length){const list=node('div');excluded.forEach(c=>list.append(candidate(c)));details(alternatives,`사용 불가 후보 ${excluded.length}건과 제외 사유`,list);}
-  alternatives.append(node('p','대체 메뉴 적용은 지원하지 않습니다. 선택·재검증 절차를 거친 뒤 현장에서 결정하세요.','muted'));
+  alternatives.append(node('p','캘린더의 운영 Agent 검토에서 권고 수용 후 재계산할 수 있습니다.','muted'));
   const changes=$('plan-changes');changes.replaceChildren();if(plan.changes){const c=plan.changes,box=node('section',null,'panel');box.append(node('h2','변경 전후'),node('p',`운영 기준 ${fmt(c.old_diners)} → ${fmt(c.new_diners)}명 (${signed(c.diners_delta)}명)`),node('p',`검토용 조리량 ${fmt(c.old_servings)} → ${fmt(c.new_servings)}식 (${signed(c.servings_delta)}식)`));if(c.materials.length)box.append(node('p','필요 재료 변화 · '+c.materials.map(m=>`${m.ingredient} ${signed(m.delta_kg)}kg`).join(' / '),'changed'));changes.append(box);}
   $('changes-details').hidden=!plan.changes;
-  text('ack-status',plan.acknowledged_at?`${stamp(plan.acknowledged_at)} · 권고 내용 열람 기록됨`:'권고 내용을 읽은 뒤 확인을 남겨 주세요.');
-  text('ack-button',plan.acknowledged_at?'운영 결과 입력 →':'운영 계획 확인');
+  text('ack-status',plan.confirmed_at?`${stamp(plan.confirmed_at)} · ${plan.confirmed_diners}명 / ${plan.final_servings}식 확정`:'운영 식수 입력 → 변경사항 반영 → 경고 확인 → 조리량 확정');
+  $('confirmation-check').hidden=!!plan.confirmed_at;$('warnings-reviewed').checked=false;
+  text('ack-button',plan.confirmed_at?'운영 결과 입력 →':plan.is_demo?'시연 조리량 확정':'조리량 확정');
   $('retry-save').hidden=plan.saved;text('replan-date-help',`‘내일’은 이 계획의 운영일(${plan.target_date})로 해석합니다.`);
   $('plan-data-basis').replaceChildren(node('p',`식단: ${plan.sources.menu} / 재고: ${plan.sources.inventory} / 입력 기준일: ${plan.sources.as_of}`),node('p','모델이 예측 범위를 계산하지 않아 상·하한은 표시하지 않습니다. 학습 범위 안의 입력도 정확도를 보증하지 않습니다.'));
 }
@@ -89,7 +91,7 @@ export function renderActual(record){
   const waste=node('div',null,'result-kpi waste-kpi');waste.append(node('span','잔식 · 잔반 · 식재료 폐기'));
   for(const [label,key] of [['배식 전 잔식','unserved_leftover_kg'],['식판 잔반','plate_waste_kg'],['식재료 폐기','ingredient_waste_kg']])metric(waste,label,amount(record[key],'kg','미측정'));
   kpis.append(waste);root.append(kpis,node('p',`급식 부족 · ${record.shortage?'있음':'없음'}`,record.shortage?'notice danger':'muted'));
-  const comparison=node('div');for(const [label,value] of [['모델 원본 예측',amount(record.predicted_diners,'명','연결 자료 없음')],['운영 조정 기준',amount(record.operating_diners,'명','연결 자료 없음')],['실제 식수',amount(record.actual_diners,'명')],['운영 기준 대비',signed(record.operating_difference)+(record.operating_difference==null?'':'명')],['실제 조리량',amount(record.prepared_servings,'식')]])metric(comparison,label,value);details(root,'입력값·비교 기준 상세',comparison);
+  const comparison=node('div');for(const [label,value] of [['모델 원본 예측',amount(record.predicted_diners,'명','연결 자료 없음')],['운영 조정 기준',amount(record.operating_diners,'명','연결 자료 없음')],['실제 식수',amount(record.actual_diners,'명')],['운영 기준 대비',signed(record.operating_difference)+(record.operating_difference==null?'':'명')],['확정 조리량',amount(record.final_servings,'식','확정 기록 없음')],['실제 조리량',amount(record.prepared_servings,'식')]])metric(comparison,label,value);details(root,'입력값·비교 기준 상세',comparison);
   if(record.notes)root.append(node('p',record.notes,'notice info'));
   root.append(node('p','비교값은 실제 식수에서 각 기준을 뺀 값입니다. 초과 조리량은 음식 무게와 다른 지표입니다.','muted'));
   if(record.corrections?.length){const list=node('div');for(const correction of record.corrections)list.append(node('p',`${stamp(correction.created_at)} · ${correction.reason}`));details(root,`정정 이력 ${record.corrections.length}건`,list);}

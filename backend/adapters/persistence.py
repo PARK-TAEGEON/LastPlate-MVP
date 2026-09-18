@@ -32,6 +32,10 @@ class Persistence:
                 request_id TEXT NOT NULL REFERENCES api_runs(request_id));
             CREATE TABLE IF NOT EXISTS api_site_settings (
                 site_id TEXT PRIMARY KEY, settings_json TEXT NOT NULL, updated_at TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS api_plan_confirmations (
+                request_id TEXT PRIMARY KEY REFERENCES api_runs(request_id),
+                day_revision INTEGER NOT NULL, diners INTEGER NOT NULL,
+                servings INTEGER NOT NULL, confirmed_at TEXT NOT NULL, is_demo INTEGER NOT NULL);
         ''')
 
     def close(self):
@@ -172,12 +176,16 @@ class Persistence:
                         run=self.get_run(candidate['request_id']);break
             row['plan_request_id']=run['request_id'] if run else None
             row['operating_diners']=None
+            row['confirmed_diners']=None;row['final_servings']=None
             if run:
                 result=run['result']
                 row['predicted_diners']=(result.get('demand') or {}).get('predicted_diners')
                 row['operating_diners']=(result.get('operation') or {}).get('base_demand')
                 row['recommended_servings']=(result.get('operation') or {}).get('recommended_servings')
                 row['prediction_id']=result.get('persistence_ids',{}).get('prediction_id')
+                confirmation=self.repo.connection.execute('SELECT diners,servings FROM api_plan_confirmations WHERE request_id=? AND confirmed_at<=?',
+                    (run['request_id'],row['created_at'])).fetchone()
+                if confirmation:row['confirmed_diners'],row['final_servings']=confirmation
             prediction=row['predicted_diners']
             row['prediction_error']=None if prediction is None else abs(prediction-row['actual_diners'])
             row['overprep_servings']=None if row['prepared_servings'] is None else max(0,row['prepared_servings']-row['actual_diners'])

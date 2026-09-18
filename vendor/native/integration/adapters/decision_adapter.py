@@ -22,6 +22,14 @@ def decide(value):
             data_quality_notes=[w['message'] for w in d['warnings']])
         dd['integration_envelope']={k:deepcopy(d[k]) for k in ('confidence','model_type','training_ranges','warnings','model_version','predicted_diners','applicability') if k in d}
         if d['applicability']!='IN_RANGE': dd['operational_eligible']=False
+        # Explicit operator scenario is separate from the preserved ML source payload.
+        # Decision must compare planned portions to the selected operational count.
+        if value.get('operating_diners') is not None:
+            dd['prediction']=value['operating_diners']
+            dd['source_type']='MANUAL'
+            dd['integration_envelope']['operator_diners']=value['operating_diners']
+            dd['provenance']['result_revision']='operator-scenario-'+fingerprint([d,value['operating_diners']])
+            dd['data_quality_notes'].append('운영자가 직접 입력한 식수로 검토; 원본 모델 예측은 source_payload에 보존')
     rr={}; events=[]; confirmation_gates=[]
     if r:
         active=project_active(r)

@@ -1,6 +1,6 @@
-import {initMonthly} from './monthly.js?v=5';
-import {api} from './api/lastplateApi.js?v=5';
-import {$,fmt,stamp,node,text,renderInputs,renderEvents,renderPlan,renderActual,renderHistory,renderSectionState} from './components/cards.js?v=5';
+import {initMonthly} from './monthly.js?v=6';
+import {api} from './api/lastplateApi.js?v=6';
+import {$,fmt,stamp,node,text,renderInputs,renderEvents,renderPlan,renderActual,renderHistory,renderSectionState} from './components/cards.js?v=6';
 
 const staff=['vacation','business_trip','work_from_home','overtime'];
 const actualNumbers=['actual_diners','prepared_servings','unserved_leftover_kg','plate_waste_kg','ingredient_waste_kg'];
@@ -29,7 +29,7 @@ function syncActions(){
   const actualReady=['success','empty'].includes(state.sections.actual.status);
   $('actual-fields').disabled=locked||!state.plan?.saved||!actualReady||Boolean(state.record&&!state.correcting);
   $('correct-actual').disabled=locked||!actualReady||!state.plan?.saved;
-  $('ack-button').disabled=locked||!state.plan?.saved||state.sections.plan.status==='loading';
+  $('ack-button').disabled=locked||!monthly?.canConfirm()||state.sections.plan.status==='loading';
   $('replan-button').disabled=locked||!state.plan?.saved||state.sections.plan.status==='loading'||!eventReady(true);
   const waitingForEvents=!monthly&&events('events').length>0&&!eventReady();
   $('plan-button').disabled=locked||!state.context||contextLoading||waitingForEvents;
@@ -89,6 +89,7 @@ function fillContext(context,draft){
   $('input-changes').hidden=true;
 }
 function updateActualContext(){
+  if(!state.record&&state.plan?.confirmed_at&&$('prepared_servings').value==='')$('prepared_servings').value=state.plan.final_servings;
   if(!state.selection)return;
   text('actual-title',`${state.selection.date.slice(5,7)}월 ${state.selection.date.slice(8)}일 운영 결과`);
   text('actual-context',`${state.context?.site_name||$('site-select').selectedOptions[0]?.textContent||''} · ${state.selection.date} · 점심`);
@@ -246,7 +247,7 @@ $('replan-button').addEventListener('click',()=>perform('replan-status','확인�
   if(!eventReady(true))throw new Error('변경 내용 확인을 먼저 눌러 주세요.');
   await acceptPlan(await api.replan(state.plan.id,events('replan-events')));status('replan-status','변경 전후 비교가 반영됐습니다.');
 }));
-$('ack-button').addEventListener('click',()=>perform('planner-status','운영 계획 확인을 기록합니다…',async()=>{if(!state.plan.acknowledged_at){const result=await api.acknowledge(state.plan.id);state.plan.acknowledged_at=result.acknowledged_at;renderPlan(state.plan);}status('planner-status','운영 계획 확인을 기록했습니다. 조리량 확정 상태는 유지됩니다.');route('actual');}));
+$('ack-button').addEventListener('click',()=>{if(state.plan?.confirmed_at)route('actual');else void monthly.confirmPlan();});
 $('retry-save').addEventListener('click',()=>perform('planner-status','계산을 반복하지 않고 저장을 다시 시도합니다…',async()=>{const saved=await api.retry(state.plan.id);await acceptPlan(saved);await monthly?.onRetried(saved);}));
 for(const kind of ['inventory'])$(kind+'-file').addEventListener('change',()=>{
   const file=$(kind+'-file').files[0];if(!file)return;
